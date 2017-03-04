@@ -7,7 +7,6 @@
 //! power (all) and safety guarantess(none) as the wrapped C-API.
 //! ODBC 4.0 is still under development by Microsoft, so these symbols are deactivated by default
 //! in the cargo.toml
-)
 
 #[cfg(test)]
 mod test;
