@@ -1,0 +1,21 @@
+[package]
+name = "odbc-ffi"
+version = "0.1.0"
+authors = ["Markus Klein <markus-klein@live.de>"]
+license = "MIT"
+repository = "https://github.com/pacman82/odbc-ffi"
+documentation = "https://docs.rs/odbc-ffi/"
+readme = "README.md"
+keywords = ["sql","database","odbc","ffi"]
+categories = ["database", "api-bindings", "external-ffi-bindings"]
+
+[dependencies]
+
+[features]
+default = ["odbc_version_3_80"]
+
+odbc_version_3_80 = []
+odbc_version_4 = ["odbc_version_3_80"]
+
+[badges]
+travis-ci = { repository = "https://github.com/pacman82/odbc-ffi", branch = "master" }
