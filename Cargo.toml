@@ -3,6 +3,7 @@ name = "odbc-ffi"
 version = "0.1.0"
 authors = ["Markus Klein <markus-klein@live.de>"]
 license = "MIT"
+description = "ffi bindings to odbc"
 repository = "https://github.com/pacman82/odbc-ffi"
 documentation = "https://docs.rs/odbc-ffi/"
 readme = "README.md"
