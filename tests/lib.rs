@@ -1,7 +1,8 @@
 //! Contains test for the ffi layer
-
-use super::*;
+extern crate odbc_ffi;
+use odbc_ffi::*;
 use std::ptr::null_mut;
+use std::os::raw::c_void;
 
 #[test]
 fn allocate_environment() {
@@ -55,3 +56,4 @@ fn allocate_connection_error() {
         assert_eq!(SQL_SUCCESS, SQLFreeHandle(SQL_HANDLE_ENV, env));
     }
 }
+

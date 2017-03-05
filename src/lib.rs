@@ -8,12 +8,10 @@
 //! ODBC 4.0 is still under development by Microsoft, so these symbols are deactivated by default
 //! in the cargo.toml
 
-#[cfg(test)]
-mod test;
-
-#[allow(non_camel_case_types)]
 mod sqlreturn;
 pub use self::sqlreturn::*;
+mod info_type;
+pub use self::info_type::*;
 use std::os::raw::{c_void, c_short, c_ushort, c_int, c_ulong};
 
 //These types can never be instantiated in Rust code.
@@ -58,7 +56,7 @@ pub const SQL_SQLSTATE_SIZE: usize = 5;
 pub const SQL_NULL_DATA: SQLLEN = -1;
 pub const SQL_NO_TOTAL: SQLLEN = -4;
 
-// SQL Data Types
+/// SQL Data Types
 #[repr(i16)]
 #[allow(non_camel_case_types)]
 pub enum SqlDataType {
@@ -168,4 +166,12 @@ extern "C" {
                       -> SQLRETURN;
 
     pub fn SQLFetch(statement_handle: SQLHSTMT) -> SQLRETURN;
+
+    /// Returns general information about the driver and data source associated with a connection
+    pub fn SQLGetInfo(connection_handle: SQLHDBC,
+                      info_type: InfoType,
+                      info_value_ptr: SQLPOINTER,
+                      buffer_length: SQLSMALLINT,
+                      string_length_ptr: *mut SQLSMALLINT)
+                      -> SQLRETURN;
 }

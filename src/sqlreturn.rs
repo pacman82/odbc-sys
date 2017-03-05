@@ -3,6 +3,7 @@
 /// Each function in ODBC returns a code, known as its return code, which indicates the overall
 /// success or failure of the function. Program logic is generally based on return codes.
 /// See [ODBC reference](https://docs.microsoft.com/en-us/sql/odbc/reference/develop-app/return-codes-odbc)
+#[allow(non_camel_case_types)]
 #[repr(i16)]
 #[must_use]
 #[derive(Debug, PartialEq, Eq)]
