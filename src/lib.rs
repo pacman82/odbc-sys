@@ -12,7 +12,11 @@ mod sqlreturn;
 pub use self::sqlreturn::*;
 mod info_type;
 pub use self::info_type::*;
-use std::os::raw::{c_void, c_short, c_ushort, c_int, c_ulong};
+mod fetch_orientation;
+pub use self::fetch_orientation::*;
+mod attributes;
+pub use self::attributes::*;
+use std::os::raw::{c_void, c_short, c_ushort, c_int};
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -22,6 +26,9 @@ pub enum Stmt {}
 
 pub type SQLHANDLE = *mut Obj;
 pub type SQLHENV = *mut Env;
+
+/// The connection handle references storage of all information about the connection to the data
+/// source, including status, transaction state, and error information.
 pub type SQLHDBC = *mut Dbc;
 pub type SQLHSTMT = *mut Stmt;
 
@@ -37,16 +44,6 @@ pub type SQLLEN = i64;
 pub type SQLLEN = SQLINTEGER;
 
 pub type SQLHWND = SQLPOINTER;
-
-pub const SQL_ATTR_ODBC_VERSION: SQLINTEGER = 200;
-
-// ODBC verions
-pub const SQL_OV_ODBC2: c_ulong = 2;
-pub const SQL_OV_ODBC3: c_ulong = 3;
-#[cfg(feature = "odbc_version_3_80")]
-pub const SQL_OV_ODBC3_80: c_ulong = 380;
-#[cfg(feature = "odbc_version_4")]
-pub const SQL_OV_ODBC4: c_ulong = 400;
 
 /// Maximum message length
 pub const SQL_MAX_MESSAGE_LENGTH: SQLSMALLINT = 512;
@@ -89,16 +86,6 @@ pub enum SqlCDataType {
 }
 pub use self::SqlCDataType::*;
 
-#[repr(u16)]
-#[allow(non_camel_case_types)]
-pub enum SqlDriverConnectOption {
-    SQL_DRIVER_NOPROMPT = 0,
-    SQL_DRIVER_COMPLETE = 1,
-    SQL_DRIVER_PROMPT = 2,
-    SQL_DRIVER_COMPLETE_REQUIRED = 3,
-}
-pub use self::SqlDriverConnectOption::*;
-
 /// Represented in C headers as SQLSMALLINT
 #[repr(i16)]
 #[allow(non_camel_case_types)]
@@ -110,30 +97,46 @@ pub enum HandleType {
 }
 pub use self::HandleType::*;
 
+/// Options for `SQLDriverConnect`
+#[repr(u16)]
+#[allow(non_camel_case_types)]
+pub enum SqlDriverConnectOption {
+    SQL_DRIVER_NOPROMPT = 0,
+    SQL_DRIVER_COMPLETE = 1,
+    SQL_DRIVER_PROMPT = 2,
+    SQL_DRIVER_COMPLETE_REQUIRED = 3,
+}
+pub use self::SqlDriverConnectOption::*;
+
 #[cfg_attr(windows, link(name="odbc32"))]
 #[cfg_attr(not(windows), link(name="odbc"))]
 extern "C" {
+    /// Allocates an environment, connection, statement, or descriptor handle.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLAllocHandle(handle_type: HandleType,
                           input_handle: SQLHANDLE,
                           output_Handle: *mut SQLHANDLE)
                           -> SQLRETURN;
 
+    /// Frees resources associated with a specific environment, connection, statement, or
+    /// descriptor handle.
+    ///
+    /// If `SQL_ERRQR` is returned the handle is still valid.
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLFreeHandle(handle_type: HandleType, handle: SQLHANDLE) -> SQLRETURN;
+
+    /// Sets attributes that govern aspects of environments
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLSetEnvAttr(environment_handle: SQLHENV,
-                         attribute: SQLINTEGER,
+                         attribute: EnvironmentAttribute,
                          value: SQLPOINTER,
                          string_length: SQLINTEGER)
                          -> SQLRETURN;
-
-    pub fn SQLDriverConnect(connection_handle: SQLHDBC,
-                            window_handle: SQLHWND,
-                            in_connection_string: *const SQLCHAR,
-                            string_length_1: SQLSMALLINT,
-                            out_connection_string: *mut SQLCHAR,
-                            buffer_length: SQLSMALLINT,
-                            string_length_2: *mut SQLSMALLINT,
-                            DriverCompletion: SqlDriverConnectOption)
-                            -> SQLRETURN;
 
     pub fn SQLDisconnect(connection_handle: SQLHDBC) -> SQLRETURN;
 
@@ -168,10 +171,94 @@ extern "C" {
     pub fn SQLFetch(statement_handle: SQLHSTMT) -> SQLRETURN;
 
     /// Returns general information about the driver and data source associated with a connection
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLGetInfo(connection_handle: SQLHDBC,
                       info_type: InfoType,
                       info_value_ptr: SQLPOINTER,
                       buffer_length: SQLSMALLINT,
                       string_length_ptr: *mut SQLSMALLINT)
+                      -> SQLRETURN;
+
+    /// SQLConnect establishes connections to a driver and a data source.
+    ///
+    /// The connection handle references storage of all information about the connection to the
+    /// data source, including status, transaction state, and error information.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
+    /// `SQL_STILL_EXECUTING`
+    pub fn SQLConnect(connection_handle: SQLHDBC,
+                      server_name: *const SQLCHAR,
+                      name_length_1: SQLSMALLINT,
+                      user_name: *const SQLCHAR,
+                      name_length_2: SQLSMALLINT,
+                      authentication: *const SQLCHAR,
+                      name_length_3: SQLSMALLINT)
+                      -> SQLRETURN;
+
+    /// Returns the list of table, catalog, or schema names, and table types, stored in a specific
+    /// data source. The driver returns the information as a result set
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
+    /// `SQL_STILL_EXECUTING`
+    pub fn SQLTables(statement_handle: SQLHSTMT,
+                     catalog_name: *const SQLCHAR,
+                     name_length_1: SQLSMALLINT,
+                     schema_name: *const SQLCHAR,
+                     name_length_2: SQLSMALLINT,
+                     table_name: *const SQLCHAR,
+                     name_length_3: SQLSMALLINT,
+                     TableType: *const SQLCHAR,
+                     name_length_4: SQLSMALLINT)
+                     -> SQLRETURN;
+
+    /// Returns information about a data source. This function is implemented only by the Driver
+    /// Manager.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_NO_DATA`
+    pub fn SQLDataSources(environment_handle: SQLHENV,
+                          direction: FetchOrientation,
+                          server_name: *mut SQLCHAR,
+                          buffer_length_1: SQLSMALLINT,
+                          name_length_1: *mut SQLSMALLINT,
+                          description: *mut SQLCHAR,
+                          buffer_length_2: SQLSMALLINT,
+                          name_length_2: *mut SQLSMALLINT)
+                          -> SQLRETURN;
+
+    /// An alternative to `SQLConnect`. It supports data sources that require more connection
+    /// information than the three arguments in `SQLConnect`, dialog boxes to prompt the user for
+    /// all connection information, and data sources that are not defined in the system information
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, `SQL_NO_DATA`,
+    /// or `SQL_STILL_EXECUTING`
+    pub fn SQLDriverConnect(connection_handle: SQLHDBC,
+                            window_handle: SQLHWND,
+                            in_connection_string: *const SQLCHAR,
+                            string_length_1: SQLSMALLINT,
+                            out_connection_string: *mut SQLCHAR,
+                            buffer_length: SQLSMALLINT,
+                            string_length_2: *mut SQLSMALLINT,
+                            DriverCompletion: SqlDriverConnectOption)
+                            -> SQLRETURN;
+
+    /// Lists driver descriptions and driver attribute keywords. This function is implemented only
+    /// by the Driver Manager.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_NO_DATA`
+    pub fn SQLDrivers(henv: SQLHENV,
+                      direction: FetchOrientation,
+                      driver_desc: *mut SQLCHAR,
+                      driver_desc_max: SQLSMALLINT,
+                      out_driver_desc: *mut SQLSMALLINT,
+                      driver_attributes: *mut SQLCHAR,
+                      drvr_attr_max: SQLSMALLINT,
+                      out_drvr_attr: *mut SQLSMALLINT)
                       -> SQLRETURN;
 }
