@@ -1,6 +1,6 @@
 [package]
 name = "odbc-ffi"
-version = "0.1.1"
+version = "0.2.0"
 authors = ["Markus Klein <markus-klein@live.de>"]
 license = "MIT"
 description = "ffi bindings to odbc"
