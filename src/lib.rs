@@ -56,6 +56,7 @@ pub const SQL_NO_TOTAL: SQLLEN = -4;
 /// SQL Data Types
 #[repr(i16)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlDataType {
     SQL_UNKNOWN_TYPE = 0, // also called SQL_VARIANT_TYPE since odbc 4.0
     SQL_CHAR = 1,
@@ -81,6 +82,7 @@ pub use self::SqlDataType::*;
 
 #[repr(i16)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlCDataType {
     SQL_C_CHAR = 1,
 }
@@ -89,6 +91,7 @@ pub use self::SqlCDataType::*;
 /// Represented in C headers as SQLSMALLINT
 #[repr(i16)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum HandleType {
     SQL_HANDLE_ENV = 1,
     SQL_HANDLE_DBC = 2,
@@ -100,6 +103,7 @@ pub use self::HandleType::*;
 /// Options for `SQLDriverConnect`
 #[repr(u16)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlDriverConnectOption {
     SQL_DRIVER_NOPROMPT = 0,
     SQL_DRIVER_COMPLETE = 1,

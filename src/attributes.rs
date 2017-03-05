@@ -3,6 +3,7 @@ use std::os::raw::c_ulong;
 /// Governs behaviour of EnvironmentAttribute
 #[repr(i32)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum EnvironmentAttribute {
     SQL_ATTR_ODBC_VERSION = 200,
     SQL_ATTR_CONNECTION_POOLING = 201,

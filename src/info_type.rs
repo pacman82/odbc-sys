@@ -1,6 +1,7 @@
 /// Information requested by SQLGetInfo
 #[repr(u16)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum InfoType {
     SQL_MAX_DRIVER_CONNECTIONS = 0,
     SQL_MAX_CONCURRENT_ACTIVITIES = 1,
@@ -51,3 +52,4 @@ pub enum InfoType {
     SQL_MAX_IDENTIFIER_LEN = 10005,
 }
 pub use self::InfoType::*;
+

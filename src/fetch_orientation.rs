@@ -1,6 +1,7 @@
 /// Codes used for FetchOrientation in `SQLFetchScroll`, `SQLDataSources` and in `SQLDrivers`
 #[repr(u16)]
 #[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum FetchOrientation {
     SQL_FETCH_NEXT = 1,
     SQL_FETCH_FIRST = 2,

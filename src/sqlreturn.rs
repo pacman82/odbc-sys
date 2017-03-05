@@ -6,7 +6,7 @@
 #[allow(non_camel_case_types)]
 #[repr(i16)]
 #[must_use]
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SQLRETURN {
     /// Function failed due to an invalid environment, connection, statement, or descriptor handle
     ///
