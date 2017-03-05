@@ -45,6 +45,10 @@ pub type SQLLEN = SQLINTEGER;
 
 pub type SQLHWND = SQLPOINTER;
 
+// flags for null-terminated string
+pub const SQL_NTS: SQLSMALLINT = -3;
+pub const SQL_NTSL: SQLINTEGER = -3;
+
 /// Maximum message length
 pub const SQL_MAX_MESSAGE_LENGTH: SQLSMALLINT = 512;
 pub const SQL_SQLSTATE_SIZE: usize = 5;
