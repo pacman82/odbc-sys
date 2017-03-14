@@ -14,7 +14,7 @@ matrix:
    - os: osx
      rust: nightly
    - os: osx
-     rust: stable
+     rust: beta
 addons:
   apt:
     packages:
