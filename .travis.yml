@@ -4,9 +4,17 @@ rust:
  - stable
  - beta
  - nightly
+os:
+ - linux
+ - osx
 matrix:
   allow_failures:
    - rust: nightly
+  exclude:
+   - os: osx
+     rust: nightly
+   - os: osx
+     rust: stable
 addons:
   apt:
     packages:
