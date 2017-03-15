@@ -15,6 +15,10 @@ matrix:
      rust: nightly
    - os: osx
      rust: beta
+before_install: |
+  if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    brew install unixodbc
+  fi
 addons:
   apt:
     packages:
