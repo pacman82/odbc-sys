@@ -8,7 +8,8 @@ repository = "https://github.com/pacman82/odbc-ffi"
 documentation = "https://docs.rs/odbc-ffi/"
 readme = "README.md"
 keywords = ["sql","database","odbc","ffi"]
-categories = ["database", "api-bindings", "external-ffi-bindings"]
+categories = ["external-ffi-bindings", "database"]
+
 
 [dependencies]
 
