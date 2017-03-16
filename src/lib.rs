@@ -32,6 +32,7 @@ pub type SQLHENV = *mut Env;
 pub type SQLHDBC = *mut Dbc;
 pub type SQLHSTMT = *mut Stmt;
 
+/// 16 Bit signed integer
 pub type SQLSMALLINT = c_short;
 pub type SQLUSMALLINT = c_ushort;
 pub type SQLINTEGER = c_int;
@@ -146,6 +147,10 @@ extern "C" {
                          string_length: SQLINTEGER)
                          -> SQLRETURN;
 
+    /// Closes the connection associated with a specific connection handle.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLDisconnect(connection_handle: SQLHDBC) -> SQLRETURN;
 
     pub fn SQLGetDiagRec(handle_type: HandleType,
