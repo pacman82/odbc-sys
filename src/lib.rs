@@ -41,6 +41,8 @@ pub type SQLCHAR = u8;
 
 #[cfg(all(windows, target_pointer_width = "64"))]
 pub type SQLLEN = i64;
+#[cfg(all(windows, target_pointer_width = "32"))]
+pub type SQLLEN = SQLINTEGER;
 #[cfg(not(windows))]
 pub type SQLLEN = SQLINTEGER;
 
