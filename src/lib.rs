@@ -181,6 +181,12 @@ extern "C" {
                       str_len_or_ind_ptr: *mut SQLLEN)
                       -> SQLRETURN;
 
+    /// SQLFetch fetches the next rowset of data from the result set and returns data for all bound
+    /// columns.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, `SQL_NO_DATA` or
+    /// `SQL_STILL_EXECUTING`
     pub fn SQLFetch(statement_handle: SQLHSTMT) -> SQLRETURN;
 
     /// Returns general information about the driver and data source associated with a connection
@@ -274,4 +280,10 @@ extern "C" {
                       drvr_attr_max: SQLSMALLINT,
                       out_drvr_attr: *mut SQLSMALLINT)
                       -> SQLRETURN;
+
+    /// Closes a cursor that has been opened on a statement and discards pending results.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR` or `SQL_INVALID_HANDLE`
+    pub fn SQLCloseCursor(hstmt: SQLHSTMT) -> SQLRETURN;
 }
