@@ -14,7 +14,7 @@ fn main() {
 }
 
 fn print_paths(paths: &str) {
-    for path in paths.split(':').filter(|x| x.is_empty()) {
+    for path in paths.split(':').filter(|x| !x.is_empty()) {
         println!("cargo:rustc-link-search=native={}", path)
     }
 }
