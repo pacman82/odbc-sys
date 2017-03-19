@@ -1,6 +1,6 @@
 [package]
 name = "odbc-sys"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["Markus Klein <markus-klein@live.de>"]
 license = "MIT"
 description = "ODBC ffi bindings"
@@ -21,4 +21,4 @@ odbc_version_3_80 = ["odbc_version_3_50"]
 odbc_version_4 = ["odbc_version_3_80"]
 
 [badges]
-travis-ci = { repository = "https://github.com/pacman82/odbc-sys", branch = "master" }
+travis-ci = { repository = "pacman82/odbc-sys", branch = "master" }

@@ -41,11 +41,9 @@ pub type SQLINTEGER = c_int;
 pub type SQLPOINTER = *mut c_void;
 pub type SQLCHAR = u8;
 
-#[cfg(all(windows, target_pointer_width = "64"))]
+#[cfg(target_pointer_width = "64")]
 pub type SQLLEN = i64;
-#[cfg(all(windows, target_pointer_width = "32"))]
-pub type SQLLEN = SQLINTEGER;
-#[cfg(not(windows))]
+#[cfg(target_pointer_width = "32")]
 pub type SQLLEN = SQLINTEGER;
 
 pub type SQLHWND = SQLPOINTER;
