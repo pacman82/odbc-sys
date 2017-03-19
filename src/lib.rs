@@ -17,6 +17,8 @@ pub use self::fetch_orientation::*;
 mod attributes;
 pub use self::attributes::*;
 use std::os::raw::{c_void, c_short, c_ushort, c_int};
+mod c_data_type;
+pub use self::c_data_type::*;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -86,14 +88,6 @@ pub enum SqlDataType {
     SQL_MULTISET = 55,
 }
 pub use self::SqlDataType::*;
-
-#[repr(i16)]
-#[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum SqlCDataType {
-    SQL_C_CHAR = 1,
-}
-pub use self::SqlCDataType::*;
 
 /// Represented in C headers as SQLSMALLINT
 #[repr(i16)]
