@@ -1,6 +1,6 @@
 //! Contains test for the ffi layer
-extern crate odbc_ffi;
-use odbc_ffi::*;
+extern crate odbc_sys;
+use odbc_sys::*;
 use std::ptr::null_mut;
 use std::os::raw::c_void;
 
