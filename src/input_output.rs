@@ -11,6 +11,7 @@ pub enum InputOutput {
     SQL_RETURN_VALUE = 5,
     #[cfg(feature = "odbc_version_3_80")]
     SQL_PARAM_INPUT_OUTPUT_STREAM = 8,
+    #[cfg(feature = "odbc_version_3_80")]
     SQL_PARAM_OUTPUT_STREAM = 16,
 }
 pub use InputOutput::*;
