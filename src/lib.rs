@@ -8,17 +8,20 @@
 //! ODBC 4.0 is still under development by Microsoft, so these symbols are deactivated by default
 //! in the cargo.toml
 
-mod sqlreturn;
 pub use self::sqlreturn::*;
-mod info_type;
 pub use self::info_type::*;
-mod fetch_orientation;
 pub use self::fetch_orientation::*;
-mod attributes;
 pub use self::attributes::*;
-use std::os::raw::{c_void, c_short, c_ushort, c_int};
-mod c_data_type;
 pub use self::c_data_type::*;
+pub use self::input_output::*;
+use std::os::raw::c_void;
+
+mod sqlreturn;
+mod info_type;
+mod fetch_orientation;
+mod attributes;
+mod c_data_type;
+mod input_output;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -34,10 +37,10 @@ pub type SQLHENV = *mut Env;
 pub type SQLHDBC = *mut Dbc;
 pub type SQLHSTMT = *mut Stmt;
 
-/// 16 Bit signed integer
-pub type SQLSMALLINT = c_short;
-pub type SQLUSMALLINT = c_ushort;
-pub type SQLINTEGER = c_int;
+pub type SQLSMALLINT = i16;
+pub type SQLUSMALLINT = u16;
+pub type SQLINTEGER = i32;
+pub type SQLUINTEGER = u32;
 pub type SQLPOINTER = *mut c_void;
 pub type SQLCHAR = u8;
 
@@ -45,6 +48,11 @@ pub type SQLCHAR = u8;
 pub type SQLLEN = i64;
 #[cfg(target_pointer_width = "32")]
 pub type SQLLEN = SQLINTEGER;
+
+#[cfg(target_pointer_width = "64")]
+pub type SQLULEN = u64;
+#[cfg(target_pointer_width = "32")]
+pub type SQLULEN = SQLUINTEGER;
 
 pub type SQLHWND = SQLPOINTER;
 
@@ -162,6 +170,11 @@ extern "C" {
                          text_length: SQLINTEGER)
                          -> SQLRETURN;
 
+    /// Returns the number of columns in a result set
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE` or
+    /// `SQL_STILL_EXECUTING`
     pub fn SQLNumResultCols(statement_handle: SQLHSTMT,
                             column_count_ptr: *mut SQLSMALLINT)
                             -> SQLRETURN;
@@ -280,4 +293,20 @@ extern "C" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR` or `SQL_INVALID_HANDLE`
     pub fn SQLCloseCursor(hstmt: SQLHSTMT) -> SQLRETURN;
+
+    /// Binds a buffer to a parameter marker in an SQL statement
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR` or `SQL_INVALID_HANDLE`
+    pub fn SQLBindParameter(hstmt: SQLHSTMT,
+                            parameter_number: SQLUSMALLINT,
+                            input_output_type: InputOutput,
+                            value_type: SqlCDataType,
+                            parmeter_type: SqlDataType,
+                            column_size: SQLULEN,
+                            decimal_digits: SQLSMALLINT,
+                            parameter_value_ptr: SQLPOINTER,
+                            buffer_length: SQLLEN,
+                            str_len_or_ind_ptr: *mut SQLLEN)
+                            -> SQLRETURN;
 }

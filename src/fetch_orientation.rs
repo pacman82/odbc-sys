@@ -15,4 +15,3 @@ pub enum FetchOrientation {
     SQL_FETCH_FIRST_SYSTEM = 32,
 }
 pub use self::FetchOrientation::*;
-

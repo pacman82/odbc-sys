@@ -64,4 +64,3 @@ pub use self::SqlCDataType::*;
 pub use SQL_C_ULONG as SQL_C_UBIGINT;
 #[cfg(not(windows))]
 pub use SQL_C_ULONG as SQL_C_BOOKMARK;
-

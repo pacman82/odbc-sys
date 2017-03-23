@@ -56,4 +56,3 @@ fn allocate_connection_error() {
         assert_eq!(SQL_SUCCESS, SQLFreeHandle(SQL_HANDLE_ENV, env));
     }
 }
-

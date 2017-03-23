@@ -21,4 +21,3 @@ pub const SQL_OV_ODBC3: c_ulong = 3;
 pub const SQL_OV_ODBC3_80: c_ulong = 380;
 #[cfg(feature = "odbc_version_4")]
 pub const SQL_OV_ODBC4: c_ulong = 400;
-

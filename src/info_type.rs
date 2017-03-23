@@ -52,4 +52,3 @@ pub enum InfoType {
     SQL_MAX_IDENTIFIER_LEN = 10005,
 }
 pub use self::InfoType::*;
-
