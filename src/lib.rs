@@ -165,6 +165,13 @@ extern "C" {
                          text_length_ptr: *mut SQLSMALLINT)
                          -> SQLRETURN;
 
+    /// Executes a preparable statement, using the current values of the parameter marker variables
+    /// if any parameters exist in the statement. This is the fastest way to submit an SQL
+    /// statement for one-time execution
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_NEED_DATA`, `SQL_STILL_EXECUTING`, `SQL_ERROR`
+    /// , `SQL_NO_DATA`, `SQL_INVALID_HANDLE`, or `SQL_PARAM_DATA_AVAILABLE`.
     pub fn SQLExecDirect(statement_handle: SQLHSTMT,
                          statement_text: *const SQLCHAR,
                          text_length: SQLINTEGER)
@@ -309,4 +316,13 @@ extern "C" {
                             buffer_length: SQLLEN,
                             str_len_or_ind_ptr: *mut SQLLEN)
                             -> SQLRETURN;
+
+    /// Prepares an SQL string for execution
+    ///
+    /// Compiles the statement and generates an acccess plan.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
+    /// `SQL_STILL_EXECUTING`
+    pub fn SQLPrepare(hstmt: SQLHSTMT, statement_text: * const SQLCHAR, text_length: SQLINTEGER);
 }
