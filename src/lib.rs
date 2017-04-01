@@ -155,6 +155,12 @@ extern "C" {
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLDisconnect(connection_handle: SQLHDBC) -> SQLRETURN;
 
+    /// Return the current values of multiple fields of a diagnostic record that contains eror,
+    /// warning, and status information.
+    ///
+    /// # Returns
+    ///
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLGetDiagRec(handle_type: HandleType,
                          handle: SQLHANDLE,
                          RecNumber: SQLSMALLINT,
@@ -214,10 +220,9 @@ extern "C" {
                       string_length_ptr: *mut SQLSMALLINT)
                       -> SQLRETURN;
 
-    /// SQLConnect establishes connections to a driver and a data source.
-    ///
-    /// The connection handle references storage of all information about the connection to the
-    /// data source, including status, transaction state, and error information.
+    /// SQLConnect establishes connections to a driver and a data source. The connection handle
+    /// references storage of all information about the connection to the data source, including
+    /// status, transaction state, and error information.
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
@@ -317,12 +322,21 @@ extern "C" {
                             str_len_or_ind_ptr: *mut SQLLEN)
                             -> SQLRETURN;
 
-    /// Prepares an SQL string for execution
-    ///
-    /// Compiles the statement and generates an acccess plan.
+    /// Compiles the statement and generates an access plan.
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
     /// `SQL_STILL_EXECUTING`
-    pub fn SQLPrepare(hstmt: SQLHSTMT, statement_text: * const SQLCHAR, text_length: SQLINTEGER);
+    pub fn SQLPrepare(hstmt: SQLHSTMT,
+                      statement_text: *const SQLCHAR,
+                      text_length: SQLINTEGER)
+                      -> SQLRETURN;
+
+    /// Executes a prepared statement, using the current values of the parameter marker variables
+    /// if any paramater markers exis in the statement.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_NEED_DATA`, `SQL_STILL_EXECUTING`, `SQL_ERROR`
+    /// , `SQL_NO_DATA`, `SQL_INVALID_HANDLE`, or `SQL_PARAM_DATA_AVAILABLE`.
+    pub fn SQLExecute(hstmt: SQLHSTMT) -> SQLRETURN;
 }
