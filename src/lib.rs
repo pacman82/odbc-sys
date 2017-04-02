@@ -68,6 +68,33 @@ pub const SQL_SQLSTATE_SIZE: usize = 5;
 pub const SQL_NULL_DATA: SQLLEN = -1;
 pub const SQL_NO_TOTAL: SQLLEN = -4;
 
+/// SQL Free Statement options
+#[repr(u16)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum FreeStmtOption{
+    /// Closes the cursor associated with StatementHandle (if one was defined) and discards all
+    /// pending results. The application can reopen this cursor later by executing a SELECT
+    /// statement again with the same or different parameter values. If no cursor is open, this
+    /// option has no effect for the application. `SQLCloseCursor` can also be called to close a
+    /// cursor.
+    SQL_CLOSE = 0,
+    /// Sets the `SQL_DESC_COUNT` field of the ARD to 0, releasing all column buffers bound by
+    /// `SQLBindCol` for the given StatementHandle. This does not unbind the bookmark column; to do
+    /// that, the `SQL_DESC_DATA_PTR` field of the ARD for the bookmark column is set to NULL.
+    /// Notice that if this operation is performed on an explicitly allocated descriptor that is
+    /// shared by more than one statement, the operation will affect the bindings of all statements
+    /// that share the descriptor.
+    SQL_UNBIND = 1,
+    //SQL_DROP = 2,
+
+    /// Sets the `SQL_DESC_COUNT` field of the APD to 0, releasing all parameter buffers set by
+    /// `SQLBindParameter` for the given StatementHandle. If this operation is performed on an
+    /// explicitly allocated descriptor that is shared by more than one statement, this operation
+    /// will affect the bindings of all the statements that share the descriptor.
+    SQL_RESET_PARAMS = 3,
+}
+
 /// SQL Data Types
 #[repr(i16)]
 #[allow(non_camel_case_types)]
@@ -339,4 +366,12 @@ extern "C" {
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_NEED_DATA`, `SQL_STILL_EXECUTING`, `SQL_ERROR`
     /// , `SQL_NO_DATA`, `SQL_INVALID_HANDLE`, or `SQL_PARAM_DATA_AVAILABLE`.
     pub fn SQLExecute(hstmt: SQLHSTMT) -> SQLRETURN;
+
+    /// Stops processing associated with a specific statement, closes any open cursors associated
+    /// with the statement, discards pending results, or, optionally, frees all resources
+    /// associated with the statement handle.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLFreeStmt(hstmt: SQLHSTMT, option: FreeStmtOption) -> SQLRETURN;
 }
