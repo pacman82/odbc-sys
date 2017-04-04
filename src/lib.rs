@@ -94,6 +94,7 @@ pub enum FreeStmtOption{
     /// will affect the bindings of all the statements that share the descriptor.
     SQL_RESET_PARAMS = 3,
 }
+pub use FreeStmtOption::*;
 
 /// SQL Data Types
 #[repr(i16)]

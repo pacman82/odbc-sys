@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.org/pacman82/odbc-sys.svg?branch=master)](https://travis-ci.org/pacman82/odbc-sys)
-[![Docs](https://docs.rs/odbc-ffi/badge.svg)](https://docs.rs/odbc-sys/)
+[![Docs](https://docs.rs/odbc-sys/badge.svg)](https://docs.rs/odbc-sys/)
 [![MIT licensed](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/pacman82/odbc-sys/blob/master/LICENSE)
-[![Published](http://meritbadge.herokuapp.com/odbc-sys)](https://crates.io/crates/odbc-ffi)
+[![Published](http://meritbadge.herokuapp.com/odbc-sys)](https://crates.io/crates/odbc-sys)
 
 FFI (Foreign Function Interface) bindings for ODBC (Open Database Connectivity)
 As ffi bindings to C-APIs are low level by nature this library is intended to be the foundation of
@@ -34,4 +34,4 @@ Contributing
 Want to help out? Just create an issue, pull request or contact markus.klein@live.de.
 
 [docs.rs]: https://docs.rs
-[documentation]: https://docs.rs/odbc-ffi/
+[documentation]: https://docs.rs/odbc-sys/
