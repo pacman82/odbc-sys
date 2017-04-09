@@ -375,4 +375,16 @@ extern "C" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
     pub fn SQLFreeStmt(hstmt: SQLHSTMT, option: FreeStmtOption) -> SQLRETURN;
+
+    /// Binds application data bufferst to columns in the result set.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLBindCol(hstmt: SQLHSTMT,
+                      col_number: SQLUSMALLINT,
+                      target_type: SqlCDataType,
+                      target_value: SQLPOINTER,
+                      buffer_length: SQLLEN,
+                      length_or_indicatior : *mut SQLLEN)
+                      -> SQLRETURN;
 }
