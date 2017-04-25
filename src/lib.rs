@@ -387,4 +387,22 @@ extern "C" {
                       buffer_length: SQLLEN,
                       length_or_indicatior : *mut SQLLEN)
                       -> SQLRETURN;
+
+    /// Returns the result descriptor for one column in the result set — column name, type,
+    /// column size, decimal digits, and nullability.
+    ///
+    /// This information also is available in the fields of the IRD.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLDescribeCol(hstmt: SQLHSTMT,
+                          col_number: SQLUSMALLINT,
+                          col_name: *mut SQLCHAR,
+                          buffer_length: SQLSMALLINT,
+                          name_length: *mut SQLSMALLINT,
+                          data_type: *mut SQLSMALLINT,
+                          col_size: *mut SQLULEN,
+                          decimal_digits: *mut SQLSMALLINT,
+                          nullable: *mut SQLSMALLINT)
+                          -> SQLRETURN;
 }
