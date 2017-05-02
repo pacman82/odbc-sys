@@ -400,7 +400,7 @@ extern "C" {
                           col_name: *mut SQLCHAR,
                           buffer_length: SQLSMALLINT,
                           name_length: *mut SQLSMALLINT,
-                          data_type: *mut SQLSMALLINT,
+                          data_type: *mut SqlDataType,
                           col_size: *mut SQLULEN,
                           decimal_digits: *mut SQLSMALLINT,
                           nullable: *mut SQLSMALLINT)
