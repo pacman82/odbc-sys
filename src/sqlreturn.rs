@@ -8,6 +8,9 @@
 #[must_use]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SQLRETURN {
+    /// No data left to read in column (see http://bit.ly/2p5KKD2)
+    SQL_NO_DATA = -4,
+
     /// Function failed due to an invalid environment, connection, statement, or descriptor handle
     ///
     /// This indicates a programming error. No additional information is available from
