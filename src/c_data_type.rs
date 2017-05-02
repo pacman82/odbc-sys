@@ -17,6 +17,8 @@ pub enum SqlCDataType {
     #[cfg(feature = "odbc_version_3_50")]
     SQL_C_GUID = - 11,
 
+    SQL_C_WCHAR = -8,
+
     SQL_C_BIT = -7,
     // deprecated
     // SQL_C_TINYINT = -6,
