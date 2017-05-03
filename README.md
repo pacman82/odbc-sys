@@ -14,8 +14,8 @@ Design Goals
 * Provide correct definition of symbols for Unix and Windows in either 32Bit or 64Bit flavour
 * Not to abstract away any power of the underlying API
 * Increase type safety where feasable
-* As it is as of now unlikely to happen that anyone is writing ODBC 2.0 applications in Rust I
-  intentionally left out deprecated symbols like 'SQLAllocEnv'
+* As it is as of now unlikely to happen that anyone is writing ODBC 2.0 applications in Rust
+  therefore deprecated symbols like 'SQLAllocEnv' have been left out intentionally.
 
 Current State
 -------------
