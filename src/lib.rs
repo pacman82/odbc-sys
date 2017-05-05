@@ -14,6 +14,7 @@ pub use self::fetch_orientation::*;
 pub use self::attributes::*;
 pub use self::c_data_type::*;
 pub use self::input_output::*;
+pub use self::nullable::*;
 use std::os::raw::c_void;
 
 mod sqlreturn;
@@ -22,6 +23,7 @@ mod fetch_orientation;
 mod attributes;
 mod c_data_type;
 mod input_output;
+mod nullable;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -404,6 +406,6 @@ extern "C" {
                           data_type: *mut SqlDataType,
                           col_size: *mut SQLULEN,
                           decimal_digits: *mut SQLSMALLINT,
-                          nullable: *mut SQLSMALLINT)
+                          nullable: *mut Nullable)
                           -> SQLRETURN;
 }
