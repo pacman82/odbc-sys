@@ -20,8 +20,8 @@ Design Goals
 Current State
 -------------
 
-I add symbols to this library as I go along implementing uses cases in higher level APIs. If you
-miss something please do not hesitate to contribute.
+Symbols are added to this library as we go along implementing uses cases in higher level APIs. If
+you miss something please do not hesitate to contribute.
 
 Documentation
 -------------
