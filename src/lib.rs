@@ -122,6 +122,17 @@ pub enum SqlDataType {
     SQL_ARRAY = 50,
     #[cfg(feature = "odbc_version_4")]
     SQL_MULTISET = 55,
+
+    //SQL extended datatypes:
+    SQL_EXT_LONGVARCHAR = -1,
+    SQL_EXT_BINARY = -2,
+    SQL_EXT_VARBINARY = -3,
+    SQL_EXT_LONGVARBINARY = -4,
+    SQL_EXT_BIGINT = -5,
+    SQL_EXT_TINYINT = -6,
+    SQL_EXT_BIT = -7,
+    SQL_EXT_GUID = -11
+
 }
 pub use self::SqlDataType::*;
 
