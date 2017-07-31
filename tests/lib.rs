@@ -2,7 +2,6 @@
 extern crate odbc_sys;
 use odbc_sys::*;
 use std::ptr::null_mut;
-use std::os::raw::c_void;
 
 #[test]
 fn allocate_environment() {
@@ -28,7 +27,7 @@ fn allocate_connection() {
         assert_eq!(SQL_SUCCESS,
                    SQLSetEnvAttr(env as SQLHENV,
                                  SQL_ATTR_ODBC_VERSION,
-                                 SQL_OV_ODBC3 as *mut c_void,
+                                 SQL_OV_ODBC3.into(),
                                  0));
 
         assert_eq!(SQL_SUCCESS,
