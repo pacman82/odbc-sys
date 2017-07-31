@@ -5,6 +5,6 @@
 pub enum Nullable {
     SQL_NULLABLE_UNKNOWN = 2,
     SQL_NULLABLE = 1,
-    SQL_NO_NULLS = 0
+    SQL_NO_NULLS = 0,
 }
 pub use Nullable::*;

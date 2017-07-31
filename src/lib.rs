@@ -74,7 +74,7 @@ pub const SQL_NO_TOTAL: SQLLEN = -4;
 #[repr(u16)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum FreeStmtOption{
+pub enum FreeStmtOption {
     /// Closes the cursor associated with StatementHandle (if one was defined) and discards all
     /// pending results. The application can reopen this cursor later by executing a SELECT
     /// statement again with the same or different parameter values. If no cursor is open, this
@@ -89,7 +89,6 @@ pub enum FreeStmtOption{
     /// that share the descriptor.
     SQL_UNBIND = 1,
     //SQL_DROP = 2,
-
     /// Sets the `SQL_DESC_COUNT` field of the APD to 0, releasing all parameter buffers set by
     /// `SQLBindParameter` for the given StatementHandle. If this operation is performed on an
     /// explicitly allocated descriptor that is shared by more than one statement, this operation
@@ -131,8 +130,7 @@ pub enum SqlDataType {
     SQL_EXT_BIGINT = -5,
     SQL_EXT_TINYINT = -6,
     SQL_EXT_BIT = -7,
-    SQL_EXT_GUID = -11
-
+    SQL_EXT_GUID = -11,
 }
 pub use self::SqlDataType::*;
 
@@ -398,7 +396,7 @@ extern "C" {
                       target_type: SqlCDataType,
                       target_value: SQLPOINTER,
                       buffer_length: SQLLEN,
-                      length_or_indicatior : *mut SQLLEN)
+                      length_or_indicatior: *mut SQLLEN)
                       -> SQLRETURN;
 
     /// Returns the result descriptor for one column in the result set — column name, type, column
