@@ -158,6 +158,19 @@ pub enum SqlDriverConnectOption {
 }
 pub use self::SqlDriverConnectOption::*;
 
+/// Statement attributes for `SQLSetStmtAttr`
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlStatementAttribute {
+    SQL_ATTR_PARAM_BIND_TYPE = 18,
+    SQL_ATTR_PARAMSET_SIZE = 22,
+    SQL_ATTR_ROW_BIND_TYPE = 5,
+    SQL_ATTR_ROW_ARRAY_SIZE = 27,
+    SQL_ATTR_ROWS_FETCHED_PTR = 26,
+}
+pub use self::SqlStatementAttribute::*;
+
 #[cfg_attr(windows, link(name = "odbc32"))]
 #[cfg_attr(not(windows), link(name = "odbc"))]
 extern "C" {
@@ -432,5 +445,16 @@ extern "C" {
         col_size: *mut SQLULEN,
         decimal_digits: *mut SQLSMALLINT,
         nullable: *mut Nullable,
+    ) -> SQLRETURN;
+
+    /// Sets attributes related to a statement.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLSetStmtAttr(
+        hstmt: SQLHSTMT,
+        attr: SqlStatementAttribute,
+        value: SQLPOINTER,
+        str_length: SQLINTEGER,
     ) -> SQLRETURN;
 }
