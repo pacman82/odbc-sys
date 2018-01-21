@@ -171,6 +171,25 @@ pub enum SqlStatementAttribute {
 }
 pub use self::SqlStatementAttribute::*;
 
+/// Connection attributes for `SQLSetConnectAttr`
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlConnectionAttribute {
+    SQL_ATTR_AUTOCOMMIT = 102,
+}
+pub use self::SqlConnectionAttribute::*;
+
+/// Completion types for `SQLEndTrans`
+#[repr(i16)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlCompletionType {
+    SQL_COMMIT = 0,
+    SQL_ROLLBACK = 1,
+}
+pub use self::SqlCompletionType::*;
+
 #[cfg_attr(windows, link(name = "odbc32"))]
 #[cfg_attr(not(windows), link(name = "odbc"))]
 extern "C" {
@@ -456,5 +475,26 @@ extern "C" {
         attr: SqlStatementAttribute,
         value: SQLPOINTER,
         str_length: SQLINTEGER,
+    ) -> SQLRETURN;
+
+    /// Sets attributes that govern aspects of connections.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLSetConnectAttr(
+        hdbc: SQLHDBC,
+        attr: SqlConnectionAttribute,
+        value: SQLPOINTER,
+        str_length: SQLINTEGER,
+    ) -> SQLRETURN;
+
+    /// Requests a commit or rollback operation for all active operations on all statements associated with a handle.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLEndTrans(
+        handle_type: HandleType,
+        handle: SQLHANDLE,
+        completion_type: SqlCompletionType,
     ) -> SQLRETURN;
 }
