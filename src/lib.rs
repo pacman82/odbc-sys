@@ -113,14 +113,10 @@ pub enum SqlDataType {
     SQL_DOUBLE = 8,
     SQL_DATETIME = 9,
     SQL_VARCHAR = 12,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_UDT = 17,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_ROW = 19,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_ARRAY = 50,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_MULTISET = 55,
+    #[cfg(feature = "odbc_version_4")] SQL_UDT = 17,
+    #[cfg(feature = "odbc_version_4")] SQL_ROW = 19,
+    #[cfg(feature = "odbc_version_4")] SQL_ARRAY = 50,
+    #[cfg(feature = "odbc_version_4")] SQL_MULTISET = 55,
 
     //SQL extended datatypes:
     SQL_EXT_LONGVARCHAR = -1,
@@ -176,7 +172,22 @@ pub use self::SqlStatementAttribute::*;
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlConnectionAttribute {
+    SQL_ATTR_ACCESS_MODE = 101,
     SQL_ATTR_AUTOCOMMIT = 102,
+    SQL_ATTR_LOGIN_TIMEOUT = 103,
+    SQL_ATTR_TRACE = 104,
+    SQL_ATTR_TRACEFILE = 105,
+    SQL_ATTR_TRANSLATE_LIB = 106,
+    SQL_ATTR_TRANSLATE_OPTION = 107,
+    SQL_ATTR_TXN_ISOLATION = 108,
+    SQL_ATTR_CURRENT_CATALOG = 109,
+    SQL_ATTR_ODBC_CURSORS = 110,
+    SQL_ATTR_QUIET_MODE = 111,
+    SQL_ATTR_PACKET_SIZE = 112,
+    SQL_ATTR_CONNECTION_TIMEOUT = 113,
+    SQL_ATTR_DISCONNECT_BEHAVIOR = 114,
+    SQL_ATTR_ENLIST_IN_DTC = 1207,
+    SQL_ATTR_ENLIST_IN_XA = 1208,
 }
 pub use self::SqlConnectionAttribute::*;
 
