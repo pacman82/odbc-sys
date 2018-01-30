@@ -503,7 +503,7 @@ extern "C" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
-    pub fn SQLEndTrans(
+    pub fn SQLEndTran(
         handle_type: HandleType,
         handle: SQLHANDLE,
         completion_type: SqlCompletionType,
