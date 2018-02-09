@@ -133,6 +133,9 @@ pub enum SqlDataType {
     SQL_EXT_BIGINT = -5,
     SQL_EXT_TINYINT = -6,
     SQL_EXT_BIT = -7,
+    SQL_EXT_WCHAR = -8,
+    SQL_EXT_WVARCHAR = -9,
+    SQL_EXT_WLONGVARCHAR = -10,
     SQL_EXT_GUID = -11,
 }
 pub use self::SqlDataType::*;
