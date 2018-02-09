@@ -118,6 +118,13 @@ pub enum SqlDataType {
     #[cfg(feature = "odbc_version_4")] SQL_ARRAY = 50,
     #[cfg(feature = "odbc_version_4")] SQL_MULTISET = 55,
 
+    // one-parameter shortcuts for date/time data types
+    SQL_DATE = 91,
+    SQL_TIME = 92,
+    SQL_TIMESTAMP = 93,
+    #[cfg(feature = "odbc_version_4")] SQL_TIME_WITH_TIMEZONE = 94,
+    #[cfg(feature = "odbc_version_4")] SQL_TIMESTAMP_WITH_TIMEZONE = 95,
+
     //SQL extended datatypes:
     SQL_EXT_LONGVARCHAR = -1,
     SQL_EXT_BINARY = -2,
