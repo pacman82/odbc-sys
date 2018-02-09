@@ -118,6 +118,13 @@ pub enum SqlDataType {
     #[cfg(feature = "odbc_version_4")] SQL_ARRAY = 50,
     #[cfg(feature = "odbc_version_4")] SQL_MULTISET = 55,
 
+    // one-parameter shortcuts for date/time data types
+    SQL_DATE = 91,
+    SQL_TIME = 92,
+    SQL_TIMESTAMP = 93,
+    #[cfg(feature = "odbc_version_4")] SQL_TIME_WITH_TIMEZONE = 94,
+    #[cfg(feature = "odbc_version_4")] SQL_TIMESTAMP_WITH_TIMEZONE = 95,
+
     //SQL extended datatypes:
     SQL_EXT_LONGVARCHAR = -1,
     SQL_EXT_BINARY = -2,
@@ -126,6 +133,9 @@ pub enum SqlDataType {
     SQL_EXT_BIGINT = -5,
     SQL_EXT_TINYINT = -6,
     SQL_EXT_BIT = -7,
+    SQL_EXT_WCHAR = -8,
+    SQL_EXT_WVARCHAR = -9,
+    SQL_EXT_WLONGVARCHAR = -10,
     SQL_EXT_GUID = -11,
 }
 pub use self::SqlDataType::*;
