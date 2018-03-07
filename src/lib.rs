@@ -213,7 +213,7 @@ pub use self::SqlCompletionType::*;
 
 #[cfg_attr(windows, link(name = "odbc32"))]
 #[cfg_attr(not(windows), link(name = "odbc"))]
-extern "C" {
+extern "system" {
     /// Allocates an environment, connection, statement, or descriptor handle.
     ///
     /// # Returns
