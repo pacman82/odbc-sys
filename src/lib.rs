@@ -66,6 +66,7 @@ pub const SQL_NTSL: SQLINTEGER = -3;
 /// Maximum message length
 pub const SQL_MAX_MESSAGE_LENGTH: SQLSMALLINT = 512;
 pub const SQL_SQLSTATE_SIZE: usize = 5;
+pub const SQL_SQLSTATE_SIZEW: usize = 10;
 
 // Special SQLGetData indicator values
 pub const SQL_NULL_DATA: SQLLEN = -1;
