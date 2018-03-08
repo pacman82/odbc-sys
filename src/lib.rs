@@ -45,6 +45,7 @@ pub type SQLINTEGER = i32;
 pub type SQLUINTEGER = u32;
 pub type SQLPOINTER = *mut c_void;
 pub type SQLCHAR = u8;
+pub type SQLWCHAR = u16;
 
 #[cfg(target_pointer_width = "64")]
 pub type SQLLEN = i64;
@@ -221,7 +222,7 @@ extern "system" {
     pub fn SQLAllocHandle(
         handle_type: HandleType,
         input_handle: SQLHANDLE,
-        output_Handle: *mut SQLHANDLE,
+        output_handle: *mut SQLHANDLE,
     ) -> SQLRETURN;
 
     /// Frees resources associated with a specific environment, connection, statement, or
@@ -255,13 +256,13 @@ extern "system" {
     /// # Returns
     ///
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
-    pub fn SQLGetDiagRec(
+    pub fn SQLGetDiagRecW(
         handle_type: HandleType,
         handle: SQLHANDLE,
-        RecNumber: SQLSMALLINT,
-        state: *mut SQLCHAR,
+        record_rumber: SQLSMALLINT,
+        state: *mut SQLWCHAR,
         native_error_ptr: *mut SQLINTEGER,
-        message_text: *mut SQLCHAR,
+        message_text: *mut SQLWCHAR,
         buffer_length: SQLSMALLINT,
         text_length_ptr: *mut SQLSMALLINT,
     ) -> SQLRETURN;
@@ -273,9 +274,9 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_NEED_DATA`, `SQL_STILL_EXECUTING`, `SQL_ERROR`
     /// , `SQL_NO_DATA`, `SQL_INVALID_HANDLE`, or `SQL_PARAM_DATA_AVAILABLE`.
-    pub fn SQLExecDirect(
+    pub fn SQLExecDirectW(
         statement_handle: SQLHSTMT,
-        statement_text: *const SQLCHAR,
+        statement_text: *const SQLWCHAR,
         text_length: SQLINTEGER,
     ) -> SQLRETURN;
 
@@ -311,7 +312,7 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
-    pub fn SQLGetInfo(
+    pub fn SQLGetInfoW(
         connection_handle: SQLHDBC,
         info_type: InfoType,
         info_value_ptr: SQLPOINTER,
@@ -326,13 +327,13 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
     /// `SQL_STILL_EXECUTING`
-    pub fn SQLConnect(
+    pub fn SQLConnectW(
         connection_handle: SQLHDBC,
-        server_name: *const SQLCHAR,
+        server_name: *const SQLWCHAR,
         name_length_1: SQLSMALLINT,
-        user_name: *const SQLCHAR,
+        user_name: *const SQLWCHAR,
         name_length_2: SQLSMALLINT,
-        authentication: *const SQLCHAR,
+        authentication: *const SQLWCHAR,
         name_length_3: SQLSMALLINT,
     ) -> SQLRETURN;
 
@@ -342,15 +343,15 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
     /// `SQL_STILL_EXECUTING`
-    pub fn SQLTables(
+    pub fn SQLTablesW(
         statement_handle: SQLHSTMT,
-        catalog_name: *const SQLCHAR,
+        catalog_name: *const SQLWCHAR,
         name_length_1: SQLSMALLINT,
-        schema_name: *const SQLCHAR,
+        schema_name: *const SQLWCHAR,
         name_length_2: SQLSMALLINT,
-        table_name: *const SQLCHAR,
+        table_name: *const SQLWCHAR,
         name_length_3: SQLSMALLINT,
-        TableType: *const SQLCHAR,
+        table_type: *const SQLWCHAR,
         name_length_4: SQLSMALLINT,
     ) -> SQLRETURN;
 
@@ -359,13 +360,13 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_NO_DATA`
-    pub fn SQLDataSources(
+    pub fn SQLDataSourcesW(
         environment_handle: SQLHENV,
         direction: FetchOrientation,
-        server_name: *mut SQLCHAR,
+        server_name: *mut SQLWCHAR,
         buffer_length_1: SQLSMALLINT,
         name_length_1: *mut SQLSMALLINT,
-        description: *mut SQLCHAR,
+        description: *mut SQLWCHAR,
         buffer_length_2: SQLSMALLINT,
         name_length_2: *mut SQLSMALLINT,
     ) -> SQLRETURN;
@@ -377,15 +378,15 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, `SQL_NO_DATA`,
     /// or `SQL_STILL_EXECUTING`
-    pub fn SQLDriverConnect(
+    pub fn SQLDriverConnectW(
         connection_handle: SQLHDBC,
         window_handle: SQLHWND,
-        in_connection_string: *const SQLCHAR,
+        in_connection_string: *const SQLWCHAR,
         string_length_1: SQLSMALLINT,
-        out_connection_string: *mut SQLCHAR,
+        out_connection_string: *mut SQLWCHAR,
         buffer_length: SQLSMALLINT,
         string_length_2: *mut SQLSMALLINT,
-        DriverCompletion: SqlDriverConnectOption,
+        driver_completion: SqlDriverConnectOption,
     ) -> SQLRETURN;
 
     /// Lists driver descriptions and driver attribute keywords. This function is implemented only
@@ -393,13 +394,13 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_NO_DATA`
-    pub fn SQLDrivers(
+    pub fn SQLDriversW(
         henv: SQLHENV,
         direction: FetchOrientation,
-        driver_desc: *mut SQLCHAR,
+        driver_desc: *mut SQLWCHAR,
         driver_desc_max: SQLSMALLINT,
         out_driver_desc: *mut SQLSMALLINT,
-        driver_attributes: *mut SQLCHAR,
+        driver_attributes: *mut SQLWCHAR,
         drvr_attr_max: SQLSMALLINT,
         out_drvr_attr: *mut SQLSMALLINT,
     ) -> SQLRETURN;
@@ -432,9 +433,9 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
     /// `SQL_STILL_EXECUTING`
-    pub fn SQLPrepare(
+    pub fn SQLPrepareW(
         hstmt: SQLHSTMT,
-        statement_text: *const SQLCHAR,
+        statement_text: *const SQLWCHAR,
         text_length: SQLINTEGER,
     ) -> SQLRETURN;
 
@@ -475,10 +476,10 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_ERROR`, or
     /// `SQL_INVALID_HANDLE`.
-    pub fn SQLDescribeCol(
+    pub fn SQLDescribeColW(
         hstmt: SQLHSTMT,
         col_number: SQLUSMALLINT,
-        col_name: *mut SQLCHAR,
+        col_name: *mut SQLWCHAR,
         buffer_length: SQLSMALLINT,
         name_length: *mut SQLSMALLINT,
         data_type: *mut SqlDataType,
@@ -491,7 +492,7 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
-    pub fn SQLSetStmtAttr(
+    pub fn SQLSetStmtAttrW(
         hstmt: SQLHSTMT,
         attr: SqlStatementAttribute,
         value: SQLPOINTER,
@@ -502,7 +503,7 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
-    pub fn SQLSetConnectAttr(
+    pub fn SQLSetConnectAttrW(
         hdbc: SQLHDBC,
         attr: SqlConnectionAttribute,
         value: SQLPOINTER,
