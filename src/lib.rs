@@ -36,8 +36,11 @@ pub enum Dbc {}
 
 pub enum Stmt {}
 
+pub enum Desc {}
+
 pub type SQLHANDLE = *mut Obj;
 pub type SQLHENV = *mut Env;
+pub type SQLHDESC = *mut Desc;
 
 /// The connection handle references storage of all information about the connection to the data
 /// source, including status, transaction state, and error information.
@@ -65,7 +68,6 @@ pub type SQLULEN = SQLUINTEGER;
 pub type SQLHWND = SQLPOINTER;
 
 pub type RETCODE = i16;
-pub type SQLHDESC = SQLHANDLE;
 
 // flags for null-terminated string
 pub const SQL_NTS: SQLSMALLINT = -3;
@@ -554,6 +556,53 @@ extern "system" {
         value_ptr: SQLPOINTER,
         buffer_length: SQLINTEGER,
         string_length_ptr: *mut SQLINTEGER,
+    ) -> SQLRETURN;
+
+    /// Returns the cursor name associated with a specified statement.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLGetCursorNameW(
+        statement_handle: SQLHSTMT,
+        cursor_name: *mut SQLWCHAR,
+        buffer_length: SQLSMALLINT,
+        name_length_ptr: *mut SQLSMALLINT,
+    ) -> SQLRETURN;
+
+    /// Returns the current setting or value of a single field of a descriptor record.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
+    /// `SQL_NO_DATA` is returned if RecNumber is greater than the current number of descriptor records.
+    /// `SQL_NO_DATA` is returned if DescriptorHandle is an IRD handle and the statement is in the prepared or executed state but there was no open cursor associated with it.
+    pub fn SQLGetDescFieldW(
+        descriptor_handle: SQLHDESC,
+        record_number: SQLSMALLINT,
+        field_identifier: SQLSMALLINT,
+        value_ptr: SQLPOINTER,
+        buffer_length: SQLINTEGER,
+        string_length_ptr: *mut SQLINTEGER
+    ) -> SQLRETURN;
+
+    /// Returns the current settings or values of multiple fields of a descriptor record.
+    /// The fields returned describe the name, data type, and storage of column or parameter data.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
+    /// `SQL_NO_DATA` is returned if RecNumber is greater than the current number of descriptor records.
+    /// `SQL_NO_DATA` is returned if DescriptorHandle is an IRD handle and the statement is in the prepared or executed state but there was no open cursor associated with it.
+    pub fn SQLGetDescRecW(
+        descriptor_handle: SQLHDESC,
+        record_number: SQLSMALLINT,
+        name: *mut SQLWCHAR,
+        buffer_length: SQLSMALLINT,
+        string_length_ptr: *mut SQLSMALLINT,
+        type_ptr: *mut SQLSMALLINT,
+        sub_type_ptr: *mut SQLSMALLINT,
+        length_ptr: *mut SQLLEN,
+        precision_ptr: *mut SQLSMALLINT,
+        scale_ptr: *mut SQLSMALLINT,
+        nullable_ptr: *mut Nullable,
     ) -> SQLRETURN;
 
     /// Returns a list of columns and associated privileges for the specified table.
