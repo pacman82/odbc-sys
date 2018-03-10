@@ -54,8 +54,7 @@ pub enum SQLRETURN {
     /// information. One or more driver-defined status records in class 02xxx may be returned.
     SQL_NO_DATA = 100,
 
-    #[cfg(feature = "odbc_version_3_80")]
-    SQL_PARAM_DATA_AVAILABLE = 101,
+    #[cfg(feature = "odbc_version_3_80")] SQL_PARAM_DATA_AVAILABLE = 101,
 }
 
 pub use self::SQLRETURN::*;

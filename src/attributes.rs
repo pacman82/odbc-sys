@@ -1,4 +1,4 @@
-use std::os::raw::{c_void, c_ulong};
+use std::os::raw::{c_ulong, c_void};
 
 /// Governs behaviour of EnvironmentAttribute
 #[repr(i32)]
@@ -23,10 +23,8 @@ pub use EnvironmentAttribute::*;
 pub enum OdbcVersion {
     SQL_OV_ODBC2 = 2,
     SQL_OV_ODBC3 = 3,
-    #[cfg(feature = "odbc_version_3_80")]
-    SQL_OV_ODBC3_80 = 380,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_OV_ODBC4 = 400,
+    #[cfg(feature = "odbc_version_3_80")] SQL_OV_ODBC3_80 = 380,
+    #[cfg(feature = "odbc_version_4")] SQL_OV_ODBC4 = 400,
 }
 pub use OdbcVersion::*;
 

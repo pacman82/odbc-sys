@@ -15,6 +15,7 @@ pub use self::attributes::*;
 pub use self::c_data_type::*;
 pub use self::input_output::*;
 pub use self::nullable::*;
+pub use self::sql_bulk_operations::*;
 use std::os::raw::c_void;
 
 mod sqlreturn;
@@ -24,11 +25,15 @@ mod attributes;
 mod c_data_type;
 mod input_output;
 mod nullable;
+mod sql_bulk_operations;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
+
 pub enum Env {}
+
 pub enum Dbc {}
+
 pub enum Stmt {}
 
 pub type SQLHANDLE = *mut Obj;
@@ -97,6 +102,7 @@ pub enum FreeStmtOption {
     /// will affect the bindings of all the statements that share the descriptor.
     SQL_RESET_PARAMS = 3,
 }
+
 pub use FreeStmtOption::*;
 
 /// SQL Data Types
@@ -104,7 +110,8 @@ pub use FreeStmtOption::*;
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlDataType {
-    SQL_UNKNOWN_TYPE = 0, // also called SQL_VARIANT_TYPE since odbc 4.0
+    SQL_UNKNOWN_TYPE = 0,
+    // also called SQL_VARIANT_TYPE since odbc 4.0
     SQL_CHAR = 1,
     SQL_NUMERIC = 2,
     SQL_DECIMAL = 3,
@@ -140,6 +147,7 @@ pub enum SqlDataType {
     SQL_EXT_WLONGVARCHAR = -10,
     SQL_EXT_GUID = -11,
 }
+
 pub use self::SqlDataType::*;
 
 /// Represented in C headers as SQLSMALLINT
@@ -152,6 +160,7 @@ pub enum HandleType {
     SQL_HANDLE_STMT = 3,
     SQL_HANDLE_DESC = 4,
 }
+
 pub use self::HandleType::*;
 
 /// Options for `SQLDriverConnect`
@@ -164,6 +173,7 @@ pub enum SqlDriverConnectOption {
     SQL_DRIVER_PROMPT = 2,
     SQL_DRIVER_COMPLETE_REQUIRED = 3,
 }
+
 pub use self::SqlDriverConnectOption::*;
 
 /// Statement attributes for `SQLSetStmtAttr`
@@ -177,6 +187,7 @@ pub enum SqlStatementAttribute {
     SQL_ATTR_ROW_ARRAY_SIZE = 27,
     SQL_ATTR_ROWS_FETCHED_PTR = 26,
 }
+
 pub use self::SqlStatementAttribute::*;
 
 /// Connection attributes for `SQLSetConnectAttr`
@@ -201,6 +212,7 @@ pub enum SqlConnectionAttribute {
     SQL_ATTR_ENLIST_IN_DTC = 1207,
     SQL_ATTR_ENLIST_IN_XA = 1208,
 }
+
 pub use self::SqlConnectionAttribute::*;
 
 /// Completion types for `SQLEndTrans`
@@ -211,6 +223,7 @@ pub enum SqlCompletionType {
     SQL_COMMIT = 0,
     SQL_ROLLBACK = 1,
 }
+
 pub use self::SqlCompletionType::*;
 
 #[cfg_attr(windows, link(name = "odbc32"))]
@@ -428,6 +441,24 @@ extern "system" {
         buffer_length: SQLLEN,
         str_len_or_ind_ptr: *mut SQLLEN,
     ) -> SQLRETURN;
+
+    /// Performs bulk insertions and bulk bookmark operations, including update, delete, and fetch by bookmark.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_NEED_DATA`, `SQL_STILL_EXECUTING`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLBulkOperations(statement_handle: SQLHSTMT, operation: SqlBulkOperation) -> SQLRETURN;
+
+    /// Cancels the processing on a statement.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR` or `SQL_INVALID_HANDLE`
+    pub fn SQLCancel(statement_handle: SQLHSTMT) -> SQLRETURN;
+
+    /// Cancels the processing on a connection or statement.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR` or `SQL_INVALID_HANDLE`
+    pub fn SQLCancelHandle(handle_type: HandleType, handle: SQLHANDLE) -> SQLRETURN;
 
     /// Compiles the statement and generates an access plan.
     ///
