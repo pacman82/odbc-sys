@@ -64,6 +64,9 @@ pub type SQLULEN = SQLUINTEGER;
 
 pub type SQLHWND = SQLPOINTER;
 
+pub type RETCODE = i16;
+pub type SQLHDESC = SQLHANDLE;
+
 // flags for null-terminated string
 pub const SQL_NTS: SQLSMALLINT = -3;
 pub const SQL_NTSL: SQLINTEGER = -3;
@@ -500,6 +503,139 @@ extern "system" {
         length_or_indicatior: *mut SQLLEN,
     ) -> SQLRETURN;
 
+    /// SQLBrowseConnect supports an iterative method of discovering and enumerating the attributes
+    /// and attribute values required to connect to a data source.
+    /// Each call to SQLBrowseConnect returns successive levels of attributes and attribute values.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_NEED_DATA`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLBrowseConnectW(
+        connection_handle: SQLHDBC,
+        in_connection_string: *const SQLWCHAR,
+        string_length: SQLSMALLINT,
+        out_connection_string: *mut SQLWCHAR,
+        buffer_length: SQLSMALLINT,
+        out_buffer_length: *mut SQLSMALLINT,
+    ) -> SQLRETURN;
+
+
+    /// Returns descriptor information for a column in a result set.
+    /// Descriptor information is returned as a character string,
+    /// a descriptor-dependent value, or an integer value.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLColAttributeW(
+        statement_handle: SQLHSTMT,
+        column_number: SQLUSMALLINT,
+        field_identifier: SQLUSMALLINT,
+        character_attribute_ptr: SQLPOINTER,
+        buffer_length: SQLSMALLINT,
+        string_length_ptr: *mut SQLSMALLINT,
+        numeric_attribute_ptr: *mut SQLLEN
+    ) -> SQLRETURN;
+
+    /// Copies descriptor information from one descriptor handle to another.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLCopyDesc(
+        source_desc_handle: SQLHDESC,
+        target_desc_handle: SQLHDESC
+    ) -> SQLRETURN;
+
+    /// Returns the current setting of a connection attribute.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLGetConnectAttrW(
+        connection_handle: SQLHDBC,
+        attribute: SQLINTEGER,
+        value_ptr: SQLPOINTER,
+        buffer_length: SQLINTEGER,
+        string_length_ptr: *mut SQLINTEGER,
+    ) -> SQLRETURN;
+
+    /// Returns a list of columns and associated privileges for the specified table.
+    /// The driver returns the information as a result set on the specified StatementHandle.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLColumnPrivilegesW(
+        statement_handle: SQLHSTMT,
+        catalog_name: *const SQLWCHAR,
+        catalog_name_length: SQLSMALLINT,
+        schema_name: *const SQLWCHAR,
+        schema_name_length: SQLSMALLINT,
+        table_name: *const SQLWCHAR,
+        table_name_length: SQLSMALLINT,
+        column_name: *const SQLWCHAR,
+        column_name_length: SQLSMALLINT
+    ) -> SQLRETURN;
+
+    /// Returns the list of column names in specified tables.
+    /// The driver returns this information as a result set on the specified StatementHandle.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLColumnsW(
+        statement_handle: SQLHSTMT,
+        catalog_name: *const SQLWCHAR,
+        catalog_name_length: SQLSMALLINT,
+        schema_name: *const SQLWCHAR,
+        schema_name_length: SQLSMALLINT,
+        table_name: *const SQLWCHAR,
+        table_name_length: SQLSMALLINT,
+        column_name: *const SQLWCHAR,
+        column_name_length: SQLSMALLINT
+    ) -> SQLRETURN;
+
+    /// Can be used to determine when an asynchronous function is complete using either notification- or polling-based processing.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
+    #[cfg(feature = "odbc_version_3_80")]
+    pub fn SQLCompleteAsync(
+        handle_type: HandleType,
+        handle: SQLHANDLE,
+        async_ret_code_ptr: *mut RETCODE
+    ) -> SQLRETURN;
+
+    /// Fetches the specified rowset of data from the result set and returns data for all bound columns.
+    /// Rowsets can be specified at an absolute or relative position or by bookmark.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLFetchScroll(
+        statement_handle: SQLHSTMT,
+        fetch_orientation: FetchOrientation,
+        fetch_offset: SQLLEN,
+    ) -> SQLRETURN;
+
+    /// Can return:
+    /// - A list of foreign keys in the specified table (columns in the specified table that refer to primary keys in other tables).
+    /// - A list of foreign keys in other tables that refer to the primary key in the specified table.
+    ///
+    /// The driver returns each list as a result set on the specified statement.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLForeignKeysW(
+        statement_handle: SQLHSTMT,
+        pk_catalog_name: *const SQLWCHAR,
+        pk_catalog_name_length: SQLSMALLINT,
+        pk_schema_name: *const SQLWCHAR,
+        pk_schema_name_length: SQLSMALLINT,
+        pk_table_name: *const SQLWCHAR,
+        pk_table_name_length: SQLSMALLINT,
+        fk_catalog_name: *const SQLWCHAR,
+        fk_catalog_name_length: SQLSMALLINT,
+        fk_schema_name: *const SQLWCHAR,
+        fk_schema_name_length: SQLSMALLINT,
+        fk_table_name: *const SQLWCHAR,
+        fk_table_name_length: SQLSMALLINT,
+    ) -> SQLRETURN;
+
     /// Returns the result descriptor for one column in the result set — column name, type, column
     /// size, decimal digits, and nullability.
     ///
@@ -518,6 +654,21 @@ extern "system" {
         col_size: *mut SQLULEN,
         decimal_digits: *mut SQLSMALLINT,
         nullable: *mut Nullable,
+    ) -> SQLRETURN;
+
+    /// Returns the description of a parameter marker associated with a prepared SQL statement.
+    /// This information is also available in the fields of the IPD.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_ERROR`, or
+    /// `SQL_INVALID_HANDLE`.
+    pub fn SQLDescribeParam(
+        statement_handle: SQLHSTMT,
+        parameter_number: SQLUSMALLINT,
+        data_type_ptr: *mut SqlDataType,
+        parameter_size_ptr: *mut SQLULEN,
+        decimal_digits_ptr: *mut SQLSMALLINT,
+        nullable_ptr: *mut SQLSMALLINT,
     ) -> SQLRETURN;
 
     /// Sets attributes related to a statement.
