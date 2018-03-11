@@ -244,6 +244,21 @@ pub enum SqlHeaderDiagnosticIdentifier {
 #[repr(i32)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlAsyncConnectionBehavior {
+    SQL_ASYNC_DBC_ENABLE_ON = 1,
+    SQL_ASYNC_DBC_ENABLE_OFF = 0,
+}
+pub use self::SqlAsyncConnectionBehavior::*;
+
+impl Default for SqlAsyncConnectionBehavior {
+    fn default() -> SqlAsyncConnectionBehavior {
+        SqlAsyncConnectionBehavior::SQL_ASYNC_DBC_ENABLE_OFF
+    }
+}
+
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlDynamicDiagnosticIdentifier {
     SQL_DIAG_ALTER_DOMAIN = 3,
     SQL_DIAG_ALTER_TABLE = 4,
