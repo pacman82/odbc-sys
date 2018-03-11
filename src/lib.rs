@@ -218,6 +218,64 @@ pub enum SqlConnectionAttribute {
     SQL_ATTR_ENLIST_IN_XA = 1208,
 }
 
+/// `DiagIdentifier` for `SQLGetDiagField`
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlHeaderDiagnosticIdentifier {
+    SQL_DIAG_RETURNCODE = 1,
+    SQL_DIAG_NUMBER = 2,
+    SQL_DIAG_ROW_COUNT = 3,
+    SQL_DIAG_SQLSTATE = 4,
+    SQL_DIAG_NATIVE = 5,
+    SQL_DIAG_MESSAGE_TEXT = 6,
+    SQL_DIAG_DYNAMIC_FUNCTION = 7,
+    SQL_DIAG_CLASS_ORIGIN = 8,
+    SQL_DIAG_SUBCLASS_ORIGIN = 9,
+    SQL_DIAG_CONNECTION_NAME = 10,
+    SQL_DIAG_SERVER_NAME = 11,
+    SQL_DIAG_DYNAMIC_FUNCTION_CODE = 12,
+    SQL_DIAG_CURSOR_ROW_COUNT = -1249,
+    SQL_DIAG_ROW_NUMBER = -1248,
+    SQL_DIAG_COLUMN_NUMBER = -1247,
+}
+
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlDynamicDiagnosticIdentifier {
+    SQL_DIAG_ALTER_DOMAIN = 3,
+    SQL_DIAG_ALTER_TABLE = 4,
+    SQL_DIAG_CALL = 7,
+    SQL_DIAG_CREATE_ASSERTION = 6,
+    SQL_DIAG_CREATE_CHARACTER_SET = 8,
+    SQL_DIAG_CREATE_COLLATION = 10,
+    SQL_DIAG_CREATE_DOMAIN = 23,
+    SQL_DIAG_CREATE_INDEX = -1,
+    SQL_DIAG_CREATE_SCHEMA = 64,
+    SQL_DIAG_CREATE_TABLE = 77,
+    SQL_DIAG_CREATE_TRANSLATION = 79,
+    SQL_DIAG_CREATE_VIEW = 84,
+    SQL_DIAG_DELETE_WHERE = 19,
+    SQL_DIAG_DROP_ASSERTION = 24,
+    SQL_DIAG_DROP_CHARACTER_SET = 25,
+    SQL_DIAG_DROP_COLLATION = 26,
+    SQL_DIAG_DROP_DOMAIN = 27,
+    SQL_DIAG_DROP_INDEX = -2,
+    SQL_DIAG_DROP_SCHEMA = 31,
+    SQL_DIAG_DROP_TABLE = 32,
+    SQL_DIAG_DROP_TRANSLATION = 33,
+    SQL_DIAG_DROP_VIEW = 36,
+    SQL_DIAG_DYNAMIC_DELETE_CURSOR = 38,
+    SQL_DIAG_DYNAMIC_UPDATE_CURSOR = 81,
+    SQL_DIAG_GRANT = 48,
+    SQL_DIAG_INSERT = 50,
+    SQL_DIAG_REVOKE = 59,
+    SQL_DIAG_SELECT_CURSOR = 85,
+    SQL_DIAG_UNKNOWN_STATEMENT = 0,
+    SQL_DIAG_UPDATE_WHERE = 82,
+}
+
 pub use self::SqlConnectionAttribute::*;
 
 /// Completion types for `SQLEndTrans`
@@ -284,6 +342,22 @@ extern "system" {
         message_text: *mut SQLWCHAR,
         buffer_length: SQLSMALLINT,
         text_length_ptr: *mut SQLSMALLINT,
+    ) -> SQLRETURN;
+
+    /// Returns the current value of a field of a record of the diagnostic data structure (associated with a specified handle) that contains error, warning, and status information.
+    ///
+    /// Note:
+    /// `diag_identifier` is either `SqlHeaderDiagnosticIdentifier` or `SqlDynamicDiagnosticIdentifier`
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or `SQL_NO_DATA`.
+    pub fn SQLGetDiagFieldW(
+        handle_type: HandleType,
+        handle: SQLHANDLE,
+        record_rumber: SQLSMALLINT,
+        diag_identifier: SQLSMALLINT,
+        diag_info_ptr: SQLPOINTER,
+        buffer_length: SQLSMALLINT,
+        string_length_ptr: *mut SQLSMALLINT,
     ) -> SQLRETURN;
 
     /// Executes a preparable statement, using the current values of the parameter marker variables
@@ -534,7 +608,7 @@ extern "system" {
         character_attribute_ptr: SQLPOINTER,
         buffer_length: SQLSMALLINT,
         string_length_ptr: *mut SQLSMALLINT,
-        numeric_attribute_ptr: *mut SQLLEN
+        numeric_attribute_ptr: *mut SQLLEN,
     ) -> SQLRETURN;
 
     /// Copies descriptor information from one descriptor handle to another.
@@ -543,7 +617,7 @@ extern "system" {
     /// `SQL_SUCCESS`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
     pub fn SQLCopyDesc(
         source_desc_handle: SQLHDESC,
-        target_desc_handle: SQLHDESC
+        target_desc_handle: SQLHDESC,
     ) -> SQLRETURN;
 
     /// Returns the current setting of a connection attribute.
@@ -581,7 +655,7 @@ extern "system" {
         field_identifier: SQLSMALLINT,
         value_ptr: SQLPOINTER,
         buffer_length: SQLINTEGER,
-        string_length_ptr: *mut SQLINTEGER
+        string_length_ptr: *mut SQLINTEGER,
     ) -> SQLRETURN;
 
     /// Returns the current settings or values of multiple fields of a descriptor record.
@@ -619,7 +693,7 @@ extern "system" {
         table_name: *const SQLWCHAR,
         table_name_length: SQLSMALLINT,
         column_name: *const SQLWCHAR,
-        column_name_length: SQLSMALLINT
+        column_name_length: SQLSMALLINT,
     ) -> SQLRETURN;
 
     /// Returns the list of column names in specified tables.
@@ -636,7 +710,7 @@ extern "system" {
         table_name: *const SQLWCHAR,
         table_name_length: SQLSMALLINT,
         column_name: *const SQLWCHAR,
-        column_name_length: SQLSMALLINT
+        column_name_length: SQLSMALLINT,
     ) -> SQLRETURN;
 
     /// Can be used to determine when an asynchronous function is complete using either notification- or polling-based processing.
@@ -647,7 +721,7 @@ extern "system" {
     pub fn SQLCompleteAsync(
         handle_type: HandleType,
         handle: SQLHANDLE,
-        async_ret_code_ptr: *mut RETCODE
+        async_ret_code_ptr: *mut RETCODE,
     ) -> SQLRETURN;
 
     /// Fetches the specified rowset of data from the result set and returns data for all bound columns.
