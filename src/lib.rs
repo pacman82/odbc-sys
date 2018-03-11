@@ -216,6 +216,7 @@ pub enum SqlConnectionAttribute {
     SQL_ATTR_DISCONNECT_BEHAVIOR = 114,
     SQL_ATTR_ENLIST_IN_DTC = 1207,
     SQL_ATTR_ENLIST_IN_XA = 1208,
+    SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE = 117,
 }
 
 /// `DiagIdentifier` for `SQLGetDiagField`
