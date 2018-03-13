@@ -326,6 +326,18 @@ extern "system" {
     /// `SQL_SUCCESS`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
     pub fn SQLFreeHandle(handle_type: HandleType, handle: SQLHANDLE) -> SQLRETURN;
 
+    /// Gets attributes that govern aspects of environments
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
+    pub fn SQLGetEnvAttr(
+        environment_handle: SQLHENV,
+        attribute: EnvironmentAttribute,
+        value_ptr: SQLPOINTER,
+        buffer_length: SQLINTEGER,
+        string_length: *mut SQLINTEGER,
+    ) -> SQLRETURN;
+
     /// Sets attributes that govern aspects of environments
     ///
     /// # Returns
