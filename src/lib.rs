@@ -654,7 +654,7 @@ extern "system" {
     /// `SQL_SUCCESS`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
     pub fn SQLGetConnectAttrW(
         connection_handle: SQLHDBC,
-        attribute: SQLINTEGER,
+        attribute: SqlConnectionAttribute,
         value_ptr: SQLPOINTER,
         buffer_length: SQLINTEGER,
         string_length_ptr: *mut SQLINTEGER,
