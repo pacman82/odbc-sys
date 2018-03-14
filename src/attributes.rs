@@ -19,6 +19,7 @@ pub use EnvironmentAttribute::*;
 /// Used in conjunction with `SQL_ATTR_ODBC_VERSION` and `SQLSetEnvAttr` to declare the ODBC
 /// version used by the application.
 #[allow(non_camel_case_types)]
+#[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum OdbcVersion {
     SQL_OV_ODBC2 = 2,
