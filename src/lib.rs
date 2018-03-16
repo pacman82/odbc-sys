@@ -752,6 +752,18 @@ extern "system" {
         async_ret_code_ptr: *mut RETCODE,
     ) -> SQLRETURN;
 
+    /// Returns the current setting of a statement attribute.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`
+    pub fn SQLGetStmtAttrW(
+        handle: SQLHSTMT,
+        attribute: SqlStatementAttribute,
+        value_ptr: SQLPOINTER,
+        buffer_length: SQLINTEGER,
+        string_length_ptr: *mut SQLINTEGER,
+    ) -> SQLRETURN;
+
     /// Fetches the specified rowset of data from the result set and returns data for all bound columns.
     /// Rowsets can be specified at an absolute or relative position or by bookmark.
     ///
