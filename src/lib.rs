@@ -191,6 +191,7 @@ pub enum SqlStatementAttribute {
     SQL_ATTR_ROW_BIND_TYPE = 5,
     SQL_ATTR_ROW_ARRAY_SIZE = 27,
     SQL_ATTR_ROWS_FETCHED_PTR = 26,
+    SQL_ATTR_ASYNC_ENABLE = 4
 }
 
 pub use self::SqlStatementAttribute::*;
