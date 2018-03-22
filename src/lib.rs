@@ -181,6 +181,92 @@ pub enum SqlDriverConnectOption {
 
 pub use self::SqlDriverConnectOption::*;
 
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SQLINTERVAL {
+    SQL_IS_YEAR = 1,
+    SQL_IS_MONTH = 2,
+    SQL_IS_DAY = 3,
+    SQL_IS_HOUR = 4,
+    SQL_IS_MINUTE = 5,
+    SQL_IS_SECOND = 6,
+    SQL_IS_YEAR_TO_MONTH = 7,
+    SQL_IS_DAY_TO_HOUR = 8,
+    SQL_IS_DAY_TO_MINUTE = 9,
+    SQL_IS_DAY_TO_SECOND = 10,
+    SQL_IS_HOUR_TO_MINUTE = 11,
+    SQL_IS_HOUR_TO_SECOND = 12,
+    SQL_IS_MINUTE_TO_SECOND = 13,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_YEAR_MONTH_STRUCT {
+    pub year: SQLUINTEGER,
+    pub month: SQLUINTEGER,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_DAY_SECOND_STRUCT {
+    pub day: SQLUINTEGER,
+    pub hour: SQLUINTEGER,
+    pub minute: SQLUINTEGER,
+    pub second: SQLUINTEGER,
+    pub fraction: SQLUINTEGER,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Copy, Clone)]
+pub union SQL_INTERVAL_UNION {
+    pub year_month: SQL_YEAR_MONTH_STRUCT,
+    pub day_second: SQL_DAY_SECOND_STRUCT,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Clone, Copy)]
+pub struct SQL_INTERVAL_STRUCT {
+    pub interval_type: SQLINTERVAL,
+    pub interval_sign: SQLSMALLINT,
+    pub interval_value: SQL_INTERVAL_UNION,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_DATE_STRUCT {
+    pub year: SQLSMALLINT,
+    pub month: SQLUSMALLINT,
+    pub day: SQLUSMALLINT,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_TIME_STRUCT {
+    pub hour: SQLUSMALLINT,
+    pub minute: SQLUSMALLINT,
+    pub second: SQLUSMALLINT,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_TIMESTAMP_STRUCT {
+    pub year: SQLSMALLINT,
+    pub month: SQLUSMALLINT,
+    pub day: SQLUSMALLINT,
+    pub hour: SQLUSMALLINT,
+    pub minute: SQLUSMALLINT,
+    pub second: SQLUSMALLINT,
+    pub fraction: SQLUINTEGER,
+}
+
 /// Statement attributes for `SQLSetStmtAttr`
 #[repr(i32)]
 #[allow(non_camel_case_types)]
@@ -191,7 +277,7 @@ pub enum SqlStatementAttribute {
     SQL_ATTR_ROW_BIND_TYPE = 5,
     SQL_ATTR_ROW_ARRAY_SIZE = 27,
     SQL_ATTR_ROWS_FETCHED_PTR = 26,
-    SQL_ATTR_ASYNC_ENABLE = 4
+    SQL_ATTR_ASYNC_ENABLE = 4,
 }
 
 pub use self::SqlStatementAttribute::*;
@@ -252,6 +338,7 @@ pub enum SqlAsyncConnectionBehavior {
     SQL_ASYNC_DBC_ENABLE_ON = 1,
     SQL_ASYNC_DBC_ENABLE_OFF = 0,
 }
+
 pub use self::SqlAsyncConnectionBehavior::*;
 
 impl Default for SqlAsyncConnectionBehavior {
