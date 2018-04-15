@@ -267,6 +267,17 @@ pub struct SQL_TIMESTAMP_STRUCT {
     pub fraction: SQLUINTEGER,
 }
 
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQLGUID {
+    pub d1: u32,
+    pub d2: u16,
+    pub d3: u16,
+    pub d4: [u8; 8],
+}
+
 /// Statement attributes for `SQLSetStmtAttr`
 #[repr(i32)]
 #[allow(non_camel_case_types)]
