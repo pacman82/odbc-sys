@@ -544,6 +544,14 @@ extern "system" {
         column_count_ptr: *mut SQLSMALLINT,
     ) -> SQLRETURN;
 
+    /// Determines whether more results are available on a statement
+    /// containing SELECT, UPDATE, INSERT, or DELETE statements and, if so, initializes processing for those results.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_NO_DATA`, `SQL_ERROR`,
+    /// `SQL_INVALID_HANDLE`, or `SQL_PARAM_DATA_AVAILABLE`.
+    pub fn SQLMoreResults(statement_handle: SQLHSTMT) -> SQLRETURN;
+
     // Can be used since odbc version 3.8 to stream results
     pub fn SQLGetData(
         statement_handle: SQLHSTMT,
