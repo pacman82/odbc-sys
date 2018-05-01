@@ -1,3 +1,6 @@
+/// Extended C Types range 4000 and above. Range of -100 thru 200 is reserved by Driver Manager.
+pub const SQL_C_TYPES_EXTENDED: i16 = 0x04000;
+
 /// The C data type is specified in the SQLBindCol and SQLGetData functions with the TargetType
 /// argument and in the SQLBindParameter function with the ValueType argument.
 #[repr(i16)]
@@ -56,7 +59,11 @@ pub enum SqlCDataType {
     SQL_C_INTERVAL_HOUR_TO_MINUTE = 111,
     SQL_C_INTERVAL_HOUR_TO_SECOND = 112,
     SQL_C_INTERVAL_MINUTE_TO_SECOND = 113,
+
+    SQL_C_SS_TIME2 = SQL_C_TYPES_EXTENDED + 0,
+    SQL_C_SS_TIMESTAMPOFFSET = SQL_C_TYPES_EXTENDED + 1,
 }
+
 pub use self::SqlCDataType::*;
 
 #[cfg(windows)]

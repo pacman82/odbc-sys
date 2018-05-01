@@ -151,6 +151,12 @@ pub enum SqlDataType {
     SQL_EXT_WVARCHAR = -9,
     SQL_EXT_WLONGVARCHAR = -10,
     SQL_EXT_GUID = -11,
+    SQL_SS_VARIANT = -150,
+    SQL_SS_UDT = -151,
+    SQL_SS_XML = -152,
+    SQL_SS_TABLE = -153,
+    SQL_SS_TIME2 = -154,
+    SQL_SS_TIMESTAMPOFFSET = -155,
 }
 
 pub use self::SqlDataType::*;
@@ -202,7 +208,7 @@ pub enum SQLINTERVAL {
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQL_YEAR_MONTH_STRUCT {
     pub year: SQLUINTEGER,
     pub month: SQLUINTEGER,
@@ -210,7 +216,7 @@ pub struct SQL_YEAR_MONTH_STRUCT {
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQL_DAY_SECOND_STRUCT {
     pub day: SQLUINTEGER,
     pub hour: SQLUINTEGER,
@@ -238,7 +244,7 @@ pub struct SQL_INTERVAL_STRUCT {
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQL_DATE_STRUCT {
     pub year: SQLSMALLINT,
     pub month: SQLUSMALLINT,
@@ -247,7 +253,7 @@ pub struct SQL_DATE_STRUCT {
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQL_TIME_STRUCT {
     pub hour: SQLUSMALLINT,
     pub minute: SQLUSMALLINT,
@@ -256,7 +262,7 @@ pub struct SQL_TIME_STRUCT {
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQL_TIMESTAMP_STRUCT {
     pub year: SQLSMALLINT,
     pub month: SQLUSMALLINT,
@@ -270,12 +276,37 @@ pub struct SQL_TIMESTAMP_STRUCT {
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy, Hash)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQLGUID {
     pub d1: u32,
     pub d2: u16,
     pub d3: u16,
     pub d4: [u8; 8],
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_SS_TIME2_STRUCT {
+    hour: SQLUSMALLINT,
+    minute: SQLUSMALLINT,
+    second: SQLUSMALLINT,
+    fraction: SQLUINTEGER,
+}
+
+#[repr(C)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
+pub struct SQL_SS_TIMESTAMPOFFSET_STRUCT {
+    pub year: SQLSMALLINT,
+    pub month: SQLUSMALLINT,
+    pub day: SQLUSMALLINT,
+    pub hour: SQLUSMALLINT,
+    pub minute: SQLUSMALLINT,
+    pub second: SQLUSMALLINT,
+    pub fraction: SQLUINTEGER,
+    pub timezone_hour: SQLSMALLINT,
+    pub timezone_minute: SQLSMALLINT,
 }
 
 /// Statement attributes for `SQLSetStmtAttr`
