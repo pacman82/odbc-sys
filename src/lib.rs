@@ -288,10 +288,10 @@ pub struct SQLGUID {
 #[allow(non_camel_case_types)]
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct SQL_SS_TIME2_STRUCT {
-    hour: SQLUSMALLINT,
-    minute: SQLUSMALLINT,
-    second: SQLUSMALLINT,
-    fraction: SQLUINTEGER,
+    pub hour: SQLUSMALLINT,
+    pub minute: SQLUSMALLINT,
+    pub second: SQLUSMALLINT,
+    pub fraction: SQLUINTEGER,
 }
 
 #[repr(C)]
