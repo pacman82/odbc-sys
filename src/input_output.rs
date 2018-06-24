@@ -1,5 +1,5 @@
 /// Used by `SQLBindParameter`.
-#[repr(u16)]
+#[repr(i16)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum InputOutput {
