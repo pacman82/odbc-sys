@@ -1,4 +1,4 @@
-use std::os::raw::{c_ulong, c_void};
+use std::os::raw::{c_void, c_ulong};
 
 /// Governs behaviour of EnvironmentAttribute
 #[repr(i32)]
@@ -19,13 +19,14 @@ pub use EnvironmentAttribute::*;
 /// Used in conjunction with `SQL_ATTR_ODBC_VERSION` and `SQLSetEnvAttr` to declare the ODBC
 /// version used by the application.
 #[allow(non_camel_case_types)]
-#[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum OdbcVersion {
     SQL_OV_ODBC2 = 2,
     SQL_OV_ODBC3 = 3,
-    #[cfg(feature = "odbc_version_3_80")] SQL_OV_ODBC3_80 = 380,
-    #[cfg(feature = "odbc_version_4")] SQL_OV_ODBC4 = 400,
+    #[cfg(feature = "odbc_version_3_80")]
+    SQL_OV_ODBC3_80 = 380,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_OV_ODBC4 = 400,
 }
 pub use OdbcVersion::*;
 
