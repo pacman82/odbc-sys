@@ -81,6 +81,7 @@ pub const SQL_SQLSTATE_SIZEW: usize = 10;
 // Special SQLGetData indicator values
 pub const SQL_NULL_DATA: SQLLEN = -1;
 pub const SQL_NO_TOTAL: SQLLEN = -4;
+pub const SQL_SS_LENGTH_UNLIMITED: SQLULEN = 0;
 
 /// SQL Free Statement options
 #[repr(u16)]
