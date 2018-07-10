@@ -1,3 +1,6 @@
+/// Extended C Types range 4000 and above. Range of -100 thru 200 is reserved by Driver Manager.
+pub const SQL_C_TYPES_EXTENDED: i16 = 0x04000;
+
 /// The C data type is specified in the SQLBindCol and SQLGetData functions with the TargetType
 /// argument and in the SQLBindParameter function with the ValueType argument.
 #[repr(i16)]
@@ -9,13 +12,12 @@ pub enum SqlCDataType {
     SQL_C_STINYINT = -26,
     SQL_C_SBIGINT = -25,
 
-    SQL_C_ULONG = - 18,
+    SQL_C_ULONG = -18,
     SQL_C_USHORT = -17,
-    SQL_C_SLONG = - 16,
+    SQL_C_SLONG = -16,
     SQL_C_SSHORT = -15,
 
-    #[cfg(feature = "odbc_version_3_50")]
-    SQL_C_GUID = - 11,
+    #[cfg(feature = "odbc_version_3_50")] SQL_C_GUID = -11,
 
     SQL_C_WCHAR = -8,
 
@@ -39,10 +41,8 @@ pub enum SqlCDataType {
     SQL_C_TYPE_DATE = 91,
     SQL_C_TYPE_TIME = 92,
     SQL_C_TYPE_TIMESTAMP = 93,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_C_TYPE_TIME_WITH_TIMEZONE = 94,
-    #[cfg(feature = "odbc_version_4")]
-    SQL_C_TYPE_TIMESTAMP_WITH_TIMEZONE = 95,
+    #[cfg(feature = "odbc_version_4")] SQL_C_TYPE_TIME_WITH_TIMEZONE = 94,
+    #[cfg(feature = "odbc_version_4")] SQL_C_TYPE_TIMESTAMP_WITH_TIMEZONE = 95,
 
     SQL_C_DEFAULT = 99,
 
@@ -59,7 +59,11 @@ pub enum SqlCDataType {
     SQL_C_INTERVAL_HOUR_TO_MINUTE = 111,
     SQL_C_INTERVAL_HOUR_TO_SECOND = 112,
     SQL_C_INTERVAL_MINUTE_TO_SECOND = 113,
+
+    SQL_C_SS_TIME2 = SQL_C_TYPES_EXTENDED + 0,
+    SQL_C_SS_TIMESTAMPOFFSET = SQL_C_TYPES_EXTENDED + 1,
 }
+
 pub use self::SqlCDataType::*;
 
 #[cfg(windows)]

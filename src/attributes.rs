@@ -19,6 +19,7 @@ pub use EnvironmentAttribute::*;
 /// Used in conjunction with `SQL_ATTR_ODBC_VERSION` and `SQLSetEnvAttr` to declare the ODBC
 /// version used by the application.
 #[allow(non_camel_case_types)]
+#[repr(i32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum OdbcVersion {
     SQL_OV_ODBC2 = 2,
@@ -32,6 +33,6 @@ pub use OdbcVersion::*;
 
 impl From<OdbcVersion> for *mut c_void {
     fn from(source: OdbcVersion) -> *mut c_void {
-        source as c_ulong as *mut c_void
+        source as i32 as *mut c_void
     }
 }
