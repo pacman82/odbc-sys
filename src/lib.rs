@@ -188,6 +188,19 @@ pub enum SqlDriverConnectOption {
 
 pub use self::SqlDriverConnectOption::*;
 
+#[repr(i32)]
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SqlAttributeStringLength {
+    SQL_IS_POINTER = -4,
+    SQL_IS_UINTEGER = -5,
+    SQL_IS_INTEGER = -6,
+    SQL_IS_USMALLINT = -7,
+    SQL_IS_SMALLINT = -8,
+}
+
+pub use self::SqlAttributeStringLength::*;
+
 #[repr(C)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
