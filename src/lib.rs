@@ -343,6 +343,7 @@ pub use self::SqlStatementAttribute::*;
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlConnectionAttribute {
+    SQL_ATTR_ASYNC_ENABLE = 4,
     SQL_ATTR_ACCESS_MODE = 101,
     SQL_ATTR_AUTOCOMMIT = 102,
     SQL_ATTR_LOGIN_TIMEOUT = 103,
