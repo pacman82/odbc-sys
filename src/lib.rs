@@ -162,6 +162,12 @@ pub enum SqlDataType {
 
 pub use self::SqlDataType::*;
 
+impl Default for SqlDataType {
+    fn default() -> SqlDataType {
+        SQL_UNKNOWN_TYPE
+    }
+}
+
 /// Represented in C headers as SQLSMALLINT
 #[repr(i16)]
 #[allow(non_camel_case_types)]
