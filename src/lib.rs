@@ -141,6 +141,8 @@ pub enum SqlDataType {
     #[cfg(feature = "odbc_version_4")] SQL_TIMESTAMP_WITH_TIMEZONE = 95,
 
     //SQL extended datatypes:
+    SQL_EXT_TIME_OR_INTERVAL = 10,
+    SQL_EXT_TIMESTAMP = 11,
     SQL_EXT_LONGVARCHAR = -1,
     SQL_EXT_BINARY = -2,
     SQL_EXT_VARBINARY = -3,
