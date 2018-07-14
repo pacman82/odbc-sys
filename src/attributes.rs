@@ -1,4 +1,4 @@
-use std::os::raw::{c_void, c_ulong};
+use std::os::raw::c_void;
 
 /// Governs behaviour of EnvironmentAttribute
 #[repr(i32)]

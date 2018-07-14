@@ -613,6 +613,15 @@ extern "system" {
         str_len_or_ind_ptr: *mut SQLLEN,
     ) -> SQLRETURN;
 
+
+    /// SQLGetTypeInfo returns information about data types supported by the data source.
+    /// The driver returns the information in the form of an SQL result set.
+    /// The data types are intended for use in Data Definition Language (DDL) statements.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLGetTypeInfo(statement_handle: SQLHSTMT, data_type: SqlDataType) -> SQLRETURN;
+
     /// SQLFetch fetches the next rowset of data from the result set and returns data for all bound
     /// columns.
     ///
