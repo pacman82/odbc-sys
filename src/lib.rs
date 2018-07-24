@@ -615,6 +615,13 @@ extern "system" {
         str_len_or_ind_ptr: *mut SQLLEN,
     ) -> SQLRETURN;
 
+    /// SQLRowCount returns the number of rows affected by an UPDATE, INSERT, or DELETE statement;
+    /// an SQL_ADD, SQL_UPDATE_BY_BOOKMARK, or SQL_DELETE_BY_BOOKMARK operation in SQLBulkOperations;
+    /// or an SQL_UPDATE or SQL_DELETE operation in SQLSetPos.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
+    pub fn SQLRowCount(statement_handle: SQLHSTMT, row_count_ptr: *mut SQLLEN) -> SQLRETURN;
 
     /// SQLGetTypeInfo returns information about data types supported by the data source.
     /// The driver returns the information in the form of an SQL result set.
