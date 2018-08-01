@@ -1170,4 +1170,15 @@ extern "system" {
         handle: SQLHANDLE,
         completion_type: SqlCompletionType,
     ) -> SQLRETURN;
+
+    /// SQLRowCount returns the number of rows affected by an UPDATE, INSERT, or DELETE statement;
+    /// an SQL_ADD, SQL_UPDATE_BY_BOOKMARK, or SQL_DELETE_BY_BOOKMARK operation in SQLBulkOperations;
+    /// or an SQL_UPDATE or SQL_DELETE operation in SQLSetPos.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_INVALID_HANDLE`, or `SQL_ERROR`.
+    pub fn SQLRowCount(
+        hstmt: SQLHSTMT,
+        row_count: *mut SQLLEN
+    ) -> SQLRETURN;
 }
