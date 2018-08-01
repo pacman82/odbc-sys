@@ -18,4 +18,3 @@ fn print_paths(paths: &str) {
         println!("cargo:rustc-link-search=native={}", path)
     }
 }
-
