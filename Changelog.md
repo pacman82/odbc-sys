@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.6.2
+-----
+
+add `SqlRowCount`
+
 0.6.1
 -----
 
