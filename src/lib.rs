@@ -8,24 +8,24 @@
 //! ODBC 4.0 is still under development by Microsoft, so these symbols are deactivated by default
 //! in the cargo.toml
 
-pub use self::sqlreturn::*;
-pub use self::info_type::*;
-pub use self::fetch_orientation::*;
 pub use self::attributes::*;
 pub use self::c_data_type::*;
+pub use self::fetch_orientation::*;
+pub use self::info_type::*;
 pub use self::input_output::*;
 pub use self::nullable::*;
 pub use self::sql_bulk_operations::*;
+pub use self::sqlreturn::*;
 use std::os::raw::c_void;
 
-mod sqlreturn;
-mod info_type;
-mod fetch_orientation;
 mod attributes;
 mod c_data_type;
+mod fetch_orientation;
+mod info_type;
 mod input_output;
 mod nullable;
 mod sql_bulk_operations;
+mod sqlreturn;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -128,17 +128,23 @@ pub enum SqlDataType {
     SQL_DOUBLE = 8,
     SQL_DATETIME = 9,
     SQL_VARCHAR = 12,
-    #[cfg(feature = "odbc_version_4")] SQL_UDT = 17,
-    #[cfg(feature = "odbc_version_4")] SQL_ROW = 19,
-    #[cfg(feature = "odbc_version_4")] SQL_ARRAY = 50,
-    #[cfg(feature = "odbc_version_4")] SQL_MULTISET = 55,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_UDT = 17,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_ROW = 19,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_ARRAY = 50,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_MULTISET = 55,
 
     // one-parameter shortcuts for date/time data types
     SQL_DATE = 91,
     SQL_TIME = 92,
     SQL_TIMESTAMP = 93,
-    #[cfg(feature = "odbc_version_4")] SQL_TIME_WITH_TIMEZONE = 94,
-    #[cfg(feature = "odbc_version_4")] SQL_TIMESTAMP_WITH_TIMEZONE = 95,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_TIME_WITH_TIMEZONE = 94,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_TIMESTAMP_WITH_TIMEZONE = 95,
 
     //SQL extended datatypes:
     SQL_EXT_TIME_OR_INTERVAL = 10,
@@ -294,7 +300,6 @@ pub struct SQL_TIMESTAMP_STRUCT {
     pub second: SQLUSMALLINT,
     pub fraction: SQLUINTEGER,
 }
-
 
 #[repr(C)]
 #[allow(non_camel_case_types)]
@@ -615,14 +620,6 @@ extern "system" {
         str_len_or_ind_ptr: *mut SQLLEN,
     ) -> SQLRETURN;
 
-    /// SQLRowCount returns the number of rows affected by an UPDATE, INSERT, or DELETE statement;
-    /// an SQL_ADD, SQL_UPDATE_BY_BOOKMARK, or SQL_DELETE_BY_BOOKMARK operation in SQLBulkOperations;
-    /// or an SQL_UPDATE or SQL_DELETE operation in SQLSetPos.
-    ///
-    /// # Returns
-    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
-    pub fn SQLRowCount(statement_handle: SQLHSTMT, row_count_ptr: *mut SQLLEN) -> SQLRETURN;
-
     /// SQLGetTypeInfo returns information about data types supported by the data source.
     /// The driver returns the information in the form of an SQL result set.
     /// The data types are intended for use in Data Definition Language (DDL) statements.
@@ -677,6 +674,23 @@ extern "system" {
         user_name: *const SQLWCHAR,
         name_length_2: SQLSMALLINT,
         authentication: *const SQLWCHAR,
+        name_length_3: SQLSMALLINT,
+    ) -> SQLRETURN;
+
+    /// SQLConnect establishes connections to a driver and a data source. The connection handle
+    /// references storage of all information about the connection to the data source, including
+    /// status, transaction state, and error information.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
+    /// `SQL_STILL_EXECUTING`
+    pub fn SQLConnect(
+        connection_handle: SQLHDBC,
+        server_name: *const SQLCHAR,
+        name_length_1: SQLSMALLINT,
+        user_name: *const SQLCHAR,
+        name_length_2: SQLSMALLINT,
+        authentication: *const SQLCHAR,
         name_length_3: SQLSMALLINT,
     ) -> SQLRETURN;
 
@@ -923,7 +937,6 @@ extern "system" {
         out_buffer_length: *mut SQLSMALLINT,
     ) -> SQLRETURN;
 
-
     /// Returns descriptor information for a column in a result set.
     /// Descriptor information is returned as a character string,
     /// a descriptor-dependent value, or an integer value.
@@ -944,10 +957,7 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_ERROR`, `SQL_NO_DATA`, or `SQL_INVALID_HANDLE`.
-    pub fn SQLCopyDesc(
-        source_desc_handle: SQLHDESC,
-        target_desc_handle: SQLHDESC,
-    ) -> SQLRETURN;
+    pub fn SQLCopyDesc(source_desc_handle: SQLHDESC, target_desc_handle: SQLHDESC) -> SQLRETURN;
 
     /// Returns the current setting of a connection attribute.
     ///
@@ -1208,4 +1218,12 @@ extern "system" {
         handle: SQLHANDLE,
         completion_type: SqlCompletionType,
     ) -> SQLRETURN;
+
+    /// Returns the number of rows affected by an UPDATE, INSERT, or DELETE statement; an `SQL_ADD`,
+    /// `SQL_UPDATE_BY_BOOKMARK`, or `SQL_DELETE_BY_BOOKMARK` operation in SQLBulkOperations; or an
+    /// `SQL_UPDATE` or `SQL_DELETE` operation in `SQLSetPos`.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_INVALID_HANDLE`, or `SQL_ERROR`.
+    pub fn SQLRowCount(hstmt: SQLHSTMT, row_count: *mut SQLLEN) -> SQLRETURN;
 }

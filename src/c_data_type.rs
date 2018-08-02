@@ -17,7 +17,8 @@ pub enum SqlCDataType {
     SQL_C_SLONG = -16,
     SQL_C_SSHORT = -15,
 
-    #[cfg(feature = "odbc_version_3_50")] SQL_C_GUID = -11,
+    #[cfg(feature = "odbc_version_3_50")]
+    SQL_C_GUID = -11,
 
     SQL_C_WCHAR = -8,
 
@@ -41,8 +42,10 @@ pub enum SqlCDataType {
     SQL_C_TYPE_DATE = 91,
     SQL_C_TYPE_TIME = 92,
     SQL_C_TYPE_TIMESTAMP = 93,
-    #[cfg(feature = "odbc_version_4")] SQL_C_TYPE_TIME_WITH_TIMEZONE = 94,
-    #[cfg(feature = "odbc_version_4")] SQL_C_TYPE_TIMESTAMP_WITH_TIMEZONE = 95,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_C_TYPE_TIME_WITH_TIMEZONE = 94,
+    #[cfg(feature = "odbc_version_4")]
+    SQL_C_TYPE_TIMESTAMP_WITH_TIMEZONE = 95,
 
     SQL_C_DEFAULT = 99,
 
