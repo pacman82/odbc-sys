@@ -647,6 +647,23 @@ extern "system" {
         name_length_3: SQLSMALLINT,
     ) -> SQLRETURN;
 
+    /// SQLConnect establishes connections to a driver and a data source. The connection handle
+    /// references storage of all information about the connection to the data source, including
+    /// status, transaction state, and error information.
+    ///
+    /// # Returns
+    /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR`, `SQL_INVALID_HANDLE`, or
+    /// `SQL_STILL_EXECUTING`
+    pub fn SQLConnect(
+        connection_handle: SQLHDBC,
+        server_name: *const SQLCHAR,
+        name_length_1: SQLSMALLINT,
+        user_name: *const SQLCHAR,
+        name_length_2: SQLSMALLINT,
+        authentication: *const SQLCHAR,
+        name_length_3: SQLSMALLINT,
+    ) -> SQLRETURN;
+
     /// Returns the list of table, catalog, or schema names, and table types, stored in a specific
     /// data source. The driver returns the information as a result set
     ///
