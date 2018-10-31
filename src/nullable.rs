@@ -8,9 +8,3 @@ pub enum Nullable {
     SQL_NO_NULLS = 0,
 }
 pub use Nullable::*;
-
-impl Default for Nullable {
-    fn default() -> Nullable {
-        SQL_NULLABLE_UNKNOWN
-    }
-}
