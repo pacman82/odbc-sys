@@ -1,6 +1,17 @@
 Changelog
 =========
 
+0.8.0
+-----
+
+* Adds `InfoType::SQL_ASYNC_MODE`
+* Adds `InfoType::SQL_MAX_ASYNC_CONCURRENT_STATEMENTS`
+* Adds `InfoType::SQL_ASYNC_DBC_FUNCTIONS`,
+* Adds `InfoType::SQL_DRIVER_AWARE_POOLING_SUPPORTED`,
+* Adds `InfoType::SQL_ASYNC_NOTIFICATION`
+* Adds `SqlConnectionAttribute::SQL_ATTR_ASYNC_STMT_EVENT`
+* Adds `SqlConnectionAttribute::SQL_ATTR_ASYNC_DBC_EVENT`
+
 0.7.0
 -----
 
