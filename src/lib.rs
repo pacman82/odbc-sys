@@ -351,6 +351,7 @@ pub use self::SqlStatementAttribute::*;
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlConnectionAttribute {
     SQL_ATTR_ASYNC_ENABLE = 4,
+    SQL_ATTR_ASYNC_STMT_EVENT = 29,
     SQL_ATTR_ACCESS_MODE = 101,
     SQL_ATTR_AUTOCOMMIT = 102,
     SQL_ATTR_LOGIN_TIMEOUT = 103,
@@ -366,6 +367,7 @@ pub enum SqlConnectionAttribute {
     SQL_ATTR_CONNECTION_TIMEOUT = 113,
     SQL_ATTR_DISCONNECT_BEHAVIOR = 114,
     SQL_ATTR_ASYNC_DBC_FUNCTIONS_ENABLE = 117,
+    SQL_ATTR_ASYNC_DBC_EVENT = 119,
     SQL_ATTR_ENLIST_IN_DTC = 1207,
     SQL_ATTR_ENLIST_IN_XA = 1208,
     SQL_ATTR_CONNECTION_DEAD = 1209,
