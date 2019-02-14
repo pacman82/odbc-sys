@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.8.1
+-----
+
+* Fix: Move `SQL_ATTR_ASYNC_STMT_EVENT` is now part of the `SqlStatementAttribute` enumeration.
+
 0.8.0
 -----
 
