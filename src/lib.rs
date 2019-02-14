@@ -335,12 +335,13 @@ pub struct SQL_SS_TIMESTAMPOFFSET_STRUCT {
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlStatementAttribute {
+    SQL_ATTR_ASYNC_ENABLE = 4,
     SQL_ATTR_PARAM_BIND_TYPE = 18,
     SQL_ATTR_PARAMSET_SIZE = 22,
     SQL_ATTR_ROW_BIND_TYPE = 5,
     SQL_ATTR_ROW_ARRAY_SIZE = 27,
     SQL_ATTR_ROWS_FETCHED_PTR = 26,
-    SQL_ATTR_ASYNC_ENABLE = 4,
+    SQL_ATTR_ASYNC_STMT_EVENT = 29,
 }
 
 pub use self::SqlStatementAttribute::*;
@@ -351,7 +352,6 @@ pub use self::SqlStatementAttribute::*;
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum SqlConnectionAttribute {
     SQL_ATTR_ASYNC_ENABLE = 4,
-    SQL_ATTR_ASYNC_STMT_EVENT = 29,
     SQL_ATTR_ACCESS_MODE = 101,
     SQL_ATTR_AUTOCOMMIT = 102,
     SQL_ATTR_LOGIN_TIMEOUT = 103,
