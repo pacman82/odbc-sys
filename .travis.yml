@@ -11,6 +11,10 @@ env:
   - FLAGS=
   - FLAGS=--features static
 
+script:
+  - cargo build --verbose --all $FLAGS
+  - cargo test --verbose --all $FLAGS
+
 matrix:
   allow_failures:
    - rust: nightly
