@@ -7,6 +7,10 @@ rust:
 os:
  - linux
  - osx
+env:
+  - FLAGS=
+  - FLAGS=--features static
+
 matrix:
   allow_failures:
    - rust: nightly
