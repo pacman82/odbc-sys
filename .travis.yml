@@ -1,4 +1,5 @@
 sudo: false
+dist: bionic
 language: rust
 rust:
  - stable
