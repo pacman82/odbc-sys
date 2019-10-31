@@ -9,7 +9,7 @@ os:
  - osx
 env:
   - FLAGS=
-  - FLAGS=--features static
+  - FLAGS="--features static"
 
 script:
   - cargo build --verbose --all $FLAGS
