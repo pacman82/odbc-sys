@@ -4,6 +4,9 @@ fn main() {
         println!("cargo:rerun-if-env-changed=ODBC_SYS_STATIC_PATH");
         println!("cargo:rustc-link-search=native={}", static_path);
         println!("cargo:rustc-link-lib=static=odbc");
+        if cfg!(not(target_os = "windows")) {
+            println!("cargo:rustc-link-lib=static=ltdl");
+        }
     }
 
     if cfg!(target_os = "macos") {
