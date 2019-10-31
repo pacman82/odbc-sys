@@ -1,5 +1,8 @@
 fn main() {
     if cfg!(r#static) {
+        let static_path = std::env::var("ODBC_SYS_STATIC_PATH").unwrap_or("/usr/lib".to_string());
+        println!("cargo:rerun-if-env-changed=ODBC_SYS_STATIC_PATH");
+        println!("cargo:rustc-link-search=native={}", static_path);
         println!("cargo:rustc-link-lib=static=odbc");
     }
 
