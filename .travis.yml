@@ -9,7 +9,7 @@ os:
  - osx
 env:
   - FLAGS=
-  - FLAGS="--features static"
+  - FLAGS="--features static" ODBC_SYS_STATIC_PATH=/usr/lib/x86_64-linux-gnu/
 
 script:
   - cargo build --verbose --all $FLAGS
