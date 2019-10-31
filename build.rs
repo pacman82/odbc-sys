@@ -1,4 +1,8 @@
 fn main() {
+    if cfg!(r#static) {
+        println!("cargo:rustc-link-lib=static=odbc");
+    }
+
     if cfg!(target_os = "macos") {
         // if we're on Mac OS X we'll kindly add DYLD_LIBRARY_PATH to rustc's
         // linker search path
