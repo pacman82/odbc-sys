@@ -7,6 +7,12 @@ fn main() {
         if cfg!(not(target_os = "windows")) {
             println!("cargo:rustc-link-lib=static=ltdl");
         }
+        if cfg!(target_os = "macos") {
+            // Homebrew's unixodbc uses the system iconv, so we can't do a fully static linking
+            // but this way we at least have only dependencies on built-in libraries
+            // See also https://github.com/Homebrew/homebrew-core/pull/46145
+            println!("cargo:rustc-link-lib=dylib=iconv");
+        }
     }
 
     if cfg!(target_os = "macos") {
