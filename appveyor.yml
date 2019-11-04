@@ -33,7 +33,6 @@ os: Visual Studio 2015
 # channels to enable unstable features when building for nightly. Or you could add additional
 # matrix entries to test different combinations of features.
 environment:
-  ODBC_SYS_STATIC_PATH: C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x64
   matrix:
 
 ### MSVC Toolchains ###
@@ -41,10 +40,6 @@ environment:
   # Stable 64-bit MSVC
     - channel: stable
       target: x86_64-pc-windows-msvc
-  # Stable 64-bit MSVC, static linking
-    - channel: stable
-      target: x86_64-pc-windows-msvc
-      cargoflags: --features "static"
   # # Stable 32-bit MSVC
   #  - channel: stable
   #    target: i686-pc-windows-msvc
@@ -61,10 +56,6 @@ environment:
   # Stable 64-bit GNU
     - channel: stable
       target: x86_64-pc-windows-gnu
-  # Stable 64-bit GNU, static linking
-    - channel: stable
-      target: x86_64-pc-windows-gnu
-      cargoflags: --features "static"
   # # Stable 32-bit GNU
   #  - channel: stable
   #    target: i686-pc-windows-gnu

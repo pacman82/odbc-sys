@@ -462,8 +462,8 @@ pub enum SqlCompletionType {
 
 pub use self::SqlCompletionType::*;
 
-#[cfg_attr(all(windows, not(r#static)), link(name = "odbc32"))]
-#[cfg_attr(all(windows, r#static), link(name = "odbc32", kind = "static"))]
+// static linking is not currently supported here for windows
+#[cfg_attr(windows, link(name = "odbc32"))]
 #[cfg_attr(all(not(windows), not(r#static)), link(name = "odbc"))]
 #[cfg_attr(all(not(windows), r#static), link(name = "odbc", kind = "static"))]
 extern "system" {
