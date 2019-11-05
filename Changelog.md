@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.8.2
+-----
+
+* Adds support for static linking
+
 0.8.1
 -----
 
