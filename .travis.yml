@@ -26,6 +26,7 @@ matrix:
      rust: beta
 before_install: |
   if [ "$TRAVIS_OS_NAME" == "osx" ]; then
+    # FIXME: Workaround for https://travis-ci.community/t/syntax-error-unexpected-keyword-rescue-expecting-keyword-end-in-homebrew/5623/4
     HOMEBREW_NO_AUTO_UPDATE=1 brew install unixodbc
   fi
 addons:
