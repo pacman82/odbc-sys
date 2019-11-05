@@ -1,4 +1,5 @@
 sudo: false
+dist: bionic
 language: rust
 rust:
  - stable
@@ -7,6 +8,14 @@ rust:
 os:
  - linux
  - osx
+env:
+  - FLAGS=
+  - FLAGS="--features static" ODBC_SYS_STATIC_PATH=/usr/lib/x86_64-linux-gnu/
+
+script:
+  - cargo build --verbose --all $FLAGS
+  - cargo test --verbose --all $FLAGS
+
 matrix:
   allow_failures:
    - rust: nightly
@@ -17,7 +26,8 @@ matrix:
      rust: beta
 before_install: |
   if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-    brew install unixodbc
+    # FIXME: Workaround for https://travis-ci.community/t/syntax-error-unexpected-keyword-rescue-expecting-keyword-end-in-homebrew/5623/4
+    HOMEBREW_NO_AUTO_UPDATE=1 brew install unixodbc
   fi
 addons:
   apt:
