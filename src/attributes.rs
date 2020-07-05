@@ -1,5 +1,3 @@
-use SQLPOINTER;
-
 pub use self::SQL_ATTR_CONNECTION_POOLING::*;
 pub use self::SQL_ATTR_CP_MATCH::*;
 pub use self::SQL_ATTR_ODBC_VERSION::*;

@@ -28,9 +28,9 @@ pub fn into_sqlpointer_derive(input: TokenStream) -> TokenStream {
         let type_name = ast.ident;
 
         let gen = quote! {
-            impl#impl_generics From<#type_name #ty_generics> for SQLPOINTER #where_clause {
-                fn from(source: #type_name) -> SQLPOINTER {
-                    source as #repr_type as SQLPOINTER
+            impl#impl_generics From<#type_name #ty_generics> for crate::SQLPOINTER #where_clause {
+                fn from(source: #type_name) -> crate::SQLPOINTER {
+                    source as #repr_type as crate::SQLPOINTER
                 }
             }
         };
