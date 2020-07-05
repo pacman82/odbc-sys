@@ -1,0 +1,12 @@
+[package]
+name = "odbc-sys-derive"
+version = "0.1.0"
+authors = ["Marin Veršić <marin.versic101@gmail.com>"]
+edition = "2018"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "^1"
+syn = "^1"

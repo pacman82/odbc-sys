@@ -12,6 +12,7 @@ build = "build.rs"
 categories = ["external-ffi-bindings", "database"]
 
 [dependencies]
+odbc-sys-derive = { path = "odbc-sys-derive" }
 
 [features]
 default = ["odbc_version_3_80"]
