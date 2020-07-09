@@ -1,14 +1,21 @@
+use crate::SQLSMALLINT;
+use std::convert::TryFrom;
+
+pub use self::SqlReturn::*;
+
 /// Indicates the overall success or failure of the function
 ///
 /// Each function in ODBC returns a code, known as its return code, which indicates the overall
 /// success or failure of the function. Program logic is generally based on return codes.
 /// See [ODBC reference][1]
 /// [1]: https://docs.microsoft.com/en-us/sql/odbc/reference/develop-app/return-codes-odbc
-#[allow(non_camel_case_types)]
-#[repr(i16)]
+pub type SQLRETURN = SQLSMALLINT;
+
+/// SQLRETURN values defined by the ODBC standard
 #[must_use]
+#[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum SQLRETURN {
+pub enum SqlReturn {
     /// Function failed due to an invalid environment, connection, statement, or descriptor handle
     ///
     /// This indicates a programming error. No additional information is available from
@@ -58,4 +65,24 @@ pub enum SQLRETURN {
     SQL_PARAM_DATA_AVAILABLE = 101,
 }
 
-pub use self::SQLRETURN::*;
+impl TryFrom<SQLRETURN> for SqlReturn {
+    type Error = SQLRETURN;
+
+    fn try_from(source: SQLRETURN) -> Result<Self, Self::Error> {
+        match source {
+            x if x == SQL_INVALID_HANDLE as SQLRETURN => Ok(SQL_INVALID_HANDLE),
+            x if x == SQL_ERROR as SQLRETURN => Ok(SQL_ERROR),
+            x if x == SQL_SUCCESS as SQLRETURN => Ok(SQL_SUCCESS),
+            x if x == SQL_SUCCESS_WITH_INFO as SQLRETURN => Ok(SQL_SUCCESS_WITH_INFO),
+            x if x == SQL_STILL_EXECUTING as SQLRETURN => Ok(SQL_STILL_EXECUTING),
+            x if x == SQL_NEED_DATA as SQLRETURN => Ok(SQL_NEED_DATA),
+            x if x == SQL_NO_DATA as SQLRETURN => Ok(SQL_NO_DATA),
+
+            #[cfg(feature = "odbc_version_3_80")]
+            x if x == SQL_PARAM_DATA_AVAILABLE as SQLRETURN => Ok(SQL_PARAM_DATA_AVAILABLE),
+
+            // ODBC driver returned value unspecified by the ODBC standard
+            unknown => Err(unknown),
+        }
+    }
+}
