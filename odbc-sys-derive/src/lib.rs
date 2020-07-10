@@ -81,7 +81,7 @@ pub fn enum_default_derive(input: TokenStream) -> TokenStream {
 
             let gen = quote! {
                 // Export default constant as global
-                pub const #default_const_name: #enum_name = #default_variant_name;
+                pub use #default_variant_name as #default_const_name;
 
                 impl#impl_generics Default for #enum_name #ty_generics #where_clause {
                     fn default() -> Self {
