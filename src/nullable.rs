@@ -12,7 +12,6 @@ pub use self::Nullable::*;
 pub type NULLABLE = SQLSMALLINT;
 
 /// Indicates whether the parameter allows NULL values.
-#[repr(i16)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Nullable {

@@ -111,7 +111,16 @@ pub enum FreeStmtOption {
 
 pub use FreeStmtOption::*;
 
-/// SQL Data Types
+/// SQL Data Type
+///
+/// NOT INTENDED TO BE USED DIRECTLY:
+/// In their application users are greatly encouraged to use `SqlDataType` enum which provides
+/// better safety guarantees by implementing `TryFrom<SQL_DATA_TYPE>` and only convert to/fro
+/// `SQL_DATA_TYPE` when interfacing API which consumes `SQL_DATA_TYPE` arguments
+#[allow(non_camel_case_types)]
+pub type SQL_DATA_TYPE = SQLSMALLINT;
+
+/// SQL Data Type
 #[repr(i16)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -166,6 +175,67 @@ pub enum SqlDataType {
     SQL_SS_TABLE = -153,
     SQL_SS_TIME2 = -154,
     SQL_SS_TIMESTAMPOFFSET = -155,
+}
+
+impl TryFrom<SQL_DATA_TYPE> for SqlDataType {
+    type Error = SQL_DATA_TYPE;
+
+    fn try_from(source: SQL_DATA_TYPE) -> Result<Self, Self::Error> {
+        match source {
+            x if x == SQL_UNKNOWN_TYPE as SQL_DATA_TYPE => Ok(SQL_UNKNOWN_TYPE),
+            x if x == SQL_CHAR as SQL_DATA_TYPE => Ok(SQL_CHAR),
+            x if x == SQL_NUMERIC as SQL_DATA_TYPE => Ok(SQL_NUMERIC),
+            x if x == SQL_DECIMAL as SQL_DATA_TYPE => Ok(SQL_DECIMAL),
+            x if x == SQL_INTEGER as SQL_DATA_TYPE => Ok(SQL_INTEGER),
+            x if x == SQL_SMALLINT as SQL_DATA_TYPE => Ok(SQL_SMALLINT),
+            x if x == SQL_FLOAT as SQL_DATA_TYPE => Ok(SQL_FLOAT),
+            x if x == SQL_REAL as SQL_DATA_TYPE => Ok(SQL_REAL),
+            x if x == SQL_DOUBLE as SQL_DATA_TYPE => Ok(SQL_DOUBLE),
+            x if x == SQL_DATETIME as SQL_DATA_TYPE => Ok(SQL_DATETIME),
+            x if x == SQL_VARCHAR as SQL_DATA_TYPE => Ok(SQL_VARCHAR),
+            #[cfg(feature = "odbc_version_4")]
+            x if x == SQL_UDT as SQL_DATA_TYPE => Ok(SQL_UDT),
+            #[cfg(feature = "odbc_version_4")]
+            x if x == SQL_ROW as SQL_DATA_TYPE => Ok(SQL_ROW),
+            #[cfg(feature = "odbc_version_4")]
+            x if x == SQL_ARRAY as SQL_DATA_TYPE => Ok(SQL_ARRAY),
+            #[cfg(feature = "odbc_version_4")]
+            x if x == SQL_MULTISET as SQL_DATA_TYPE => Ok(SQL_MULTISET),
+
+            // one-parameter shortcuts for date/time data types
+            x if x == SQL_DATE as SQL_DATA_TYPE => Ok(SQL_DATE),
+            x if x == SQL_TIME as SQL_DATA_TYPE => Ok(SQL_TIME),
+            x if x == SQL_TIMESTAMP as SQL_DATA_TYPE => Ok(SQL_TIMESTAMP),
+            #[cfg(feature = "odbc_version_4")]
+            x if x == SQL_TIME_WITH_TIMEZONE as SQL_DATA_TYPE => Ok(SQL_TIME_WITH_TIMEZONE),
+            #[cfg(feature = "odbc_version_4")]
+            x if x == SQL_TIMESTAMP_WITH_TIMEZONE as SQL_DATA_TYPE => Ok(SQL_TIMESTAMP_WITH_TIMEZONE),
+
+            //SQL extended datatypes:
+            x if x == SQL_EXT_TIME_OR_INTERVAL as SQL_DATA_TYPE => Ok(SQL_EXT_TIME_OR_INTERVAL),
+            x if x == SQL_EXT_TIMESTAMP as SQL_DATA_TYPE => Ok(SQL_EXT_TIMESTAMP),
+            x if x == SQL_EXT_LONGVARCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_LONGVARCHAR),
+            x if x == SQL_EXT_BINARY as SQL_DATA_TYPE => Ok(SQL_EXT_BINARY),
+            x if x == SQL_EXT_VARBINARY as SQL_DATA_TYPE => Ok(SQL_EXT_VARBINARY),
+            x if x == SQL_EXT_LONGVARBINARY as SQL_DATA_TYPE => Ok(SQL_EXT_LONGVARBINARY),
+            x if x == SQL_EXT_BIGINT as SQL_DATA_TYPE => Ok(SQL_EXT_BIGINT),
+            x if x == SQL_EXT_TINYINT as SQL_DATA_TYPE => Ok(SQL_EXT_TINYINT),
+            x if x == SQL_EXT_BIT as SQL_DATA_TYPE => Ok(SQL_EXT_BIT),
+            x if x == SQL_EXT_WCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_WCHAR),
+            x if x == SQL_EXT_WVARCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_WVARCHAR),
+            x if x == SQL_EXT_WLONGVARCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_WLONGVARCHAR),
+            x if x == SQL_EXT_GUID as SQL_DATA_TYPE => Ok(SQL_EXT_GUID),
+            x if x == SQL_SS_VARIANT as SQL_DATA_TYPE => Ok(SQL_SS_VARIANT),
+            x if x == SQL_SS_UDT as SQL_DATA_TYPE => Ok(SQL_SS_UDT),
+            x if x == SQL_SS_XML as SQL_DATA_TYPE => Ok(SQL_SS_XML),
+            x if x == SQL_SS_TABLE as SQL_DATA_TYPE => Ok(SQL_SS_TABLE),
+            x if x == SQL_SS_TIME2 as SQL_DATA_TYPE => Ok(SQL_SS_TIME2),
+            x if x == SQL_SS_TIMESTAMPOFFSET as SQL_DATA_TYPE => Ok(SQL_SS_TIMESTAMPOFFSET),
+
+            // ODBC driver returned value unspecified by the ODBC standard
+            unknown => Err(unknown),
+        }
+    }
 }
 
 pub use self::SqlDataType::*;
@@ -843,7 +913,7 @@ extern "system" {
         parameter_number: SQLUSMALLINT,
         input_output_type: InputOutput,
         value_type: SqlCDataType,
-        parmeter_type: SqlDataType,
+        parameter_type: SqlDataType,
         column_size: SQLULEN,
         decimal_digits: SQLSMALLINT,
         parameter_value_ptr: SQLPOINTER,
@@ -1122,7 +1192,7 @@ extern "system" {
         col_name: *mut SQLCHAR,
         buffer_length: SQLSMALLINT,
         name_length: *mut SQLSMALLINT,
-        data_type: *mut SqlDataType,
+        data_type: *mut SQL_DATA_TYPE,
         col_size: *mut SQLULEN,
         decimal_digits: *mut SQLSMALLINT,
         nullable_ptr: *mut NULLABLE,
@@ -1142,7 +1212,7 @@ extern "system" {
         col_name: *mut SQLWCHAR,
         buffer_length: SQLSMALLINT,
         name_length: *mut SQLSMALLINT,
-        data_type: *mut SqlDataType,
+        data_type: *mut SQL_DATA_TYPE,
         col_size: *mut SQLULEN,
         decimal_digits: *mut SQLSMALLINT,
         nullable_ptr: *mut NULLABLE,
@@ -1157,7 +1227,7 @@ extern "system" {
     pub fn SQLDescribeParam(
         statement_handle: SQLHSTMT,
         parameter_number: SQLUSMALLINT,
-        data_type_ptr: *mut SqlDataType,
+        data_type_ptr: *mut SQL_DATA_TYPE,
         parameter_size_ptr: *mut SQLULEN,
         decimal_digits_ptr: *mut SQLSMALLINT,
         nullable_ptr: *mut NULLABLE,
