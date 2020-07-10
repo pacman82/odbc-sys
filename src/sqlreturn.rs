@@ -3,15 +3,20 @@ use std::convert::TryFrom;
 
 pub use self::SqlReturn::*;
 
-/// Indicates the overall success or failure of the function
+/// Indicates the overall success or failure of a function
+///
+/// NOT INTENDED TO BE USED DIRECTLY:
+/// In their application users are greatly encouraged to use `SqlReturn` enum which provides better
+/// safety guarantees by implementing `TryFrom<SQLRETURN>` and only convert to/from `SQLRETURN` when
+/// interfacing API which consumes `SQLRETURN` arguments
+pub type SQLRETURN = SQLSMALLINT;
+
+/// Indicates the overall success or failure of a function
 ///
 /// Each function in ODBC returns a code, known as its return code, which indicates the overall
 /// success or failure of the function. Program logic is generally based on return codes.
 /// See [ODBC reference][1]
 /// [1]: https://docs.microsoft.com/en-us/sql/odbc/reference/develop-app/return-codes-odbc
-pub type SQLRETURN = SQLSMALLINT;
-
-/// SQLRETURN values defined by the ODBC standard
 #[must_use]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]

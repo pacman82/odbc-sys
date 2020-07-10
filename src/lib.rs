@@ -1013,7 +1013,7 @@ extern "system" {
         length_ptr: *mut SQLLEN,
         precision_ptr: *mut SQLSMALLINT,
         scale_ptr: *mut SQLSMALLINT,
-        nullable_ptr: *mut Nullable,
+        nullable_ptr: *mut NULLABLE,
     ) -> SQLRETURN;
 
     /// Returns a list of columns and associated privileges for the specified table.
@@ -1125,7 +1125,7 @@ extern "system" {
         data_type: *mut SqlDataType,
         col_size: *mut SQLULEN,
         decimal_digits: *mut SQLSMALLINT,
-        nullable: *mut Nullable,
+        nullable_ptr: *mut NULLABLE,
     ) -> SQLRETURN;
 
     /// Returns the result descriptor for one column in the result set — column name, type, column
@@ -1145,7 +1145,7 @@ extern "system" {
         data_type: *mut SqlDataType,
         col_size: *mut SQLULEN,
         decimal_digits: *mut SQLSMALLINT,
-        nullable: *mut Nullable,
+        nullable_ptr: *mut NULLABLE,
     ) -> SQLRETURN;
 
     /// Returns the description of a parameter marker associated with a prepared SQL statement.
@@ -1160,7 +1160,7 @@ extern "system" {
         data_type_ptr: *mut SqlDataType,
         parameter_size_ptr: *mut SQLULEN,
         decimal_digits_ptr: *mut SQLSMALLINT,
-        nullable_ptr: *mut SQLSMALLINT,
+        nullable_ptr: *mut NULLABLE,
     ) -> SQLRETURN;
 
     /// Sets attributes related to a statement.
