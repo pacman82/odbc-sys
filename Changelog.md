@@ -1,6 +1,22 @@
 Changelog
 =========
 
+0.8.3
+-----
+
+* Adds `attributes::SQL_ATTR_CONNECTION_POOLING` and `attributes::SQL_ATTR_CP_MATCH` enums
+* Implements Default trait for attribute values
+
+
+### BREAKING CHANGES
+
+* `SQL_ATTR_APPLICATION_KEY` constant removed because it is not part of the ODBC standard.
+If there is any software that depends on this constant defined, users are encouraged to open an
+issue report
+* `SQL_OV_ODBC_2` constant removed because odbc-sys does not support OBDC versions < 3.0.
+* Enum OdbcVersion renamed to `SQL_ATTR_ODBC_VERSION` to better reflect it's intended use as a value
+for environment attribute to be used with `SQLSetEnvAttr` and `SQLGetEnvAttr` functions
+
 0.8.2
 -----
 
