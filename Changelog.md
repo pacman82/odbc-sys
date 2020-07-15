@@ -1,7 +1,7 @@
 Changelog
 =========
 
-0.8.3
+0.9.0
 -----
 
 * Adds `attributes::SQL_ATTR_CONNECTION_POOLING` and `attributes::SQL_ATTR_CP_MATCH` enums
