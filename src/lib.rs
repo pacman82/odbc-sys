@@ -83,6 +83,18 @@ pub const SQL_NULL_DATA: SQLLEN = -1;
 pub const SQL_NO_TOTAL: SQLLEN = -4;
 pub const SQL_SS_LENGTH_UNLIMITED: SQLULEN = 0;
 
+/// Used to provide info about enabled/supported features, attributes, etc.
+///
+/// This enum doesn't include #[repr(x)] because it is used as a different type in different
+/// functions. If using as raw values users should cast variants of this enum into required types.
+#[allow(non_camel_case_types)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub enum SQL_INFO {
+    SQL_FALSE = 0,
+    SQL_TRUE = 1,
+}
+pub use SQL_INFO::*;
+
 /// SQL Free Statement options
 #[repr(u16)]
 #[allow(non_camel_case_types)]
@@ -492,7 +504,7 @@ extern "system" {
     pub fn SQLGetEnvAttr(
         environment_handle: SQLHENV,
         attribute: EnvironmentAttribute,
-        value_ptr: SQLPOINTER,
+        value_ptr: EnvAttributeValue,
         buffer_length: SQLINTEGER,
         string_length: *mut SQLINTEGER,
     ) -> SQLRETURN;
@@ -504,7 +516,7 @@ extern "system" {
     pub fn SQLSetEnvAttr(
         environment_handle: SQLHENV,
         attribute: EnvironmentAttribute,
-        value: SQLPOINTER,
+        value: EnvAttributeValue,
         string_length: SQLINTEGER,
     ) -> SQLRETURN;
 
