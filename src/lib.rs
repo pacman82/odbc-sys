@@ -131,7 +131,6 @@ impl SQL_DATA_TYPE {
     }
 }
 
-
 /// SQL Data Type identifier
 #[repr(i16)]
 #[allow(non_camel_case_types)]
@@ -1327,4 +1326,21 @@ extern "system" {
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_INVALID_HANDLE`, or `SQL_ERROR`.
     pub fn SQLRowCount(hstmt: SQLHSTMT, row_count: *mut SQLLEN) -> SQLRETURN;
+
+    /// Retrieves the following information about columns within a specified table:
+    /// * The optimal set of columns that uniquely identifies a row in the table.
+    /// * Columns that are automatically updated when any value in the row is updated by a
+    ///   transaction.
+    pub fn SQLSpecialColumns(
+        statement_handle: SQLHSTMT,
+        identifier_type: SQLSMALLINT,
+        catalog_name: *mut SQLCHAR,
+        name_length1: SQLSMALLINT,
+        schema_name: *mut SQLCHAR,
+        name_length2: SQLSMALLINT,
+        table_name: *mut SQLCHAR,
+        name_length3: SQLSMALLINT,
+        scope: SQLSMALLINT,
+        nullable: Nullable,
+    ) -> SQLRETURN;
 }
