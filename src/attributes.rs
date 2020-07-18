@@ -12,6 +12,16 @@ pub use SQL_ATTR_ODBC_VERSION::*;
 #[repr(transparent)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct EnvAttributeValue(SQLPOINTER);
+impl EnvAttributeValue {
+    // Not required to be public
+    #[allow(non_snake_case)]
+    fn into_SQLUINTEGER(self) -> SQLUINTEGER {
+        self.0 as SQLUINTEGER
+    }
+    fn into_i32(self) -> i32 {
+        self.0 as i32
+    }
+}
 
 /// Governs behaviour of EnvironmentAttribute
 #[repr(i32)]
@@ -46,14 +56,14 @@ pub enum SQL_ATTR_ODBC_VERSION {
 }
 impl SQL_ATTR_ODBC_VERSION {
     #[inline]
-    // Must not be public
+    // Not required to be public
     fn into_i32(self) -> i32 {
         self as i32
     }
 }
 impl From<SQL_ATTR_ODBC_VERSION> for EnvAttributeValue {
     fn from(source: SQL_ATTR_ODBC_VERSION) -> Self {
-        EnvAttributeValue(source.into_i32() as SQLPOINTER)
+        Self(source.into_i32() as SQLPOINTER)
     }
 }
 impl TryFrom<EnvAttributeValue> for SQL_ATTR_ODBC_VERSION {
@@ -61,11 +71,11 @@ impl TryFrom<EnvAttributeValue> for SQL_ATTR_ODBC_VERSION {
 
     fn try_from(source: EnvAttributeValue) -> Result<Self, Self::Error> {
         match source {
-            x if x.0 as i32 == SQL_OV_ODBC3.into_i32() => Ok(SQL_OV_ODBC3),
+            x if x.into_i32() == SQL_OV_ODBC3.into_i32() => Ok(SQL_OV_ODBC3),
             #[cfg(feature = "odbc_version_3_80")]
-            x if x.0 as i32 == SQL_OV_ODBC3_80.into_i32() => Ok(SQL_OV_ODBC3_80),
+            x if x.into_i32() == SQL_OV_ODBC3_80.into_i32() => Ok(SQL_OV_ODBC3_80),
             #[cfg(feature = "odbc_version_4")]
-            x if x.0 as i32 == SQL_OV_ODBC4.into_i32() => Ok(SQL_OV_ODBC4),
+            x if x.into_i32() == SQL_OV_ODBC4.into_i32() => Ok(SQL_OV_ODBC4),
 
             unknown => Err(unknown),
         }
@@ -85,7 +95,7 @@ pub enum SQL_ATTR_CONNECTION_POOLING {
     SQL_CP_DRIVER_AWARE = 3,
 }
 impl SQL_ATTR_CONNECTION_POOLING {
-    // Must not be public
+    // Not required to be public
     #[inline]
     #[allow(non_snake_case)]
     fn into_SQLUINTEGER(self) -> SQLUINTEGER {
@@ -101,7 +111,7 @@ impl Default for SQL_ATTR_CONNECTION_POOLING {
 }
 impl From<SQL_ATTR_CONNECTION_POOLING> for EnvAttributeValue {
     fn from(source: SQL_ATTR_CONNECTION_POOLING) -> Self {
-        EnvAttributeValue(source.into_SQLUINTEGER() as SQLPOINTER)
+        Self(source.into_SQLUINTEGER() as SQLPOINTER)
     }
 }
 impl TryFrom<EnvAttributeValue> for SQL_ATTR_CONNECTION_POOLING {
@@ -109,14 +119,14 @@ impl TryFrom<EnvAttributeValue> for SQL_ATTR_CONNECTION_POOLING {
 
     fn try_from(source: EnvAttributeValue) -> Result<Self, Self::Error> {
         match source {
-            x if x.0 as SQLUINTEGER == SQL_CP_OFF.into_SQLUINTEGER() => Ok(SQL_CP_OFF),
-            x if x.0 as SQLUINTEGER == SQL_CP_ONE_PER_DRIVER.into_SQLUINTEGER() => {
+            x if x.into_SQLUINTEGER() == SQL_CP_OFF.into_SQLUINTEGER() => Ok(SQL_CP_OFF),
+            x if x.into_SQLUINTEGER() == SQL_CP_ONE_PER_DRIVER.into_SQLUINTEGER() => {
                 Ok(SQL_CP_ONE_PER_DRIVER)
             }
-            x if x.0 as SQLUINTEGER == SQL_CP_ONE_PER_HENV.into_SQLUINTEGER() => {
+            x if x.into_SQLUINTEGER() == SQL_CP_ONE_PER_HENV.into_SQLUINTEGER() => {
                 Ok(SQL_CP_ONE_PER_HENV)
             }
-            x if x.0 as SQLUINTEGER == SQL_CP_DRIVER_AWARE.into_SQLUINTEGER() => {
+            x if x.into_SQLUINTEGER() == SQL_CP_DRIVER_AWARE.into_SQLUINTEGER() => {
                 Ok(SQL_CP_DRIVER_AWARE)
             }
 
@@ -136,7 +146,7 @@ pub enum SQL_ATTR_CP_MATCH {
     SQL_CP_RELAXED_MATCH = 1,
 }
 impl SQL_ATTR_CP_MATCH {
-    // Must not be public
+    // Not required to be public
     #[inline]
     #[allow(non_snake_case)]
     fn into_SQLUINTEGER(self) -> SQLUINTEGER {
@@ -153,7 +163,7 @@ impl Default for SQL_ATTR_CP_MATCH {
 }
 impl From<SQL_ATTR_CP_MATCH> for EnvAttributeValue {
     fn from(source: SQL_ATTR_CP_MATCH) -> Self {
-        EnvAttributeValue(source.into_SQLUINTEGER() as SQLPOINTER)
+        Self(source.into_SQLUINTEGER() as SQLPOINTER)
     }
 }
 impl TryFrom<EnvAttributeValue> for SQL_ATTR_CP_MATCH {
@@ -161,10 +171,10 @@ impl TryFrom<EnvAttributeValue> for SQL_ATTR_CP_MATCH {
 
     fn try_from(source: EnvAttributeValue) -> Result<Self, Self::Error> {
         match source {
-            x if x.0 as SQLUINTEGER == SQL_CP_STRICT_MATCH.into_SQLUINTEGER() => {
+            x if x.into_SQLUINTEGER() == SQL_CP_STRICT_MATCH.into_SQLUINTEGER() => {
                 Ok(SQL_CP_STRICT_MATCH)
             }
-            x if x.0 as SQLUINTEGER == SQL_CP_RELAXED_MATCH.into_SQLUINTEGER() => {
+            x if x.into_SQLUINTEGER() == SQL_CP_RELAXED_MATCH.into_SQLUINTEGER() => {
                 Ok(SQL_CP_RELAXED_MATCH)
             }
 
@@ -179,9 +189,8 @@ impl TryFrom<EnvAttributeValue> for SQL_ATTR_CP_MATCH {
 /// not return string data null-terminated.
 #[allow(non_camel_case_types)]
 pub type SQL_ATTR_OUTPUT_NTS = SQL_INFO;
-
 impl SQL_ATTR_OUTPUT_NTS {
-    // Must not be public
+    // Not required to be public
     #[inline]
     fn into_i32(self) -> i32 {
         self as i32
@@ -194,7 +203,7 @@ impl Default for SQL_ATTR_OUTPUT_NTS {
 }
 impl From<SQL_ATTR_OUTPUT_NTS> for EnvAttributeValue {
     fn from(source: SQL_ATTR_OUTPUT_NTS) -> Self {
-        EnvAttributeValue(source.into_i32() as SQLPOINTER)
+        Self(source.into_i32() as SQLPOINTER)
     }
 }
 impl TryFrom<EnvAttributeValue> for SQL_ATTR_OUTPUT_NTS {
@@ -202,12 +211,13 @@ impl TryFrom<EnvAttributeValue> for SQL_ATTR_OUTPUT_NTS {
 
     fn try_from(source: EnvAttributeValue) -> Result<Self, Self::Error> {
         match source {
-            x if x.0 as i32 == SQL_ATTR_OUTPUT_NTS::SQL_FALSE as i32 => {
+            x if x.into_i32() == SQL_ATTR_OUTPUT_NTS::SQL_FALSE.into_i32() => {
                 Ok(SQL_ATTR_OUTPUT_NTS::SQL_FALSE)
             }
-            x if x.0 as i32 == SQL_ATTR_OUTPUT_NTS::SQL_TRUE as i32 => {
+            x if x.into_i32() == SQL_ATTR_OUTPUT_NTS::SQL_TRUE.into_i32() => {
                 Ok(SQL_ATTR_OUTPUT_NTS::SQL_TRUE)
             }
+
             unknown => Err(unknown),
         }
     }
