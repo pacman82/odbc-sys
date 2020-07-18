@@ -5,11 +5,11 @@ pub use self::SqlReturn::*;
 
 /// Indicates the overall success or failure of a function
 ///
-/// NOT INTENDED TO BE USED DIRECTLY:
-/// In their application users are greatly encouraged to use `SqlReturn` enum which provides better
-/// safety guarantees by implementing `TryFrom<SQLRETURN>` and only convert to/from `SQLRETURN` when
-/// interfacing API which consumes `SQLRETURN` arguments
-pub type SQLRETURN = SQLSMALLINT;
+/// In their application users should use `SqlReturn` enum which provides better safety guarantees
+/// and only convert to/from `SQLRETURN` when interfacing API which consumes `SQLRETURN` arguments
+#[repr(transparent)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct SQLRETURN(SQLSMALLINT);
 
 /// Indicates the overall success or failure of a function
 ///
@@ -75,16 +75,15 @@ impl TryFrom<SQLRETURN> for SqlReturn {
 
     fn try_from(source: SQLRETURN) -> Result<Self, Self::Error> {
         match source {
-            x if x == SQL_INVALID_HANDLE as SQLRETURN => Ok(SQL_INVALID_HANDLE),
-            x if x == SQL_ERROR as SQLRETURN => Ok(SQL_ERROR),
-            x if x == SQL_SUCCESS as SQLRETURN => Ok(SQL_SUCCESS),
-            x if x == SQL_SUCCESS_WITH_INFO as SQLRETURN => Ok(SQL_SUCCESS_WITH_INFO),
-            x if x == SQL_STILL_EXECUTING as SQLRETURN => Ok(SQL_STILL_EXECUTING),
-            x if x == SQL_NEED_DATA as SQLRETURN => Ok(SQL_NEED_DATA),
-            x if x == SQL_NO_DATA as SQLRETURN => Ok(SQL_NO_DATA),
+            x if x.0 == SQL_INVALID_HANDLE as SQLSMALLINT => Ok(SQL_INVALID_HANDLE),
+            x if x.0 == SQL_ERROR as SQLSMALLINT => Ok(SQL_ERROR),
+            x if x.0 == SQL_SUCCESS as SQLSMALLINT => Ok(SQL_SUCCESS),
+            x if x.0 == SQL_SUCCESS_WITH_INFO as SQLSMALLINT => Ok(SQL_SUCCESS_WITH_INFO),
+            x if x.0 == SQL_STILL_EXECUTING as SQLSMALLINT => Ok(SQL_STILL_EXECUTING),
+            x if x.0 == SQL_NEED_DATA as SQLSMALLINT => Ok(SQL_NEED_DATA),
+            x if x.0 == SQL_NO_DATA as SQLSMALLINT => Ok(SQL_NO_DATA),
 
-            #[cfg(feature = "odbc_version_3_80")]
-            x if x == SQL_PARAM_DATA_AVAILABLE as SQLRETURN => Ok(SQL_PARAM_DATA_AVAILABLE),
+            x if x.0 == SQL_PARAM_DATA_AVAILABLE as SQLSMALLINT => Ok(SQL_PARAM_DATA_AVAILABLE),
 
             // ODBC driver returned value unspecified by the ODBC standard
             unknown => Err(unknown),

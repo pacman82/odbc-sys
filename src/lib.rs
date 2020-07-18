@@ -111,16 +111,28 @@ pub enum FreeStmtOption {
 
 pub use FreeStmtOption::*;
 
-/// SQL Data Type
+/// SQL Data Type identifier
 ///
-/// NOT INTENDED TO BE USED DIRECTLY:
-/// In their application users are greatly encouraged to use `SqlDataType` enum which provides
-/// better safety guarantees by implementing `TryFrom<SQL_DATA_TYPE>` and only convert to/fro
-/// `SQL_DATA_TYPE` when interfacing API which consumes `SQL_DATA_TYPE` arguments
+/// In their application users should use `SqlDataType` enum which provides better safety
+/// guarantees and only convert to/from `SQL_DATA_TYPE` when interfacing API which consumes
+/// `SQL_DATA_TYPE` arguments
+#[repr(transparent)]
 #[allow(non_camel_case_types)]
-pub type SQL_DATA_TYPE = SQLSMALLINT;
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+pub struct SQL_DATA_TYPE(SQLSMALLINT);
+impl SQL_DATA_TYPE {
+    /// Constructs a driver-specific `SqlDataType` identifier
+    ///
+    /// Used to construct a SQL data type identifier which is not provided by the `SqlDataType`
+    /// enum. This method should be used rarely and is provided for completeness of adherance to
+    /// the ODBC specification
+    pub fn driver_specific(sql_data_type: SQLSMALLINT) -> Self {
+        Self(sql_data_type)
+    }
+}
 
-/// SQL Data Type
+
+/// SQL Data Type identifier
 #[repr(i16)]
 #[allow(non_camel_case_types)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -176,65 +188,82 @@ pub enum SqlDataType {
     SQL_SS_TIME2 = -154,
     SQL_SS_TIMESTAMPOFFSET = -155,
 }
+impl SqlDataType {
+    // Not required to be public
+    #[inline]
+    #[allow(non_snake_case)]
+    fn into_SQLSMALLINT(self) -> SQLSMALLINT {
+        self as SQLSMALLINT
+    }
+}
 
+/// ODBC specification allows drivers to return driver-specific values for SQL type identifiers.
+/// Driver-specific SQL type identifiers will be returned as `Result::Error(SQLSMALLINT)`
 impl TryFrom<SQL_DATA_TYPE> for SqlDataType {
     type Error = SQL_DATA_TYPE;
 
     fn try_from(source: SQL_DATA_TYPE) -> Result<Self, Self::Error> {
         match source {
-            x if x == SQL_UNKNOWN_TYPE as SQL_DATA_TYPE => Ok(SQL_UNKNOWN_TYPE),
-            x if x == SQL_CHAR as SQL_DATA_TYPE => Ok(SQL_CHAR),
-            x if x == SQL_NUMERIC as SQL_DATA_TYPE => Ok(SQL_NUMERIC),
-            x if x == SQL_DECIMAL as SQL_DATA_TYPE => Ok(SQL_DECIMAL),
-            x if x == SQL_INTEGER as SQL_DATA_TYPE => Ok(SQL_INTEGER),
-            x if x == SQL_SMALLINT as SQL_DATA_TYPE => Ok(SQL_SMALLINT),
-            x if x == SQL_FLOAT as SQL_DATA_TYPE => Ok(SQL_FLOAT),
-            x if x == SQL_REAL as SQL_DATA_TYPE => Ok(SQL_REAL),
-            x if x == SQL_DOUBLE as SQL_DATA_TYPE => Ok(SQL_DOUBLE),
-            x if x == SQL_DATETIME as SQL_DATA_TYPE => Ok(SQL_DATETIME),
-            x if x == SQL_VARCHAR as SQL_DATA_TYPE => Ok(SQL_VARCHAR),
+            x if x.0 == SQL_UNKNOWN_TYPE.into_SQLSMALLINT() => Ok(SQL_UNKNOWN_TYPE),
+            x if x.0 == SQL_CHAR.into_SQLSMALLINT() => Ok(SQL_CHAR),
+            x if x.0 == SQL_NUMERIC.into_SQLSMALLINT() => Ok(SQL_NUMERIC),
+            x if x.0 == SQL_DECIMAL.into_SQLSMALLINT() => Ok(SQL_DECIMAL),
+            x if x.0 == SQL_INTEGER.into_SQLSMALLINT() => Ok(SQL_INTEGER),
+            x if x.0 == SQL_SMALLINT.into_SQLSMALLINT() => Ok(SQL_SMALLINT),
+            x if x.0 == SQL_FLOAT.into_SQLSMALLINT() => Ok(SQL_FLOAT),
+            x if x.0 == SQL_REAL.into_SQLSMALLINT() => Ok(SQL_REAL),
+            x if x.0 == SQL_DOUBLE.into_SQLSMALLINT() => Ok(SQL_DOUBLE),
+            x if x.0 == SQL_DATETIME.into_SQLSMALLINT() => Ok(SQL_DATETIME),
+            x if x.0 == SQL_VARCHAR.into_SQLSMALLINT() => Ok(SQL_VARCHAR),
             #[cfg(feature = "odbc_version_4")]
-            x if x == SQL_UDT as SQL_DATA_TYPE => Ok(SQL_UDT),
+            x if x.0 == SQL_UDT.into_SQLSMALLINT() => Ok(SQL_UDT),
             #[cfg(feature = "odbc_version_4")]
-            x if x == SQL_ROW as SQL_DATA_TYPE => Ok(SQL_ROW),
+            x if x.0 == SQL_ROW.into_SQLSMALLINT() => Ok(SQL_ROW),
             #[cfg(feature = "odbc_version_4")]
-            x if x == SQL_ARRAY as SQL_DATA_TYPE => Ok(SQL_ARRAY),
+            x if x.0 == SQL_ARRAY.into_SQLSMALLINT() => Ok(SQL_ARRAY),
             #[cfg(feature = "odbc_version_4")]
-            x if x == SQL_MULTISET as SQL_DATA_TYPE => Ok(SQL_MULTISET),
+            x if x.0 == SQL_MULTISET.into_SQLSMALLINT() => Ok(SQL_MULTISET),
 
             // one-parameter shortcuts for date/time data types
-            x if x == SQL_DATE as SQL_DATA_TYPE => Ok(SQL_DATE),
-            x if x == SQL_TIME as SQL_DATA_TYPE => Ok(SQL_TIME),
-            x if x == SQL_TIMESTAMP as SQL_DATA_TYPE => Ok(SQL_TIMESTAMP),
+            x if x.0 == SQL_DATE.into_SQLSMALLINT() => Ok(SQL_DATE),
+            x if x.0 == SQL_TIME.into_SQLSMALLINT() => Ok(SQL_TIME),
+            x if x.0 == SQL_TIMESTAMP.into_SQLSMALLINT() => Ok(SQL_TIMESTAMP),
             #[cfg(feature = "odbc_version_4")]
-            x if x == SQL_TIME_WITH_TIMEZONE as SQL_DATA_TYPE => Ok(SQL_TIME_WITH_TIMEZONE),
+            x if x.0 == SQL_TIME_WITH_TIMEZONE.into_SQLSMALLINT() => Ok(SQL_TIME_WITH_TIMEZONE),
             #[cfg(feature = "odbc_version_4")]
-            x if x == SQL_TIMESTAMP_WITH_TIMEZONE as SQL_DATA_TYPE => Ok(SQL_TIMESTAMP_WITH_TIMEZONE),
+            x if x.0 == SQL_TIMESTAMP_WITH_TIMEZONE.into_SQLSMALLINT() => {
+                Ok(SQL_TIMESTAMP_WITH_TIMEZONE)
+            }
 
             //SQL extended datatypes:
-            x if x == SQL_EXT_TIME_OR_INTERVAL as SQL_DATA_TYPE => Ok(SQL_EXT_TIME_OR_INTERVAL),
-            x if x == SQL_EXT_TIMESTAMP as SQL_DATA_TYPE => Ok(SQL_EXT_TIMESTAMP),
-            x if x == SQL_EXT_LONGVARCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_LONGVARCHAR),
-            x if x == SQL_EXT_BINARY as SQL_DATA_TYPE => Ok(SQL_EXT_BINARY),
-            x if x == SQL_EXT_VARBINARY as SQL_DATA_TYPE => Ok(SQL_EXT_VARBINARY),
-            x if x == SQL_EXT_LONGVARBINARY as SQL_DATA_TYPE => Ok(SQL_EXT_LONGVARBINARY),
-            x if x == SQL_EXT_BIGINT as SQL_DATA_TYPE => Ok(SQL_EXT_BIGINT),
-            x if x == SQL_EXT_TINYINT as SQL_DATA_TYPE => Ok(SQL_EXT_TINYINT),
-            x if x == SQL_EXT_BIT as SQL_DATA_TYPE => Ok(SQL_EXT_BIT),
-            x if x == SQL_EXT_WCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_WCHAR),
-            x if x == SQL_EXT_WVARCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_WVARCHAR),
-            x if x == SQL_EXT_WLONGVARCHAR as SQL_DATA_TYPE => Ok(SQL_EXT_WLONGVARCHAR),
-            x if x == SQL_EXT_GUID as SQL_DATA_TYPE => Ok(SQL_EXT_GUID),
-            x if x == SQL_SS_VARIANT as SQL_DATA_TYPE => Ok(SQL_SS_VARIANT),
-            x if x == SQL_SS_UDT as SQL_DATA_TYPE => Ok(SQL_SS_UDT),
-            x if x == SQL_SS_XML as SQL_DATA_TYPE => Ok(SQL_SS_XML),
-            x if x == SQL_SS_TABLE as SQL_DATA_TYPE => Ok(SQL_SS_TABLE),
-            x if x == SQL_SS_TIME2 as SQL_DATA_TYPE => Ok(SQL_SS_TIME2),
-            x if x == SQL_SS_TIMESTAMPOFFSET as SQL_DATA_TYPE => Ok(SQL_SS_TIMESTAMPOFFSET),
+            x if x.0 == SQL_EXT_TIME_OR_INTERVAL.into_SQLSMALLINT() => Ok(SQL_EXT_TIME_OR_INTERVAL),
+            x if x.0 == SQL_EXT_TIMESTAMP.into_SQLSMALLINT() => Ok(SQL_EXT_TIMESTAMP),
+            x if x.0 == SQL_EXT_LONGVARCHAR.into_SQLSMALLINT() => Ok(SQL_EXT_LONGVARCHAR),
+            x if x.0 == SQL_EXT_BINARY.into_SQLSMALLINT() => Ok(SQL_EXT_BINARY),
+            x if x.0 == SQL_EXT_VARBINARY.into_SQLSMALLINT() => Ok(SQL_EXT_VARBINARY),
+            x if x.0 == SQL_EXT_LONGVARBINARY.into_SQLSMALLINT() => Ok(SQL_EXT_LONGVARBINARY),
+            x if x.0 == SQL_EXT_BIGINT.into_SQLSMALLINT() => Ok(SQL_EXT_BIGINT),
+            x if x.0 == SQL_EXT_TINYINT.into_SQLSMALLINT() => Ok(SQL_EXT_TINYINT),
+            x if x.0 == SQL_EXT_BIT.into_SQLSMALLINT() => Ok(SQL_EXT_BIT),
+            x if x.0 == SQL_EXT_WCHAR.into_SQLSMALLINT() => Ok(SQL_EXT_WCHAR),
+            x if x.0 == SQL_EXT_WVARCHAR.into_SQLSMALLINT() => Ok(SQL_EXT_WVARCHAR),
+            x if x.0 == SQL_EXT_WLONGVARCHAR.into_SQLSMALLINT() => Ok(SQL_EXT_WLONGVARCHAR),
+            x if x.0 == SQL_EXT_GUID.into_SQLSMALLINT() => Ok(SQL_EXT_GUID),
+            x if x.0 == SQL_SS_VARIANT.into_SQLSMALLINT() => Ok(SQL_SS_VARIANT),
+            x if x.0 == SQL_SS_UDT.into_SQLSMALLINT() => Ok(SQL_SS_UDT),
+            x if x.0 == SQL_SS_XML.into_SQLSMALLINT() => Ok(SQL_SS_XML),
+            x if x.0 == SQL_SS_TABLE.into_SQLSMALLINT() => Ok(SQL_SS_TABLE),
+            x if x.0 == SQL_SS_TIME2.into_SQLSMALLINT() => Ok(SQL_SS_TIME2),
+            x if x.0 == SQL_SS_TIMESTAMPOFFSET.into_SQLSMALLINT() => Ok(SQL_SS_TIMESTAMPOFFSET),
 
             // ODBC driver returned value unspecified by the ODBC standard
             unknown => Err(unknown),
         }
+    }
+}
+impl From<SqlDataType> for SQL_DATA_TYPE {
+    fn from(source: SqlDataType) -> Self {
+        Self(source.into_SQLSMALLINT())
     }
 }
 
@@ -694,7 +723,9 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_ERROR`, or `SQL_INVALID_HANDLE`.
-    pub fn SQLGetTypeInfo(statement_handle: SQLHSTMT, data_type: SqlDataType) -> SQLRETURN;
+    // Uses SQL_DATA_TYPE instead of SqlDataType because ODBC spec allows driver-specific values
+    // and if this library complies with the standard `data_type` argument cannot be enumerated
+    pub fn SQLGetTypeInfo(statement_handle: SQLHSTMT, data_type: SQL_DATA_TYPE) -> SQLRETURN;
 
     /// SQLFetch fetches the next rowset of data from the result set and returns data for all bound
     /// columns.
@@ -908,12 +939,14 @@ extern "system" {
     ///
     /// # Returns
     /// `SQL_SUCCESS`, `SQL_SUCCESS_WITH_INFO`, `SQL_ERROR` or `SQL_INVALID_HANDLE`
+    // Uses SQL_DATA_TYPE instead of SqlDataType because ODBC spec allows driver-specific values
+    // and if this library complies with the standard `data_type` argument cannot be enumerated
     pub fn SQLBindParameter(
         hstmt: SQLHSTMT,
         parameter_number: SQLUSMALLINT,
         input_output_type: InputOutput,
         value_type: SqlCDataType,
-        parameter_type: SqlDataType,
+        parameter_type: SQL_DATA_TYPE,
         column_size: SQLULEN,
         decimal_digits: SQLSMALLINT,
         parameter_value_ptr: SQLPOINTER,
