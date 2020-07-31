@@ -5,64 +5,64 @@ use std::ptr::null_mut;
 
 #[test]
 fn allocate_environment() {
-    let mut env: SQLHANDLE = null_mut();
+    let mut env: Handle = null_mut();
     unsafe {
         assert_eq!(
-            SQLRETURN::SQL_SUCCESS,
-            SQLAllocHandle(SQL_HANDLE_ENV, null_mut(), &mut env as *mut SQLHANDLE)
+            SqlReturn::SUCCESS,
+            SQLAllocHandle(HandleType::Env, null_mut(), &mut env as *mut Handle)
         );
-        assert_eq!(SQLRETURN::SQL_SUCCESS, SQLFreeHandle(SQL_HANDLE_ENV, env));
+        assert_eq!(SqlReturn::SUCCESS, SQLFreeHandle(HandleType::Env, env));
     }
 }
 
 #[test]
 fn allocate_connection() {
-    let mut env: SQLHANDLE = null_mut();
-    let mut conn: SQLHANDLE = null_mut();
+    let mut env: Handle = null_mut();
+    let mut conn: Handle = null_mut();
 
     unsafe {
         assert_eq!(
-            SQL_SUCCESS,
-            SQLAllocHandle(SQL_HANDLE_ENV, null_mut(), &mut env as *mut SQLHANDLE)
+            SqlReturn::SUCCESS,
+            SQLAllocHandle(HandleType::Env, null_mut(), &mut env as *mut Handle)
         );
 
         assert_eq!(
-            SQL_SUCCESS,
+            SqlReturn::SUCCESS,
             SQLSetEnvAttr(
-                env as SQLHENV,
-                SQL_ATTR_ODBC_VERSION,
-                SQL_OV_ODBC3.into(),
+                env as HEnv,
+                EnvironmentAttribute::OdbcVersion,
+                AttrOdbcVersion::Odbc3.into(),
                 0
             )
         );
 
         assert_eq!(
-            SQL_SUCCESS,
-            SQLAllocHandle(SQL_HANDLE_DBC, env, &mut conn as *mut SQLHANDLE)
+            SqlReturn::SUCCESS,
+            SQLAllocHandle(HandleType::Dbc, env, &mut conn as *mut Handle)
         );
 
-        assert_eq!(SQL_SUCCESS, SQLFreeHandle(SQL_HANDLE_DBC, conn));
-        assert_eq!(SQL_SUCCESS, SQLFreeHandle(SQL_HANDLE_ENV, env));
+        assert_eq!(SqlReturn::SUCCESS, SQLFreeHandle(HandleType::Dbc, conn));
+        assert_eq!(SqlReturn::SUCCESS, SQLFreeHandle(HandleType::Env, env));
     }
 }
 
 #[test]
 fn allocate_connection_error() {
-    let mut env: SQLHANDLE = null_mut();
-    let mut conn: SQLHANDLE = null_mut();
+    let mut env: Handle = null_mut();
+    let mut conn: Handle = null_mut();
 
     unsafe {
         assert_eq!(
-            SQL_SUCCESS,
-            SQLAllocHandle(SQL_HANDLE_ENV, null_mut(), &mut env as *mut SQLHANDLE)
+            SqlReturn::SUCCESS,
+            SQLAllocHandle(HandleType::Env, null_mut(), &mut env as *mut Handle)
         );
 
         // Allocating connection without setting ODBC Version first should result in an error
         assert_eq!(
-            SQL_ERROR,
-            SQLAllocHandle(SQL_HANDLE_DBC, env, &mut conn as *mut SQLHANDLE)
+            SqlReturn::ERROR,
+            SQLAllocHandle(HandleType::Dbc, env, &mut conn as *mut Handle)
         );
 
-        assert_eq!(SQL_SUCCESS, SQLFreeHandle(SQL_HANDLE_ENV, env));
+        assert_eq!(SqlReturn::SUCCESS, SQLFreeHandle(HandleType::Env, env));
     }
 }
