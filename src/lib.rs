@@ -56,12 +56,12 @@ pub type WChar = u16;
 #[cfg(target_pointer_width = "64")]
 pub type Len = i64;
 #[cfg(target_pointer_width = "32")]
-pub type SQLLEN = SQLINTEGER;
+pub type Len = Integer;
 
 #[cfg(target_pointer_width = "64")]
 pub type ULen = u64;
 #[cfg(target_pointer_width = "32")]
-pub type SQLULEN = SQLUINTEGER;
+pub type ULen = UInteger;
 
 pub type HWnd = Pointer;
 
