@@ -119,6 +119,8 @@ pub enum SqlDataType {
     Smallint = 5,
     Float = 6,
     Real = 7,
+    /// Signed, approximate, numeric value with a binary precision 53 (zero or absolute value
+    /// 10[-308] to 10[308]).
     Double = 8,
     Datetime = 9,
     Varchar = 12,
@@ -134,6 +136,8 @@ pub enum SqlDataType {
     // one-parameter shortcuts for date/time data types
     Date = 91,
     Time = 92,
+    /// Year, month, day, hour, minute, and second fields, with valid values as defined for the DATE
+    /// and TIME data types.
     Timestamp = 93,
     #[cfg(feature = "odbc_version_4")]
     TimeWithTimezone = 94,
