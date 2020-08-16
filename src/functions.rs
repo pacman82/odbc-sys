@@ -2,7 +2,7 @@ use crate::{
     BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, DriverConnectOption,
     EnvironmentAttribute, FetchOrientation, FreeStmtOption, HDbc, HDesc, HEnv, HStmt, HWnd, Handle,
     HandleType, InfoType, Integer, Len, Nullable, ParamType, Pointer, RetCode, SmallInt,
-    SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
+    SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar, Desc,
 };
 
 // static linking is not currently supported here for windows
@@ -481,7 +481,7 @@ extern "system" {
     pub fn SQLColAttributeW(
         statement_handle: HStmt,
         column_number: USmallInt,
-        field_identifier: USmallInt,
+        field_identifier: Desc,
         character_attribute_ptr: Pointer,
         buffer_length: SmallInt,
         string_length_ptr: *mut SmallInt,

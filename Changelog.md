@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.11.0
+------
+
+*Breaking Changes*:
+
+* `SQLColAttributeW`: `field_identifier` parameter type has been changed to the new `Desc` enumeration.
+* `Desc` has been renamed to `Description`.
+
 0.10.0
 ------
 

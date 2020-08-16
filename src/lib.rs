@@ -10,7 +10,7 @@
 
 pub use self::{
     attributes::*, bulk_operation::*, c_data_type::*, fetch_orientation::*, info_type::*,
-    nullable::*, param_type::*, sqlreturn::*, functions::*, interval::*
+    nullable::*, param_type::*, sqlreturn::*, functions::*, interval::*, desc::*,
 };
 use std::os::raw::{c_int, c_void};
 
@@ -24,6 +24,7 @@ mod nullable;
 mod param_type;
 mod sqlreturn;
 mod interval;
+mod desc;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -34,11 +35,11 @@ pub enum Dbc {}
 
 pub enum Stmt {}
 
-pub enum Desc {}
+pub enum Description {}
 
 pub type Handle = *mut Obj;
 pub type HEnv = *mut Env;
-pub type HDesc = *mut Desc;
+pub type HDesc = *mut Description;
 
 /// The connection handle references storage of all information about the connection to the data
 /// source, including status, transaction state, and error information.
@@ -115,6 +116,10 @@ pub enum SqlDataType {
     Char = 1,
     Numeric = 2,
     Decimal = 3,
+    /// Exact numeric value with precision 10 and scale 0 (signed: -2[31] <= n <= 2[31] - 1,
+    /// unsigned: 0 <= n <= 2[32] - 1).  An application uses `SQLGetTypeInfo` or `SQLColAttribute`
+    /// to determine whether a particular data type or a particular column in a result set is
+    /// unsigned.
     Integer = 4,
     Smallint = 5,
     Float = 6,
