@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.12.0
+------
+
+* *Breaking Change*: `SqlDataType` has been converted from an enumeration into a newtype integer.
+
 0.11.0
 ------
 

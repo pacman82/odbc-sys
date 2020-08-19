@@ -4,7 +4,7 @@
 pub enum InfoType {
     MaxDriverConnectinos = 0,
     MaxConcurrentActivities = 1,
-    DataSourceName= 2,
+    DataSourceName = 2,
     // FetchDirection = 8, Deprecated in ODBC 3
     ServerName = 13,
     SearchPatternEscape = 14,

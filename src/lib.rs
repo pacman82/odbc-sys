@@ -9,22 +9,23 @@
 //! in the cargo.toml
 
 pub use self::{
-    attributes::*, bulk_operation::*, c_data_type::*, fetch_orientation::*, info_type::*,
-    nullable::*, param_type::*, sqlreturn::*, functions::*, interval::*, desc::*,
+    attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
+    info_type::*, interval::*, nullable::*, param_type::*, sql_data_type::*, sqlreturn::*,
 };
 use std::os::raw::{c_int, c_void};
 
 mod attributes;
 mod bulk_operation;
 mod c_data_type;
+mod desc;
 mod fetch_orientation;
 mod functions;
 mod info_type;
+mod interval;
 mod nullable;
 mod param_type;
+mod sql_data_type;
 mod sqlreturn;
-mod interval;
-mod desc;
 
 //These types can never be instantiated in Rust code.
 pub enum Obj {}
@@ -105,70 +106,6 @@ pub enum FreeStmtOption {
     /// explicitly allocated descriptor that is shared by more than one statement, this operation
     /// will affect the bindings of all the statements that share the descriptor.
     ResetParams = 3,
-}
-
-/// SQL Data Types
-#[repr(i16)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum SqlDataType {
-    UnknownType = 0,
-    // also called SQL_VARIANT_TYPE since odbc 4.0
-    Char = 1,
-    Numeric = 2,
-    Decimal = 3,
-    /// Exact numeric value with precision 10 and scale 0 (signed: -2[31] <= n <= 2[31] - 1,
-    /// unsigned: 0 <= n <= 2[32] - 1).  An application uses `SQLGetTypeInfo` or `SQLColAttribute`
-    /// to determine whether a particular data type or a particular column in a result set is
-    /// unsigned.
-    Integer = 4,
-    Smallint = 5,
-    Float = 6,
-    Real = 7,
-    /// Signed, approximate, numeric value with a binary precision 53 (zero or absolute value
-    /// 10[-308] to 10[308]).
-    Double = 8,
-    Datetime = 9,
-    Varchar = 12,
-    #[cfg(feature = "odbc_version_4")]
-    Udt = 17,
-    #[cfg(feature = "odbc_version_4")]
-    Row = 19,
-    #[cfg(feature = "odbc_version_4")]
-    Array = 50,
-    #[cfg(feature = "odbc_version_4")]
-    Multiset = 55,
-
-    // one-parameter shortcuts for date/time data types
-    Date = 91,
-    Time = 92,
-    /// Year, month, day, hour, minute, and second fields, with valid values as defined for the DATE
-    /// and TIME data types.
-    Timestamp = 93,
-    #[cfg(feature = "odbc_version_4")]
-    TimeWithTimezone = 94,
-    #[cfg(feature = "odbc_version_4")]
-    TimestampWithTimezone = 95,
-
-    //SQL extended datatypes:
-    ExtTimeOrInterval = 10,
-    ExtTimestamp = 11,
-    ExtLongVarchar = -1,
-    ExtBinary = -2,
-    ExtVarBinary = -3,
-    ExtLongVarBinary = -4,
-    ExtBigInt = -5,
-    ExtTinyInt = -6,
-    ExtBit = -7,
-    ExtWChar = -8,
-    ExtWVarChar = -9,
-    ExtWLongVarChar = -10,
-    ExtGuid = -11,
-    SsVariant = -150,
-    SsUdt = -151,
-    SsXml = -152,
-    SsTable = -153,
-    SsTime2 = -154,
-    SsTimestampOffset = -155,
 }
 
 /// Represented in C headers as SQLSMALLINT

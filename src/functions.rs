@@ -1,8 +1,8 @@
 use crate::{
-    BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, DriverConnectOption,
+    BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, Desc, DriverConnectOption,
     EnvironmentAttribute, FetchOrientation, FreeStmtOption, HDbc, HDesc, HEnv, HStmt, HWnd, Handle,
     HandleType, InfoType, Integer, Len, Nullable, ParamType, Pointer, RetCode, SmallInt,
-    SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar, Desc,
+    SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
 };
 
 // static linking is not currently supported here for windows

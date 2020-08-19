@@ -85,7 +85,6 @@ pub enum Desc {
     UserDefinedTypeName = 1028,
 
     // Extended Descriptors
-
     /// `SQL_DESC_ARRAY_SIZE`
     ArraySize = 20,
     /// `SQL_DESC_ARRAY_STATUS_PTR`

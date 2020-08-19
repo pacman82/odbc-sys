@@ -1,5 +1,5 @@
 #[repr(C)]
-#[derive(Debug,  PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Interval {
     /// SQL_IS_YEAR
     Year = 1,

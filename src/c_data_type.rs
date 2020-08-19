@@ -67,7 +67,6 @@ pub enum CDataType {
     SsTimestampOffset = C_TYPES_EXTENDED + 1,
 }
 
-
 #[cfg(windows)]
 pub use CDataType::ULong as UBigInt;
 #[cfg(not(windows))]
