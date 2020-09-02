@@ -35,12 +35,19 @@ pub enum CDataType {
     // SQL_C_SHORT = 5,
     Float = 7,
     Double = 8,
+
+    // Used in Odbc2.x Odbc3.x uses TypeDate instead.
     Date = 9,
+    // Used in Odbc2.x Odbc3.x uses TypeTime instead.
     Time = 10,
+    // Used in Odbc2.x Odbc3.x uses TypeTimeTimestamp instead.
     TimeStamp = 11,
 
+    /// SQL_TYPE_DATE
     TypeDate = 91,
+    /// SQL_TYPE_TIME
     TypeTime = 92,
+    /// SQL_TYPE_TIMESTAMP
     TypeTimestamp = 93,
     #[cfg(feature = "odbc_version_4")]
     TypeTimeWithTimezone = 94,

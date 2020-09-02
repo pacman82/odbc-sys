@@ -53,6 +53,7 @@ pub type Integer = i32;
 pub type UInteger = u32;
 pub type Pointer = *mut c_void;
 pub type Char = u8;
+pub type SChar = i8;
 pub type WChar = u16;
 
 #[cfg(target_pointer_width = "64")]

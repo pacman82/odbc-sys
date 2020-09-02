@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.12.1
+------
+
+* A type alias for `SChar`.
+
 0.12.0
 ------
 
