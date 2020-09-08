@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.12.4
+------
+
+* Derive `Default` for `Numeric`.
+
 0.12.3
 ------
 
