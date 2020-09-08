@@ -415,6 +415,7 @@ pub enum CompletionType {
 
 pub const MAX_NUMERIC_LEN: usize = 16;
 #[repr(C)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Numeric
 {
 	precision: Char,

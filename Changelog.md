@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.12.3
+------
+
+* Derive `Debug`, `PartialEq`, `Eq`, `Clone` and `Copy` for `Numeric`.
+
 0.12.2
 ------
 
