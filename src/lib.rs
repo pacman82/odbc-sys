@@ -412,3 +412,14 @@ pub enum CompletionType {
     Commit = 0,
     Rollback = 1,
 }
+
+pub const MAX_NUMERIC_LEN: usize = 16;
+#[repr(C)]
+pub struct Numeric
+{
+	precision: Char,
+    scale: SChar,
+    /// 1 if positive, 0 if negative
+	sign: Char,
+	val: [Char; MAX_NUMERIC_LEN],
+}

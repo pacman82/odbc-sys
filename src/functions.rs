@@ -763,4 +763,15 @@ extern "system" {
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `INVALID_HANDLE`, or `ERROR`.
     pub fn SQLRowCount(hstmt: HStmt, row_count: *mut Len) -> SqlReturn;
+
+    /// Allows an application to send data for a parameter or column to the driver at statement
+    /// execution time. This function can be used to send character or binary data values in parts
+    /// to a column with a character, binary, or data source-specific data type (for example,
+    /// parameters of the SQL_LONGVARBINARY or SQL_LONGVARCHAR types). SQLPutData supports binding
+    /// to a Unicode C data type, even if the underlying driver does not support Unicode data.
+    ///
+    /// # Returns
+    ///
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `STILL_EXECUTING`, `ERROR`, or `INVALID_HANDLE`.
+    pub fn SQLPutData(hstmt: HStmt, data: Pointer, str_len_or_ind: Len) -> SqlReturn;
 }

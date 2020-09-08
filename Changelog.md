@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.12.2
+------
+
+* Adds `SQLPutData`.
+* Adds `Numeric`.
+
 0.12.1
 ------
 
