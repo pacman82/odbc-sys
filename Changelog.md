@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.12.5
+------
+
+* `Numeric` members now all public.
+
 0.12.4
 ------
 

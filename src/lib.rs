@@ -418,9 +418,9 @@ pub const MAX_NUMERIC_LEN: usize = 16;
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub struct Numeric
 {
-	precision: Char,
-    scale: SChar,
+	pub precision: Char,
+    pub scale: SChar,
     /// 1 if positive, 0 if negative
-	sign: Char,
-	val: [Char; MAX_NUMERIC_LEN],
+	pub sign: Char,
+	pub val: [Char; MAX_NUMERIC_LEN],
 }
