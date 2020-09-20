@@ -600,8 +600,60 @@ extern "system" {
 
     /// Returns the current setting of a statement attribute.
     ///
+    /// A call to `SQLGetStmtAttr` returns in `value` the value of the statement attribute specified
+    /// in `attribute`. That value can either be a `ULen` value or a null-terminated character
+    /// string. If the value is a `ULen` value, some drivers may only write the lower 32-bit or
+    /// 16-bit of a buffer and leave the higher-order bit unchanged. Therefore, applications should
+    /// use a buffer of `ULen and initialize the value to 0 before calling this function. Also, the
+    /// `buffer_length` and `string_length` arguments are not used. If the value is a
+    /// null-terminated string, the application specifies the maximum length of that string in the
+    /// `buffer_length` argument, and the driver returns the length of that string in the
+    /// `string_length` buffer.
+    ///
+    /// To allow applications calling `SQLGetStmtAttr` to work with ODBC 2.x drivers, a call to
+    /// `SQLGetStmtAttr` is mapped in the Driver Manager to SQLGetStmtOption.
+    /// The following statement attributes are read-only, so can be retrieved by `SQLGetStmtAttr`,
+    /// but not set by SQLSetStmtAttr:
+    ///
+    /// * `StatementAttribute::ImpParamDesc`
+    /// * `StatementAttribute::ImpRowDesc`
+    /// * `StatementAttribute::RowNumber`
+    ///
     /// # Returns
-    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`
+    ///
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
+    pub fn SQLGetStmtAttr(
+        hstmt: HStmt,
+        attribute: StatementAttribute,
+        value: Pointer,
+        buffer_length: Integer,
+        string_length: *mut Integer,
+    ) -> SqlReturn;
+
+    /// Returns the current setting of a statement attribute.
+    ///
+    /// A call to `SQLGetStmtAttr` returns in `value` the value of the statement attribute specified
+    /// in `attribute`. That value can either be a `ULen` value or a null-terminated character
+    /// string. If the value is a `ULen` value, some drivers may only write the lower 32-bit or
+    /// 16-bit of a buffer and leave the higher-order bit unchanged. Therefore, applications should
+    /// use a buffer of `ULen and initialize the value to 0 before calling this function. Also, the
+    /// `buffer_length` and `string_length` arguments are not used. If the value is a
+    /// null-terminated string, the application specifies the maximum length of that string in the
+    /// `buffer_length` argument, and the driver returns the length of that string in the
+    /// `string_length` buffer.
+    ///
+    /// To allow applications calling `SQLGetStmtAttr` to work with ODBC 2.x drivers, a call to
+    /// `SQLGetStmtAttr` is mapped in the Driver Manager to SQLGetStmtOption.
+    /// The following statement attributes are read-only, so can be retrieved by `SQLGetStmtAttr`,
+    /// but not set by SQLSetStmtAttr:
+    ///
+    /// * `StatementAttribute::ImpParamDesc`
+    /// * `StatementAttribute::ImpRowDesc`
+    /// * `StatementAttribute::RowNumber`
+    ///
+    /// # Returns
+    ///
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
     pub fn SQLGetStmtAttrW(
         handle: HStmt,
         attribute: StatementAttribute,
@@ -775,36 +827,17 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `STILL_EXECUTING`, `ERROR`, or `INVALID_HANDLE`.
     pub fn SQLPutData(hstmt: HStmt, data: Pointer, str_len_or_ind: Len) -> SqlReturn;
 
-    /// Returns the current setting of a statement attribute.
-    ///
-    /// A call to `SQLGetStmtAttr` returns in `value` the value of the statement attribute specified
-    /// in `attribute`. That value can either be a `ULen` value or a null-terminated character
-    /// string. If the value is a `ULen` value, some drivers may only write the lower 32-bit or
-    /// 16-bit of a buffer and leave the higher-order bit unchanged. Therefore, applications should
-    /// use a buffer of `ULen and initialize the value to 0 before calling this function. Also, the
-    /// `buffer_length` and `string_length` arguments are not used. If the value is a
-    /// null-terminated string, the application specifies the maximum length of that string in the
-    /// `buffer_length` argument, and the driver returns the length of that string in the
-    /// `string_length` buffer.
-    ///
-    /// To allow applications calling `SQLGetStmtAttr` to work with ODBC 2.x drivers, a call to
-    /// `SQLGetStmtAttr` is mapped in the Driver Manager to SQLGetStmtOption.
-    /// The following statement attributes are read-only, so can be retrieved by `SQLGetStmtAttr`,
-    /// but not set by SQLSetStmtAttr:
-    ///
-    /// * `StatementAttribute::ImpParamDesc`
-    /// * `StatementAttribute::ImpRowDesc`
-    /// * `StatementAttribute::RowNumber`
+    /// Sets the value of a single field of a descriptor record.
     ///
     /// # Returns
     ///
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
-    pub fn SQLGetStmtAttr(
-        hstmt: HStmt,
-        attribute: StatementAttribute,
+    pub fn SQLSetDescField(
+        hdesc: HDesc,
+        rec_number: SmallInt,
+        field_identifier: SmallInt,
         value: Pointer,
         buffer_length: Integer,
-        string_length: *mut Integer,
     ) -> SqlReturn;
 
     /// Sets the value of a single field of a descriptor record.
@@ -812,7 +845,7 @@ extern "system" {
     /// # Returns
     ///
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
-    pub fn SQLSetDescField(
+    pub fn SQLSetDescFieldW(
         hdesc: HDesc,
         rec_number: SmallInt,
         field_identifier: SmallInt,

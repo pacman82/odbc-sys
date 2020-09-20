@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.13.1
+------
+
+* Adds function `SQLSetDescFieldW`.
+
 0.13.0
 ------
 
