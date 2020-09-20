@@ -248,19 +248,6 @@ pub struct SsTimestampOffset {
     pub timezone_minute: SmallInt,
 }
 
-/// Statement attributes for `SQLSetStmtAttr`
-#[repr(i32)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum StatementAttribute {
-    AsyncEnable = 4,
-    ParamBindType = 18,
-    ParamsetSize = 22,
-    RowBindType = 5,
-    RowArraySize = 27,
-    RowsFetchedPtr = 26,
-    AsyncStmtEvent = 29,
-}
-
 /// Connection attributes for `SQLSetConnectAttr`
 #[repr(i32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -418,7 +405,8 @@ pub const MAX_NUMERIC_LEN: usize = 16;
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub struct Numeric
 {
-	pub precision: Char,
+    pub precision: Char,
+    /// Number of decimal digits to the right of the decimal point.
     pub scale: SChar,
     /// 1 if positive, 0 if negative
 	pub sign: Char,

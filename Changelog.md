@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.13.0
+------
+
+* Rewrites enumeration `StatementAttribute`.
+* Adds function `SQLGetStmtAttr`.
+* Adds function `SQLSetDescField`.
+
 0.12.5
 ------
 
