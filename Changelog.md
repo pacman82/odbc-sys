@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.14.0
+------
+
+* `field_identifier` parameter type in `SQLSetDescField` and `SQLSetDescFieldW` changed to `Desc`.
+
 0.13.1
 ------
 

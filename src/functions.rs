@@ -526,7 +526,7 @@ extern "system" {
     pub fn SQLGetDescFieldW(
         descriptor_handle: HDesc,
         record_number: SmallInt,
-        field_identifier: SmallInt,
+        field_identifier: Desc,
         value_ptr: Pointer,
         buffer_length: Integer,
         string_length_ptr: *mut Integer,
@@ -835,7 +835,7 @@ extern "system" {
     pub fn SQLSetDescField(
         hdesc: HDesc,
         rec_number: SmallInt,
-        field_identifier: SmallInt,
+        field_identifier: Desc,
         value: Pointer,
         buffer_length: Integer,
     ) -> SqlReturn;
@@ -848,7 +848,7 @@ extern "system" {
     pub fn SQLSetDescFieldW(
         hdesc: HDesc,
         rec_number: SmallInt,
-        field_identifier: SmallInt,
+        field_identifier: Desc,
         value: Pointer,
         buffer_length: Integer,
     ) -> SqlReturn;
