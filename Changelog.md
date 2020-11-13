@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.15.0
+------
+
+* `SQLDescribeParam` signature changed. The type of the last parameter has been changed to `*mut Nullable`.
+* `CDataType` has new Variants `Ard` and `Apd`.
+
 0.14.0
 ------
 
