@@ -7,6 +7,13 @@ pub const C_TYPES_EXTENDED: i16 = 0x04000;
 #[repr(i16)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum CDataType {
+
+    /// SQL_ARD_TYPE
+    Ard = -99,
+
+    /// SQL_APD_TYPE
+    Apd = -100,
+
     UTinyInty = -28,
     UBigInt = -27,
     STinyInt = -26,
