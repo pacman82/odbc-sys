@@ -741,6 +741,7 @@ extern "system" {
     /// This information is also available in the fields of the IPD.
     ///
     /// # Returns
+    ///
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `ERROR`, or
     /// `INVALID_HANDLE`.
     pub fn SQLDescribeParam(
@@ -749,7 +750,7 @@ extern "system" {
         data_type_ptr: *mut SqlDataType,
         parameter_size_ptr: *mut ULen,
         decimal_digits_ptr: *mut SmallInt,
-        nullable_ptr: *mut SmallInt,
+        nullable_ptr: *mut Nullable,
     ) -> SqlReturn;
 
     /// Sets attributes related to a statement.
