@@ -56,15 +56,8 @@ pub type Char = u8;
 pub type SChar = i8;
 pub type WChar = u16;
 
-#[cfg(target_pointer_width = "64")]
-pub type Len = i64;
-#[cfg(target_pointer_width = "32")]
-pub type Len = Integer;
-
-#[cfg(target_pointer_width = "64")]
-pub type ULen = u64;
-#[cfg(target_pointer_width = "32")]
-pub type ULen = UInteger;
+pub type Len = isize;
+pub type ULen = usize;
 
 pub type HWnd = Pointer;
 

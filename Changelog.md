@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.16.0
+------
+
+* `ULen` is now a type alias for `usize`.
+* `Len` is now a type alias for `isize`.
+
+Both changes do not change binary size of these on any platform, but are more likely to result in portable downstream code.
+
 0.15.0
 ------
 
