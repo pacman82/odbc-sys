@@ -55,11 +55,4 @@ impl SqlDataType {
     pub const EXT_W_VARCHAR: SqlDataType = SqlDataType(-9);
     pub const EXT_W_LONG_VARCHAR: SqlDataType = SqlDataType(-10);
     pub const EXT_GUID: SqlDataType = SqlDataType(-11);
-
-    pub const SS_VARIANT: SqlDataType = SqlDataType(-150);
-    pub const SS_UDT: SqlDataType = SqlDataType(-151);
-    pub const SS_XML: SqlDataType = SqlDataType(-152);
-    pub const SS_TABLE: SqlDataType = SqlDataType(-153);
-    pub const SS_TIME_2: SqlDataType = SqlDataType(-154);
-    pub const SS_TIMESTAMP_OFFSET: SqlDataType = SqlDataType(-155);
 }

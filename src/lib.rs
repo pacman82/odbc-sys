@@ -75,7 +75,6 @@ pub const SQLSTATE_SIZEW: usize = 10;
 // Special SQLGetData indicator values
 pub const NULL_DATA: Len = -1;
 pub const NO_TOTAL: Len = -4;
-pub const SS_LENGTH_UNLIMITED: ULen = 0;
 
 /// SQL Free Statement options
 #[repr(u16)]
@@ -214,31 +213,6 @@ pub struct Guid {
     pub d2: u16,
     pub d3: u16,
     pub d4: [u8; 8],
-}
-
-/// SQL_SS_TIME2_STRUCT
-#[repr(C)]
-#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
-pub struct SsTime2 {
-    pub hour: USmallInt,
-    pub minute: USmallInt,
-    pub second: USmallInt,
-    pub fraction: UInteger,
-}
-
-/// SQL_SS_TIMESTAMPOFFSET_STRUCT
-#[repr(C)]
-#[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
-pub struct SsTimestampOffset {
-    pub year: SmallInt,
-    pub month: USmallInt,
-    pub day: USmallInt,
-    pub hour: USmallInt,
-    pub minute: USmallInt,
-    pub second: USmallInt,
-    pub fraction: UInteger,
-    pub timezone_hour: SmallInt,
-    pub timezone_minute: SmallInt,
 }
 
 /// Connection attributes for `SQLSetConnectAttr`
