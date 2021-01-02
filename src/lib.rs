@@ -10,7 +10,7 @@
 
 pub use self::{
     attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
-    info_type::*, interval::*, nullable::*, param_type::*, sql_data_type::*, sqlreturn::*,
+    info_type::*, interval::*, nullability::*, param_type::*, sql_data_type::*, sqlreturn::*,
 };
 use std::os::raw::{c_int, c_void};
 
@@ -22,7 +22,7 @@ mod fetch_orientation;
 mod functions;
 mod info_type;
 mod interval;
-mod nullable;
+mod nullability;
 mod param_type;
 mod sql_data_type;
 mod sqlreturn;
@@ -370,12 +370,11 @@ pub enum CompletionType {
 pub const MAX_NUMERIC_LEN: usize = 16;
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
-pub struct Numeric
-{
+pub struct Numeric {
     pub precision: Char,
     /// Number of decimal digits to the right of the decimal point.
     pub scale: SChar,
     /// 1 if positive, 0 if negative
-	pub sign: Char,
-	pub val: [Char; MAX_NUMERIC_LEN],
+    pub sign: Char,
+    pub val: [Char; MAX_NUMERIC_LEN],
 }

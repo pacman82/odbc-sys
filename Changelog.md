@@ -5,6 +5,7 @@ Changelog
 ------
 
 * Remove constants and types specific to Microsoft SQL Server.
+
   * `SS_LENGTH_UNLIMITED`
   * `SsTime2`
   * `SsTimestampOffset`
@@ -15,7 +16,8 @@ Changelog
   * `SS_TIME_2`
   * `SS_TIMESTAMP_OFFSET`
 
-  If we would reintroduce them in this crate it would be behind a feature flag.
+* Renames `CDataType::UTinyInty` into `CDataType::UTinyInt`.
+* Renames `Nullable` into `Nullability`.
 
 0.16.0
 ------

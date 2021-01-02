@@ -116,7 +116,6 @@ pub enum StatementAttribute {
     CursorSensitivity = -2,
 
     // Extensions
-
     /// SQL_ATTR_ASYNC_ENABLE
     AsyncEnable = 4,
     /// SQL_ATTR_CONCURRENCY
