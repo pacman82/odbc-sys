@@ -10,13 +10,14 @@
 pub struct SqlReturn(pub i16);
 
 impl SqlReturn {
-    /// Function failed due to an invalid environment, connection, statement, or descriptor handle
+    /// `SQL_INVALID_HANDLE`; Function failed due to an invalid environment, connection, statement,
+    /// or descriptor handle.
     ///
     /// This indicates a programming error. No additional information is available from
     /// `SQLGetDiagRec` or `SQLGetDiagField`. This code is returned only when the handle is a null
     /// pointer or is the wrong type, such as when a statement handle is passed for an argument a
     /// connection handle.
-    pub const INVALID_HANDLE: SqlReturn = SqlReturn(-1);
+    pub const INVALID_HANDLE: SqlReturn = SqlReturn(-2);
 
     /// Function failed
     ///

@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.17.1
+------
+
+* Fix: `SqlReturn::INVALID_HANDLE` is now correctly set to `-2`.
+
 0.17.0
 ------
 
