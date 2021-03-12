@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.17.2
+------
+
+* Introduce `iodbc` feature for linking against iodbc on OS-X.
+
 0.17.1
 ------
 
