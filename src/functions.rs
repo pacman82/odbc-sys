@@ -7,8 +7,10 @@ use crate::{
 
 // static linking is not currently supported here for windows
 #[cfg_attr(windows, link(name = "odbc32"))]
-#[cfg_attr(all(not(windows), not(r#static)), link(name = "odbc"))]
-#[cfg_attr(all(not(windows), r#static), link(name = "odbc", kind = "static"))]
+#[cfg_attr(all(not(windows), not(feature = "static"), not(feature = "iodbc")), link(name = "odbc"))]
+#[cfg_attr(all(not(windows), feature = "static", not(feature = "iodbc")), link(name = "odbc", kind = "static"))]
+#[cfg_attr(all(not(windows), not(feature = "static"), feature = "iodbc"), link(name = "iodbc"))]
+#[cfg_attr(all(not(windows), feature = "static", feature = "iodbc"), link(name = "iodbc", kind = "static"))]
 extern "system" {
     /// Allocates an environment, connection, statement, or descriptor handle.
     ///

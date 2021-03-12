@@ -20,6 +20,11 @@ Design Goals
 * As it is as of now unlikely to happen that anyone is writing ODBC 2.0 applications in Rust
   therefore deprecated symbols like 'SQLAllocEnv' have been left out intentionally.
 
+Linking
+-------
+
+This library will link against `odbc32.dll` (preinstalled) on Windows systems. On Linux and OS-X it links against `libodbc.so` by default. This is typically provided by [unix-odbc](http://www.unixodbc.org/). Using the `--feature iodbc` you can also link against `libiodbc.so`. This may be interessting if you are trying to connect to some older data sources on OS-X.
+
 Current State
 -------------
 
