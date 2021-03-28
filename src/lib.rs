@@ -64,8 +64,8 @@ pub type HWnd = Pointer;
 pub type RetCode = i16;
 
 // flags for null-terminated string
-pub const NTS: SmallInt = -3;
-pub const NTSL: Integer = -3;
+pub const NTS: isize = -3;
+pub const NTSL: isize = -3;
 
 /// Maximum message length
 pub const MAX_MESSAGE_LENGTH: SmallInt = 512;

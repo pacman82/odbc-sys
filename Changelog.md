@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.18.0
+------
+
+* Type of `NTS` and `NTSL` is now `isize`.
+
 0.17.2
 ------
 
