@@ -10,7 +10,8 @@
 
 pub use self::{
     attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
-    info_type::*, interval::*, nullability::*, param_type::*, sql_data_type::*, sqlreturn::*,
+    indicator::*, info_type::*, interval::*, nullability::*, param_type::*, sql_data_type::*,
+    sqlreturn::*,
 };
 use std::os::raw::{c_int, c_void};
 
@@ -20,6 +21,7 @@ mod c_data_type;
 mod desc;
 mod fetch_orientation;
 mod functions;
+mod indicator;
 mod info_type;
 mod interval;
 mod nullability;
@@ -71,10 +73,6 @@ pub const NTSL: isize = -3;
 pub const MAX_MESSAGE_LENGTH: SmallInt = 512;
 pub const SQLSTATE_SIZE: usize = 5;
 pub const SQLSTATE_SIZEW: usize = 10;
-
-// Special SQLGetData indicator values
-pub const NULL_DATA: Len = -1;
-pub const NO_TOTAL: Len = -4;
 
 /// SQL Free Statement options
 #[repr(u16)]

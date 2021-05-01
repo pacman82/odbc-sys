@@ -1,6 +1,12 @@
 Changelog
 =========
 
+0.18.1
+------
+
+* Add `DATA_AT_EXEC`
+* Add `fn len_data_at_exec`
+
 0.18.0
 ------
 
