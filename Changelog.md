@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.18.2
+------
+
+* Add `SQLParamData`
+
 0.18.1
 ------
 

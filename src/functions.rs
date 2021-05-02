@@ -867,4 +867,16 @@ extern "system" {
         value: Pointer,
         buffer_length: Integer,
     ) -> SqlReturn;
+
+    /// Used together with [`SQLPutData`] to supply parameter data at statement execution time, and
+    /// with [`SQLGetData`] to retrieve streamed output parameter data.
+    ///
+    /// # Returns
+    ///
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `NEED_DATA`, `NO_DATA`, `STILL_EXECUTING`, `ERROR`,
+    /// `INVALID_HANDLE`, or `PARAM_DATA_AVAILABLE`.
+    pub fn SQLParamData(
+        hstmt: HStmt,
+        value_out: * mut Pointer,
+    ) -> SqlReturn;
 }
