@@ -7,18 +7,17 @@ pub enum EnvironmentAttribute {
     OdbcVersion = 200,
     ConnectionPooling = 201,
     CpMatch = 202,
-    // This attribute was commented out because there is no mention of it in the ODBC
-    // specification nor does this attribute exist in unixODBC or iODBC implementations.
-    // This attribute exists in Microsoft implementation only and it's usage is unclear.
+    // This attribute was commented out because there is no mention of it in the ODBC specification
+    // nor does this attribute exist in unixODBC or iODBC implementations. This attribute exists in
+    // Microsoft implementation only and it's usage is unclear.
     // For private driver manager
-    //SQL_ATTR_APPLICATION_KEY = 203,
+    // SQL_ATTR_APPLICATION_KEY = 203,
     OutputNts = 10001,
 }
 
 /// ODBC verions
 ///
-/// Possible values for `OdbcVersion` attribute set with `SQLSetEnvAttr` to
-/// declare ODBC version
+/// Possible values for `OdbcVersion` attribute set with `SQLSetEnvAttr` to declare ODBC version
 #[repr(i32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AttrOdbcVersion {
@@ -38,8 +37,8 @@ impl From<AttrOdbcVersion> for Pointer {
 }
 /// Connection pool configuration
 ///
-/// Possible values for `ConnectionPooling` attribute set with `SQLSetEnvAttr` to define
-/// which pooling scheme will be used
+/// Possible values for `ConnectionPooling` attribute set with `SQLSetEnvAttr` to define which
+/// pooling scheme will be used
 #[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AttrConnectionPooling {
@@ -64,8 +63,8 @@ impl From<AttrConnectionPooling> for Pointer {
 
 /// Matching of pooled connections
 ///
-/// Possible values for `CpMatch` attribute set with `SQLSetEnvAttr` to define
-/// which connection attributes must match for a connection returned from the pool
+/// Possible values for `CpMatch` attribute set with `SQLSetEnvAttr` to define which connection
+/// attributes must match for a connection returned from the pool
 #[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AttrCpMatch {

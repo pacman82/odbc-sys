@@ -875,8 +875,5 @@ extern "system" {
     ///
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `NEED_DATA`, `NO_DATA`, `STILL_EXECUTING`, `ERROR`,
     /// `INVALID_HANDLE`, or `PARAM_DATA_AVAILABLE`.
-    pub fn SQLParamData(
-        hstmt: HStmt,
-        value_out: * mut Pointer,
-    ) -> SqlReturn;
+    pub fn SQLParamData(hstmt: HStmt, value_out: *mut Pointer) -> SqlReturn;
 }
