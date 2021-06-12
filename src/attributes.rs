@@ -38,13 +38,23 @@ impl From<AttrOdbcVersion> for Pointer {
 /// Connection pool configuration
 ///
 /// Possible values for `ConnectionPooling` attribute set with `SQLSetEnvAttr` to define which
-/// pooling scheme will be used
+/// pooling scheme will be used.
+///
+/// See: <https://docs.microsoft.com/en-us/sql/odbc/reference/syntax/sqlsetenvattr-function>
 #[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AttrConnectionPooling {
+    /// Connection pooling is turned off. This is the default.
     Off = 0,
+    /// A single connection pool is supported for each driver. Every connection in a pool is
+    /// associated with one driver.
     OnePerDriver = 1,
+    /// A single connection pool is supported for each environment. Every connection in a pool is
+    /// associated with one environment.
     OnePerHenv = 2,
+    /// Use the connection-pool awareness feature of the driver, if it is available. If the driver
+    /// does not support connection-pool awareness, `DriverAware` is ignored and `OnePerHenv` is
+    /// used.
     DriverAware = 3,
 }
 
@@ -61,14 +71,18 @@ impl From<AttrConnectionPooling> for Pointer {
     }
 }
 
-/// Matching of pooled connections
+/// Determines how a connection is chosen from a connection pool.
 ///
-/// Possible values for `CpMatch` attribute set with `SQLSetEnvAttr` to define which connection
+/// Possible values for `CpMatch` attribute set with [`crate::SQLSetEnvAttr`] to define which connection
 /// attributes must match for a connection returned from the pool
 #[repr(u32)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum AttrCpMatch {
+    /// Only connections that exactly match the connection options in the call and the connection
+    /// attributes set by the application are reused. This is the default.
     Strict = 0,
+    /// Connections with matching connection string keywords can be used. Keywords must match, but
+    /// not all connection attributes must match.
     Relaxed = 1,
 }
 

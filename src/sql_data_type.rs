@@ -8,8 +8,8 @@ impl SqlDataType {
     pub const CHAR: SqlDataType = SqlDataType(1);
     pub const NUMERIC: SqlDataType = SqlDataType(2);
     pub const DECIMAL: SqlDataType = SqlDataType(3);
-    /// Exact numeric value with precision 10 and scale 0 (signed: -2[31] <= n <= 2[31] - 1,
-    /// unsigned: 0 <= n <= 2[32] - 1).  An application uses `SQLGetTypeInfo` or `SQLColAttribute`
+    /// Exact numeric value with precision 10 and scale 0 (signed: `-2[31] <= n <= 2[31] - 1`,
+    /// unsigned: `0 <= n <= 2[32] - 1`).  An application uses `SQLGetTypeInfo` or `SQLColAttribute`
     /// to determine whether a particular data type or a particular column in a result set is
     /// unsigned.
     pub const INTEGER: SqlDataType = SqlDataType(4);
@@ -17,7 +17,7 @@ impl SqlDataType {
     pub const FLOAT: SqlDataType = SqlDataType(6);
     pub const REAL: SqlDataType = SqlDataType(7);
     /// Signed, approximate, numeric value with a binary precision 53 (zero or absolute value
-    /// 10[-308] to 10[308]).
+    /// `10[-308]` to `10[308]`).
     pub const DOUBLE: SqlDataType = SqlDataType(8);
     pub const DATETIME: SqlDataType = SqlDataType(9);
     pub const VARCHAR: SqlDataType = SqlDataType(12);

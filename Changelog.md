@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.18.3
+------
+
+* Improved documentation connection pooling.
+
 0.18.2
 ------
 
