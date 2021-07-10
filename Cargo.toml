@@ -1,7 +1,7 @@
 [package]
 name = "odbc-sys"
-version = "0.18.3"
-authors = ["Markus Klein <markus-klein@live.de>"]
+version = "0.18.4"
+authors = ["Markus Klein"]
 license = "MIT"
 description = "ODBC ffi bindings"
 repository = "https://github.com/pacman82/odbc-sys"

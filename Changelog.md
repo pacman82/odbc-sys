@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.18.4
+------
+
+* Check for overflow in `len_data_at_exec`.
+
 0.18.3
 ------
 
