@@ -18,5 +18,5 @@ pub const DATA_AT_EXEC: Len = -2;
 pub fn len_data_at_exec(length: Len) -> Len {
     const SQL_LEN_DATA_AT_EXEC_OFFSET: Len = -100;
 
-    -(length) + SQL_LEN_DATA_AT_EXEC_OFFSET
+    (-length).checked_add(SQL_LEN_DATA_AT_EXEC_OFFSET).unwrap()
 }
