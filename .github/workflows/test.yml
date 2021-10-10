@@ -17,6 +17,8 @@ jobs:
         run: cargo build --verbose
       - name: Run tests
         run: cargo test --verbose
+      - name: Run tests with static linking
+        run: cargo test --verbose --features static ODBC_SYS_STATIC_PATH=/usr/lib/x86_64-linux-gnu/
 
   build-win64:
     name: Build & Test on Windows 64Bit
@@ -51,9 +53,6 @@ jobs:
 
       - name: Run tests
         run: cargo test --verbose
-
-      - name: Run tests with static linking
-        run: cargo test --verbose --features static ODBC_SYS_STATIC_PATH=/usr/lib/x86_64-linux-gnu/
 
   build-osx:
     name: Build & Test on OS-X
