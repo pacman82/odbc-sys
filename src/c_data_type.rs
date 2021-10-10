@@ -76,7 +76,7 @@ pub enum CDataType {
     IntervalHourToSecond = 112,
     IntervalMinuteToSecond = 113,
 
-    SsTime2 = C_TYPES_EXTENDED + 0,
+    SsTime2 = C_TYPES_EXTENDED,
     SsTimestampOffset = C_TYPES_EXTENDED + 1,
 }
 
