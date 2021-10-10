@@ -1,6 +1,5 @@
 # odbc-sys
 
-[![Build Status](https://travis-ci.org/pacman82/odbc-sys.svg?branch=master)](https://travis-ci.org/pacman82/odbc-sys)
 [![Docs](https://docs.rs/odbc-sys/badge.svg)](https://docs.rs/odbc-sys/)
 [![MIT licensed](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/pacman82/odbc-sys/blob/master/LICENSE)
 [![Published](http://meritbadge.herokuapp.com/odbc-sys)](https://crates.io/crates/odbc-sys)

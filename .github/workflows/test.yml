@@ -17,22 +17,8 @@ jobs:
         run: cargo build --verbose
       - name: Run tests
         run: cargo test --verbose
-      - name: Run tests with static linking
-        run: cargo test --verbose --features static ODBC_SYS_STATIC_PATH=/usr/lib/x86_64-linux-gnu/
-
-  build-linux-static:
-    name: Build & Test with static linking
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Install static libraries unixodbc
-        run: sudo apt-get install -y unixodbc unixodbc-dev
-      - uses: actions/checkout@v2
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests with static linking
-        run: cargo test --verbose --features static ODBC_SYS_STATIC_PATH=/usr/lib/x86_64-linux-gnu/
+      - name: Run tests
+        run: cargo test --verbose
 
   build-win64:
     name: Build & Test on Windows 64Bit
