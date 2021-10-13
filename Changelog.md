@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.19.0
+------
+
+* Update to Rust edition 2018
+
 0.18.4
 ------
 
