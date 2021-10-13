@@ -260,7 +260,7 @@ extern "system" {
         name_length_2: SmallInt,
         table_name: *const Char,
         name_length_3: SmallInt,
-        TableType: *const Char,
+        table_type: *const Char,
         name_length_4: SmallInt,
     ) -> SqlReturn;
 
