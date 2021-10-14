@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.20.0
+------
+
+* Add `StatementAttribute::MetadataId`
+
 0.19.0
 ------
 

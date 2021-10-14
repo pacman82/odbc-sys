@@ -5,6 +5,8 @@ use crate::{
     SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
 };
 
+pub static mut NUM_ENVIRONMENT: u32 = 0;
+
 // static linking is not currently supported here for windows
 #[cfg_attr(windows, link(name = "odbc32"))]
 #[cfg_attr(

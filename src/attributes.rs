@@ -188,7 +188,7 @@ pub enum StatementAttribute {
     /// SQL_ATTR_SAMPLE_SIZE
     SampleSize = 30,
     #[cfg(feature = "odbc_version_4")]
-    ///SQL_ATTR_DYNAMIC_COLUMNS
+    /// SQL_ATTR_DYNAMIC_COLUMNS
     DynamicColumns = 31,
     #[cfg(feature = "odbc_version_4")]
     /// SQL_ATTR_TYPE_EXCEPTION_BEHAVIOR
@@ -196,4 +196,6 @@ pub enum StatementAttribute {
     #[cfg(feature = "odbc_version_4")]
     /// SQL_ATTR_LENGTH_EXCEPTION_BEHAVIOR
     LengthExceptionBehaviour = 33,
+    /// SQL_ATTR_METADATA_ID
+    MetadataId = 10014,
 }
