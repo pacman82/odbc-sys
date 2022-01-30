@@ -1,16 +1,14 @@
 [package]
 name = "odbc-sys"
-version = "0.20.0"
+version = "0.21.0"
 authors = ["Markus Klein"]
 license = "MIT"
 description = "ODBC ffi bindings"
 repository = "https://github.com/pacman82/odbc-sys"
-documentation = "https://docs.rs/odbc-sys/"
-readme = "README.md"
 keywords = ["sql","database","odbc","ffi"]
 build = "build.rs"
 categories = ["external-ffi-bindings", "database"]
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 

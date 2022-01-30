@@ -511,6 +511,26 @@ extern "system" {
     pub fn SQLCopyDesc(source_desc_handle: HDesc, target_desc_handle: HDesc) -> SqlReturn;
 
     /// Returns the current setting of a connection attribute.
+    /// 
+    /// * `buffer_length`: is either buffer length or one of [`crate::IS_POINTER`],
+    ///   [`crate::IS_UINTEGER`], [`crate::IS_INTEGER`], [`crate::IS_USMALLINT`] or
+    ///   [`crate::IS_SMALLINT`].
+    ///
+    /// # Returns
+    /// `SUCCESS`, `ERROR`, `SQL_NO_DATA`, or `INVALID_HANDLE`.
+    pub fn SQLGetConnectAttr(
+        connection_handle: HDbc,
+        attribute: ConnectionAttribute,
+        value_ptr: Pointer,
+        buffer_length: Integer,
+        string_length_ptr: *mut Integer,
+    ) -> SqlReturn;
+
+    /// Returns the current setting of a connection attribute.
+    /// 
+    /// * `buffer_length`: is either buffer length or one of [`crate::IS_POINTER`],
+    ///   [`crate::IS_UINTEGER`], [`crate::IS_INTEGER`], [`crate::IS_USMALLINT`] or
+    ///   [`crate::IS_SMALLINT`].
     ///
     /// # Returns
     /// `SUCCESS`, `ERROR`, `SQL_NO_DATA`, or `INVALID_HANDLE`.

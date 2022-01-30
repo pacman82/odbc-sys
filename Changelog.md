@@ -1,6 +1,13 @@
 Changelog
 =========
 
+0.21.0
+------
+
+* Add `SQLGetConnectAttr`. Previously only wide version had been declared.
+* Removed `enum SqlAttributeStringLength` in favour of constants.
+* Update edition to 2012
+
 0.20.0
 ------
 

@@ -119,22 +119,18 @@ pub enum DriverConnectOption {
     CompleteRequired = 3,
 }
 
-#[repr(i32)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum SqlAttributeStringLength {
-    /// SQL_IS_POINTER
-    Pointer = -4,
-    /// SQL_IS_UINTEGER
-    UInteger = -5,
-    /// SQL_IS_INTEGER
-    Integer = -6,
-    /// SQL_IS_USMALLINT
-    USmallInt = -7,
-    /// SQL_IS_SMALLINT
-    SmallInt = -8,
-}
+// Attribute for string lengths
 
-pub use self::SqlAttributeStringLength::*;
+/// SQL_IS_POINTER
+pub const IS_POINTER: i32 = -4;
+/// SQL_IS_UINTEGER
+pub const IS_UINTEGER: i32 = -5;
+/// SQL_IS_INTEGER
+pub const IS_INTEGER: i32 = -6;
+/// SQL_IS_USMALLINT
+pub const IS_USMALLINT: i32 = -7;
+/// SQL_IS_SMALLINT
+pub const IS_SMALLINT: i32 = -8;
 
 /// SQL_YEAR_MONTH_STRUCT
 #[repr(C)]
