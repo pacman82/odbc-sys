@@ -488,13 +488,27 @@ extern "system" {
         out_buffer_length: *mut SmallInt,
     ) -> SqlReturn;
 
-    /// Returns descriptor information for a column in a result set.
-    /// Descriptor information is returned as a character string,
-    /// a descriptor-dependent value, or an integer value.
+    /// Returns descriptor information for a column in a result set. Descriptor information is
+    /// returned as a character string, a descriptor-dependent value, or an integer value.
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
     pub fn SQLColAttributeW(
+        statement_handle: HStmt,
+        column_number: USmallInt,
+        field_identifier: Desc,
+        character_attribute_ptr: Pointer,
+        buffer_length: SmallInt,
+        string_length_ptr: *mut SmallInt,
+        numeric_attribute_ptr: *mut Len,
+    ) -> SqlReturn;
+
+    /// Returns descriptor information for a column in a result set. Descriptor information is
+    /// returned as a character string, a descriptor-dependent value, or an integer value.
+    ///
+    /// # Returns
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLColAttribute(
         statement_handle: HStmt,
         column_number: USmallInt,
         field_identifier: Desc,

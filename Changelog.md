@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.21.1
+------
+
+* Add `SqlColAttribute`. Previously only `SqlColAttributeW` had been declared.
+
 0.21.0
 ------
 
