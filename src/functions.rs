@@ -620,8 +620,25 @@ extern "system" {
         column_name_length: SmallInt,
     ) -> SqlReturn;
 
-    /// Returns the list of column names in specified tables.
-    /// The driver returns this information as a result set on the specified StatementHandle.
+    /// Returns the list of column names in specified tables. The driver returns this information as
+    /// a result set on the specified StatementHandle.
+    ///
+    /// # Returns
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLColumns(
+        statement_handle: HStmt,
+        catalog_name: *const Char,
+        catalog_name_length: SmallInt,
+        schema_name: *const Char,
+        schema_name_length: SmallInt,
+        table_name: *const Char,
+        table_name_length: SmallInt,
+        column_name: *const Char,
+        column_name_length: SmallInt,
+    ) -> SqlReturn;
+
+    /// Returns the list of column names in specified tables. The driver returns this information as
+    /// a result set on the specified StatementHandle.
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.

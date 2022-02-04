@@ -1,10 +1,15 @@
 Changelog
 =========
 
+0.21.2
+------
+
+* Add `SQLColumns`. Previously only `SQLColumnsW` had been declared.
+
 0.21.1
 ------
 
-* Add `SqlColAttribute`. Previously only `SqlColAttributeW` had been declared.
+* Add `SQLColAttribute`. Previously only `SQLColAttributeW` had been declared.
 
 0.21.0
 ------
