@@ -152,19 +152,18 @@ extern "system" {
     /// Returns the number of columns in a result set
     ///
     /// # Returns
-    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE` or
-    /// `SQL_STILL_EXECUTING`
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE` or `SQL_STILL_EXECUTING`
     pub fn SQLNumResultCols(statement_handle: HStmt, column_count_ptr: *mut SmallInt) -> SqlReturn;
 
     /// Returns the number of parameters in an SQL statement.
     ///
     /// # Returns
-    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE` or
-    /// `SQL_STILL_EXECUTING`
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE` or `SQL_STILL_EXECUTING`
     pub fn SQLNumParams(statement_handle: HStmt, parameter_count_ptr: *mut SmallInt) -> SqlReturn;
 
     /// Determines whether more results are available on a statement
-    /// containing SELECT, UPDATE, INSERT, or DELETE statements and, if so, initializes processing for those results.
+    /// containing SELECT, UPDATE, INSERT, or DELETE statements and, if so, initializes processing
+    /// for those results.
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `SQL_STILL_EXECUTING`, `SQL_NO_DATA`, `ERROR`,

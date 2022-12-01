@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.21.3
+------
+
+* Add `SQLNumParams`
+
 0.21.2
 ------
 
