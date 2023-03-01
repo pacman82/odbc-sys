@@ -754,6 +754,30 @@ extern "system" {
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    pub fn SQLForeignKeys(
+        statement_handle: HStmt,
+        pk_catalog_name: *const WChar,
+        pk_catalog_name_length: SmallInt,
+        pk_schema_name: *const WChar,
+        pk_schema_name_length: SmallInt,
+        pk_table_name: *const WChar,
+        pk_table_name_length: SmallInt,
+        fk_catalog_name: *const WChar,
+        fk_catalog_name_length: SmallInt,
+        fk_schema_name: *const WChar,
+        fk_schema_name_length: SmallInt,
+        fk_table_name: *const WChar,
+        fk_table_name_length: SmallInt,
+    ) -> SqlReturn;
+
+    /// Can return:
+    /// - A list of foreign keys in the specified table (columns in the specified table that refer to primary keys in other tables).
+    /// - A list of foreign keys in other tables that refer to the primary key in the specified table.
+    ///
+    /// The driver returns each list as a result set on the specified statement.
+    ///
+    /// # Returns
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
     pub fn SQLForeignKeysW(
         statement_handle: HStmt,
         pk_catalog_name: *const WChar,
