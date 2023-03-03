@@ -6,7 +6,7 @@ fn main() {
         let static_path =
             std::env::var("ODBC_SYS_STATIC_PATH").unwrap_or_else(|_| "/usr/lib".to_string());
         println!("cargo:rerun-if-env-changed=ODBC_SYS_STATIC_PATH");
-        println!("cargo:rustc-link-search=native={}", static_path);
+        println!("cargo:rustc-link-search=native={static_path}");
         println!("cargo:rustc-link-lib=static=odbc");
         println!("cargo:rustc-link-lib=static=ltdl");
         if cfg!(target_os = "macos") {
@@ -33,6 +33,6 @@ fn main() {
 
 fn print_paths(paths: &str) {
     for path in paths.split(':').filter(|x| !x.is_empty()) {
-        println!("cargo:rustc-link-search=native={}", path)
+        println!("cargo:rustc-link-search=native={path}")
     }
 }
