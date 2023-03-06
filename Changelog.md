@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.21.4
+------
+
+* Add narrow `SQLForeignKeys`
+
 0.21.3
 ------
 

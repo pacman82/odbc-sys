@@ -1,6 +1,6 @@
 [package]
 name = "odbc-sys"
-version = "0.21.3"
+version = "0.21.4"
 authors = ["Markus Klein"]
 license = "MIT"
 description = "ODBC ffi bindings"
