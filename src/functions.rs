@@ -756,17 +756,17 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
     pub fn SQLForeignKeys(
         statement_handle: HStmt,
-        pk_catalog_name: *const WChar,
+        pk_catalog_name: *const Char,
         pk_catalog_name_length: SmallInt,
-        pk_schema_name: *const WChar,
+        pk_schema_name: *const Char,
         pk_schema_name_length: SmallInt,
-        pk_table_name: *const WChar,
+        pk_table_name: *const Char,
         pk_table_name_length: SmallInt,
-        fk_catalog_name: *const WChar,
+        fk_catalog_name: *const Char,
         fk_catalog_name_length: SmallInt,
-        fk_schema_name: *const WChar,
+        fk_schema_name: *const Char,
         fk_schema_name_length: SmallInt,
-        fk_table_name: *const WChar,
+        fk_table_name: *const Char,
         fk_table_name_length: SmallInt,
     ) -> SqlReturn;
 
