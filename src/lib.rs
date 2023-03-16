@@ -274,18 +274,13 @@ pub enum HeaderDiagnosticIdentifier {
 }
 
 #[repr(i32)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub enum AsyncConnectionBehavior {
     /// SQL_ASYNC_DBC_ENABLE_ON
     On = 1,
-    /// SQL_ASYNC_DBC_ENABLE_OFF = 0,
+    /// SQL_ASYNC_DBC_ENABLE_OFF = 0
+    #[default]
     Off = 0,
-}
-
-impl Default for AsyncConnectionBehavior {
-    fn default() -> AsyncConnectionBehavior {
-        AsyncConnectionBehavior::Off
-    }
 }
 
 #[repr(i32)]
