@@ -23,6 +23,11 @@ pub enum InfoType {
     MaxCatalogNameLen = 34,
     MaxTableNameLen = 35,
     // ScrollConcurrency = 43, deprecated in ODBC 3
+    /// `SQL_SCROLL_OPTIONS` C-API places this in the extended header. Lists the supported cursor
+    /// types (forward-only, static, keyset-driven, dynamic, or mixed). All data sources must
+    /// support forward-only cursors. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    ScrollOptions = 44,
     TransactionCapable = 46,
     UserName = 47,
     TransactionIsolationProtocol = 72,
@@ -43,6 +48,42 @@ pub enum InfoType {
     MaxTablesInSelect = 106,
     MaxUserNameLen = 107,
     OuterJoinCapabilities = 115,
+    /// `DYNAMIC_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the fetch types
+    /// supported by scrollable cursors. The bits in the return value correspond to the fetch types
+    /// in SQLFetchScroll. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    DynamicCursorAttributes1 = 144,
+    /// `SQL_DYNAMIC_CURSOR_ATTRIBUTES2` C-API places this in the extended header. Lists whether
+    /// cursors can detect their own updates, deletes, and inserts. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    DynamicCursorAttributes2 = 145,
+    /// `SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the
+    /// fetch types supported by scrollable cursors. The bits in the return value correspond to the
+    /// fetch types in SQLFetchScroll. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    ForwardOnlyCursorAttributes1 = 146,
+    /// `SQL_FORWARD_ONLY_CURSOR_ATTRIBUTES2` C-API places this in the extended header. Lists
+    /// whether cursors can detect their own updates, deletes, and inserts. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    ForwardOnlyCursorAttributes2 = 147,
+    /// `SQL_KEYSET_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the fetch
+    /// types supported by scrollable cursors. The bits in the return value correspond to the fetch
+    /// types in SQLFetchScroll. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    KeysetCursorAttributes1 = 150,
+    /// `SQL_KEYSET_CURSOR_ATTRIBUTES2` C-API places this in the extended header. Lists whether
+    /// cursors can detect their own updates, deletes, and inserts. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    KeysetCursorAttributes2 = 151,
+    /// `SQL_STATIC_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the fetch
+    /// types supported by scrollable cursors. The bits in the return value correspond to the fetch
+    /// types in SQLFetchScroll. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    StaticCursorAttributes1 = 167,
+    /// `SQL_STATIC_CURSOR_ATTRIBUTES2` C-API places this in the extended header. Lists whether
+    /// cursors can detect their own updates, deletes, and inserts. See:
+    /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
+    StaticCursorAttributes2 = 168,
     XopenCliYear = 10000,
     CursorSensitivity = 10001,
     DescribeParameter = 10002,

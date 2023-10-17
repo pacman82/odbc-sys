@@ -531,7 +531,7 @@ extern "system" {
     pub fn SQLCopyDesc(source_desc_handle: HDesc, target_desc_handle: HDesc) -> SqlReturn;
 
     /// Returns the current setting of a connection attribute.
-    /// 
+    ///
     /// * `buffer_length`: is either buffer length or one of [`crate::IS_POINTER`],
     ///   [`crate::IS_UINTEGER`], [`crate::IS_INTEGER`], [`crate::IS_USMALLINT`] or
     ///   [`crate::IS_SMALLINT`].
@@ -547,7 +547,7 @@ extern "system" {
     ) -> SqlReturn;
 
     /// Returns the current setting of a connection attribute.
-    /// 
+    ///
     /// * `buffer_length`: is either buffer length or one of [`crate::IS_POINTER`],
     ///   [`crate::IS_UINTEGER`], [`crate::IS_INTEGER`], [`crate::IS_USMALLINT`] or
     ///   [`crate::IS_SMALLINT`].

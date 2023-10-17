@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.22.0
+------
+
+* Extend `InfoType` to determine cursor capabilities. E.g. `InfoType::ScrollOptions`
+
 0.21.4
 ------
 
