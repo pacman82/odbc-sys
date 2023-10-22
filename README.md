@@ -1,7 +1,7 @@
 # odbc-sys
 
 [![Docs](https://docs.rs/odbc-sys/badge.svg)](https://docs.rs/odbc-sys/)
-[![MIT licensed](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/pacman82/odbc-sys/blob/master/LICENSE)
+[![MIT licensed](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/pacman82/odbc-sys/blob/main/LICENSE)
 [![Published](http://meritbadge.herokuapp.com/odbc-sys)](https://crates.io/crates/odbc-sys)
 
 FFI (Foreign Function Interface) bindings for ODBC (Open Database Connectivity)
