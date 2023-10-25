@@ -11,7 +11,7 @@
 pub use self::{
     attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
     indicator::*, info_type::*, interval::*, nullability::*, param_type::*, sql_data_type::*,
-    sqlreturn::*,
+    sqlreturn::*, set_pos::*,
 };
 use std::os::raw::{c_int, c_void};
 
@@ -26,6 +26,7 @@ mod info_type;
 mod interval;
 mod nullability;
 mod param_type;
+mod set_pos;
 mod sql_data_type;
 mod sqlreturn;
 
@@ -60,10 +61,15 @@ pub type WChar = u16;
 
 pub type Len = isize;
 pub type ULen = usize;
-
 pub type HWnd = Pointer;
-
 pub type RetCode = i16;
+
+/// Row index parameter for [`crate::SQLSetPos`]
+#[cfg(target_pointer_width = "64")]
+pub type SetPosIRow = u64;
+/// Row index parameter for [`crate::SQLSetPos`]
+#[cfg(not(target_pointer_width = "64"))]
+pub type SetPosIRow = i16;
 
 // flags for null-terminated string
 pub const NTS: isize = -3;
