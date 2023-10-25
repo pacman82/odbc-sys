@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.23.0
+------
+
+* Add `InfoType::ActiveEnvironments`
+* Fix Typo `InfoType::MaxDiverConnections` is now `InfoType::MaxDriverConnections`
+
+Thanks to @lfrancke
+
 0.22.0
 ------
 

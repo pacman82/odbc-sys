@@ -48,13 +48,13 @@ pub enum InfoType {
     MaxTablesInSelect = 106,
     MaxUserNameLen = 107,
     OuterJoinCapabilities = 115,
-    /// `ACTIVE_ENVIRONMENTS` C-API places this in the extended header.
-    /// An SQLUSMALLINT value that specifies the maximum number of active environments that the driver can support.
-    /// If there is no specified limit or the limit is unknown, this value is set to zero.
+    /// `SQL_ACTIVE_ENVIRONMENTS` C-API places this in the extended header. A `u16` value that
+    /// specifies the maximum number of active environments that the driver can support. If there is
+    /// no specified limit or the limit is unknown, this value is set to zero.
     ActiveEnvironments = 116,
-    /// `DYNAMIC_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the fetch types
-    /// supported by scrollable cursors. The bits in the return value correspond to the fetch types
-    /// in SQLFetchScroll. See:
+    /// `SQL_DYNAMIC_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the fetch
+    /// types supported by scrollable cursors. The bits in the return value correspond to the fetch
+    /// types in SQLFetchScroll. See:
     /// <https://learn.microsoft.com/sql/odbc/reference/develop-app/determining-cursor-capabilities>
     DynamicCursorAttributes1 = 144,
     /// `SQL_DYNAMIC_CURSOR_ATTRIBUTES2` C-API places this in the extended header. Lists whether
