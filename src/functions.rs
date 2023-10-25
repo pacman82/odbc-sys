@@ -1,8 +1,8 @@
 use crate::{
     BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, Desc, DriverConnectOption,
     EnvironmentAttribute, FetchOrientation, FreeStmtOption, HDbc, HDesc, HEnv, HStmt, HWnd, Handle,
-    HandleType, InfoType, Integer, Len, Nullability, ParamType, Pointer, RetCode, SmallInt,
-    SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
+    HandleType, InfoType, Integer, Len, Lock, Nullability, Operation, ParamType, Pointer, RetCode,
+    SetPosIRow, SmallInt, SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
 };
 
 pub static mut NUM_ENVIRONMENT: u32 = 0;
@@ -739,11 +739,38 @@ extern "system" {
     /// Rowsets can be specified at an absolute or relative position or by bookmark.
     ///
     /// # Returns
-    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
+    /// 
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `STILL_EXECUTING`.
     pub fn SQLFetchScroll(
         statement_handle: HStmt,
         fetch_orientation: FetchOrientation,
         fetch_offset: Len,
+    ) -> SqlReturn;
+
+    /// Sets the cursor position in a rowset and allows an application to refresh, update or delete
+    /// data in the rowset.
+    /// 
+    /// See: <https://learn.microsoft.com/sql/odbc/reference/syntax/sqlsetpos-function>
+    /// 
+    /// # Parameters
+    /// 
+    /// * `statement_handle`: Statement Handle
+    /// * `row_number`: Position of the row in the rowset on which to perform the operation
+    ///   specified with the Operation argument. If `row_number` is 0, the operation applies to
+    ///   every row in the rowset.
+    /// * `operation`: Operation to perform
+    /// * `lock_type`: Specifies how to lock the row after performing the operation specified in the
+    ///   Operation argument.
+    /// 
+    /// # Returns
+    /// 
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `NEED_DATA`, `STILL_EXECUTING`, `ERROR`, or
+    /// `INVALID_HANDLE`.
+    pub fn SQLSetPos(
+        statement_handle: HStmt,
+        row_number: SetPosIRow,
+        operation: Operation,
+        lock_type: Lock,
     ) -> SqlReturn;
 
     /// Can return:
