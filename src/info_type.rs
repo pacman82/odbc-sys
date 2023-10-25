@@ -2,7 +2,7 @@
 #[repr(u16)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum InfoType {
-    MaxDriverConnectinos = 0,
+    MaxDriverConnections = 0,
     MaxConcurrentActivities = 1,
     DataSourceName = 2,
     // FetchDirection = 8, Deprecated in ODBC 3
@@ -48,6 +48,10 @@ pub enum InfoType {
     MaxTablesInSelect = 106,
     MaxUserNameLen = 107,
     OuterJoinCapabilities = 115,
+    /// `ACTIVE_ENVIRONMENTS` C-API places this in the extended header.
+    /// An SQLUSMALLINT value that specifies the maximum number of active environments that the driver can support.
+    /// If there is no specified limit or the limit is unknown, this value is set to zero.
+    ActiveEnvironments = 116,
     /// `DYNAMIC_CURSOR_ATTRIBUTES1` C-API places this in the extended header. Lists the fetch types
     /// supported by scrollable cursors. The bits in the return value correspond to the fetch types
     /// in SQLFetchScroll. See:
