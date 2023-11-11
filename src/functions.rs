@@ -99,7 +99,7 @@ extern "system" {
     pub fn SQLGetDiagRecW(
         handle_type: HandleType,
         handle: Handle,
-        record_rumber: SmallInt,
+        record_number: SmallInt,
         state: *mut WChar,
         native_error_ptr: *mut Integer,
         message_text: *mut WChar,
@@ -116,7 +116,7 @@ extern "system" {
     pub fn SQLGetDiagFieldW(
         handle_type: HandleType,
         handle: Handle,
-        record_rumber: SmallInt,
+        record_number: SmallInt,
         diag_identifier: SmallInt,
         diag_info_ptr: Pointer,
         buffer_length: SmallInt,
@@ -405,7 +405,7 @@ extern "system" {
         parameter_number: USmallInt,
         input_output_type: ParamType,
         value_type: CDataType,
-        parmeter_type: SqlDataType,
+        parameter_type: SqlDataType,
         column_size: ULen,
         decimal_digits: SmallInt,
         parameter_value_ptr: Pointer,
@@ -476,7 +476,7 @@ extern "system" {
         target_type: CDataType,
         target_value: Pointer,
         buffer_length: Len,
-        length_or_indicatior: *mut Len,
+        length_or_indicator: *mut Len,
     ) -> SqlReturn;
 
     /// SQLBrowseConnect supports an iterative method of discovering and enumerating the attributes
