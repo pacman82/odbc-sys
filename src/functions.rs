@@ -987,3 +987,20 @@ extern "system" {
     /// `INVALID_HANDLE`, or `PARAM_DATA_AVAILABLE`.
     pub fn SQLParamData(hstmt: HStmt, value_out: *mut Pointer) -> SqlReturn;
 }
+
+#[link(name = "odbcinst")]
+extern "C" {
+    ///  Gets a list of names of values or data corresponding to a value of the system information.
+    ///
+    /// # Returns
+    ///
+    /// The amount of characters returned (negative indicates an error)
+    pub fn SQLGetPrivateProfileStringW(
+        section: *const WChar,
+        entry: *const WChar,
+        default: *const WChar,
+        ret_buffer: *mut WChar,
+        ret_buffer_size: i32,
+        filename: *const WChar,
+    ) -> i32;
+}
