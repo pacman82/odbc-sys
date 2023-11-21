@@ -113,6 +113,10 @@ pub enum HandleType {
     Dbc = 2,
     Stmt = 3,
     Desc = 4,
+    // Only used between Drivers and Driver Manager to enable connection pooling.
+    // https://learn.microsoft.com/en-us/sql/odbc/reference/develop-driver/developing-connection-pool-awareness-in-an-odbc-driver?view=sql-server-ver16
+    // Defined in sqlspi.h
+    DbcInfoToken = 6
 }
 
 /// Options for `SQLDriverConnect`
