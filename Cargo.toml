@@ -11,6 +11,7 @@ categories = ["external-ffi-bindings", "database"]
 edition = "2021"
 
 [dependencies]
+num_enum = "0.7.1"
 
 [features]
 default = ["odbc_version_3_80"]
@@ -20,4 +21,3 @@ iodbc = []
 odbc_version_3_50 = []
 odbc_version_3_80 = ["odbc_version_3_50"]
 odbc_version_4 = ["odbc_version_3_80"]
-

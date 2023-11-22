@@ -10,9 +10,10 @@
 
 pub use self::{
     attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
-    indicator::*, info_type::*, interval::*, nullability::*, param_type::*, sql_data_type::*,
-    sqlreturn::*, set_pos::*,
+    indicator::*, info_type::*, interval::*, nullability::*, param_type::*, set_pos::*,
+    sql_data_type::*, sqlreturn::*,
 };
+use num_enum::TryFromPrimitive;
 use std::os::raw::{c_int, c_void};
 
 mod attributes;
@@ -107,7 +108,7 @@ pub enum FreeStmtOption {
 
 /// Represented in C headers as SQLSMALLINT
 #[repr(i16)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, TryFromPrimitive)]
 pub enum HandleType {
     Env = 1,
     Dbc = 2,
@@ -116,7 +117,7 @@ pub enum HandleType {
     // Only used between Drivers and Driver Manager to enable connection pooling.
     // https://learn.microsoft.com/en-us/sql/odbc/reference/develop-driver/developing-connection-pool-awareness-in-an-odbc-driver?view=sql-server-ver16
     // Defined in sqlspi.h
-    DbcInfoToken = 6
+    DbcInfoToken = 6,
 }
 
 /// Options for `SQLDriverConnect`

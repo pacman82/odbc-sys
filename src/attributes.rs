@@ -1,8 +1,9 @@
 use crate::Pointer;
+use num_enum::TryFromPrimitive;
 
 /// Governs behaviour of EnvironmentAttribute
 #[repr(i32)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy, TryFromPrimitive)]
 pub enum EnvironmentAttribute {
     OdbcVersion = 200,
     ConnectionPooling = 201,
