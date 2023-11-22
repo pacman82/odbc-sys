@@ -1,6 +1,12 @@
 Changelog
 =========
 
+UNRELEASED
+----------
+
+* Adds `HandleType::try_from(i16)` and `EnvironmentAttribute::try_from(i16)`.
+  This adds the first external dependency to this crate: `num_enum` 
+
 0.24.0
 ------
 
