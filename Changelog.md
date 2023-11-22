@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.24.0
+------
+
+* New handle type `DBC_INFO_TOKEN`.
+
 0.23.1
 ------
 
