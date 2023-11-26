@@ -1,5 +1,10 @@
 Changelog
 =========
+        
+Unreleased
+----------
+
+* Fix Typo `CDataType::TypeTimestampWithTimzone` is now `CDataType::TypeTimestampWithTimezone`
 
 0.24.0
 ------
