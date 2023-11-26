@@ -58,7 +58,7 @@ pub enum CDataType {
     #[cfg(feature = "odbc_version_4")]
     TypeTimeWithTimezone = 94,
     #[cfg(feature = "odbc_version_4")]
-    TypeTimestampWithTimzone = 95,
+    TypeTimestampWithTimezone = 95,
 
     Default = 99,
 
