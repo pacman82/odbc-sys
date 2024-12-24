@@ -18,6 +18,12 @@ fn main() {
     }
 
     if cfg!(target_os = "macos") {
+        // Automatically append Homebrew's unixODBC lib path if the environment variable is set
+        if let Ok(unixodbc_lib) = std::env::var("ODBC_SYS_STATIC_PATH") {
+            println!("cargo:rustc-link-search=native={unixodbc_lib}");
+            println!("cargo:rustc-link-lib=dylib=odbc");
+        }
+
         // if we're on Mac OS X we'll kindly add DYLD_LIBRARY_PATH to rustc's
         // linker search path
         if let Some(dyld_paths) = option_env!("DYLD_LIBRARY_PATH") {
@@ -33,6 +39,6 @@ fn main() {
 
 fn print_paths(paths: &str) {
     for path in paths.split(':').filter(|x| !x.is_empty()) {
-        println!("cargo:rustc-link-search=native={path}")
+        println!("cargo:rustc-link-search=native={path}");
     }
 }
