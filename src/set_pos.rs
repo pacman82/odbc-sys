@@ -12,7 +12,6 @@ impl Operation {
 
 /// Lock options in [`crate::SQLSetPos`]
 #[repr(C)]
-#[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Lock(i16);
 
