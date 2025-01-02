@@ -1,10 +1,14 @@
-Changelog
-=========
+# Changelog
         
-Unreleased
-----------
+## 0.25.0
 
-* Fix Typo `CDataType::TypeTimestampWithTimzone` is now `CDataType::TypeTimestampWithTimezone`
+### Added
+
+- Automatically detect homebrew library path on Mac-OS
+
+### Breaking
+
+- Fix Typo `CDataType::TypeTimestampWithTimzone` is now `CDataType::TypeTimestampWithTimezone`
 
 0.24.0
 ------
