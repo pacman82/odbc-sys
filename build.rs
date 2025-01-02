@@ -1,3 +1,5 @@
+use std::process::Command;
+
 fn main() {
     if std::env::var("CARGO_FEATURE_STATIC").is_ok() {
         if cfg!(target_os = "windows") {
@@ -18,6 +20,10 @@ fn main() {
     }
 
     if cfg!(target_os = "macos") {
+        if let Some(homebrew_lib_path) = homebrew_library_path() {
+            print_paths(&homebrew_lib_path);
+        }
+
         // if we're on Mac OS X we'll kindly add DYLD_LIBRARY_PATH to rustc's
         // linker search path
         if let Some(dyld_paths) = option_env!("DYLD_LIBRARY_PATH") {
@@ -35,4 +41,17 @@ fn print_paths(paths: &str) {
     for path in paths.split(':').filter(|x| !x.is_empty()) {
         println!("cargo:rustc-link-search=native={path}")
     }
+}
+
+fn homebrew_library_path() -> Option<String> {
+    let output = Command::new("brew").arg("--prefix").output().ok()?;
+    if !output.status.success() {
+        return None;
+    }
+    let prefix =
+        String::from_utf8(output.stdout).expect("brew --prefix must yield utf8 encoded response");
+    // brew returns also a linebreak (`\n`), we want to get rid of that.
+    let prefix = prefix.trim();
+    let lib_path = prefix.to_owned() + "/lib";
+    Some(lib_path)
 }
