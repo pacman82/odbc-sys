@@ -8,19 +8,13 @@
 //! ODBC 4.0 is still under development by Microsoft, so these symbols are deactivated by default
 //! in the cargo.toml
 
-pub use self::{
-    attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
-    indicator::*, info_type::*, interval::*, nullability::*, param_type::*, sql_data_type::*,
-    sqlreturn::*, set_pos::*,
-};
-use std::os::raw::{c_int, c_void};
-
 mod attributes;
 mod bulk_operation;
 mod c_data_type;
 mod desc;
 mod fetch_orientation;
 mod functions;
+mod handles;
 mod indicator;
 mod info_type;
 mod interval;
@@ -30,25 +24,12 @@ mod set_pos;
 mod sql_data_type;
 mod sqlreturn;
 
-//These types can never be instantiated in Rust code.
-pub enum Obj {}
-
-pub enum Env {}
-
-pub enum Dbc {}
-
-pub enum Stmt {}
-
-pub enum Description {}
-
-pub type Handle = *mut Obj;
-pub type HEnv = *mut Env;
-pub type HDesc = *mut Description;
-
-/// The connection handle references storage of all information about the connection to the data
-/// source, including status, transaction state, and error information.
-pub type HDbc = *mut Dbc;
-pub type HStmt = *mut Stmt;
+pub use self::{
+    attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
+    handles::*, indicator::*, info_type::*, interval::*, nullability::*, param_type::*, set_pos::*,
+    sql_data_type::*, sqlreturn::*,
+};
+use std::os::raw::{c_int, c_void};
 
 pub type SmallInt = i16;
 pub type USmallInt = u16;
@@ -116,7 +97,7 @@ pub enum HandleType {
     // Only used between Drivers and Driver Manager to enable connection pooling.
     // https://learn.microsoft.com/en-us/sql/odbc/reference/develop-driver/developing-connection-pool-awareness-in-an-odbc-driver?view=sql-server-ver16
     // Defined in sqlspi.h
-    DbcInfoToken = 6
+    DbcInfoToken = 6,
 }
 
 /// Options for `SQLDriverConnect`
