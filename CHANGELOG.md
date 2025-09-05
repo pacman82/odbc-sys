@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.2](https://github.com/pacman82/odbc-sys/compare/v0.26.1...v0.26.2) - 2025-09-05
+
+### Added
+
+- adds HDesc::null()
+
 ## [0.26.1](https://github.com/pacman82/odbc-sys/compare/v0.26.0...v0.26.1) - 2025-09-05
 
 ### Added
