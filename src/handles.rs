@@ -1,21 +1,69 @@
-//These types can never be instantiated in Rust code. The actual objects are created by the ODBC
-// driver manager and driver. We just want Rust to realize that these are distinct types. We never
-// will work with the instances directly. ODBC will only care about the pointers to these.
-pub enum Obj {}
+use std::{ffi::c_void, ptr::null_mut};
 
-pub enum Env {}
+// ODBC handles are pointers to opaque C types. We do not know their memory layout or other details
+// of their implementation. This RFC suggest how to represent them in Rust:
+// <https://rust-lang.github.io/rfcs/1861-extern-types.html>
+//
+// Until this is stable we could choose to represent them like suggested in the nomicon:
+// <https://doc.rust-lang.org/nomicon/ffi.html#representing-opaque-structs>
+//
+// However, we know in the context of ODBC that we are always interested in the *mut versions of
+// this pointer. For now a strict alias around `*mut c_void` seems to be the most pragmatic
+// solution.
 
-pub enum Dbc {}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct Handle(pub *mut c_void);
 
-pub enum Stmt {}
+impl Handle {
+    pub fn null() -> Self {
+        Self(null_mut())
+    }
 
-pub enum Description {}
+    pub fn as_henv(self) -> HEnv {
+        HEnv(self.0)
+    }
 
-pub type Handle = *mut Obj;
-pub type HEnv = *mut Env;
-pub type HDesc = *mut Description;
+    pub fn as_hdbc(self) -> HDbc {
+        HDbc(self.0)
+    }
+
+    pub fn as_hstmt(self) -> HStmt {
+        HStmt(self.0)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct HEnv(pub *mut c_void);
+
+impl HEnv {
+    pub fn null() -> Self {
+        Self(null_mut())
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct HDesc(pub *mut c_void);
 
 /// The connection handle references storage of all information about the connection to the data
 /// source, including status, transaction state, and error information.
-pub type HDbc = *mut Dbc;
-pub type HStmt = *mut Stmt;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct HDbc(pub *mut c_void);
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(transparent)]
+pub struct HStmt(pub *mut c_void);
+
+// Handles are `Send` according to ODBC spec, since they must be able to be used from different
+// threads. They even must protect their inner state. This would also make them `Sync`, yet they do
+// have interior mutability for error handling.
+// See: <https://docs.microsoft.com/en-us/sql/odbc/reference/develop-app/multithreading>
+
+unsafe impl Send for HEnv {}
+
+unsafe impl Send for HDbc {}
+
+unsafe impl Send for HStmt {}
