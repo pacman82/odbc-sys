@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.26.1](https://github.com/pacman82/odbc-sys/compare/v0.26.0...v0.26.1) - 2025-09-05
+
+### Added
+
+- `HEnv`, `HDbc` and `HStmt` now have an `as_handle` method
+
 ## [0.26.0](https://github.com/pacman82/odbc-sys/compare/v0.25.1...v0.26.0) - 2025-09-05
 
 ### Added
