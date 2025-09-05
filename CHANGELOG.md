@@ -14,8 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Install UnixODBC in test workflow
 - Explain enum {} trick in handles
 - extract handles into own module
-# Changelog
-        
+
 ## 0.25.0
 
 ### Added
