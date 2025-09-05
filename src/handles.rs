@@ -51,6 +51,12 @@ impl HEnv {
 #[repr(transparent)]
 pub struct HDesc(pub *mut c_void);
 
+impl HDesc {
+    pub fn null() -> Self {
+        Self(null_mut())
+    }
+}
+
 /// The connection handle references storage of all information about the connection to the data
 /// source, including status, transaction state, and error information.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
