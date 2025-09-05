@@ -41,6 +41,10 @@ impl HEnv {
     pub fn null() -> Self {
         Self(null_mut())
     }
+
+    pub fn as_handle(self) -> Handle {
+        Handle(self.0)
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -53,9 +57,21 @@ pub struct HDesc(pub *mut c_void);
 #[repr(transparent)]
 pub struct HDbc(pub *mut c_void);
 
+impl HDbc {
+    pub fn as_handle(self) -> Handle {
+        Handle(self.0)
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[repr(transparent)]
 pub struct HStmt(pub *mut c_void);
+
+impl HStmt {
+    pub fn as_handle(self) -> Handle {
+        Handle(self.0)
+    }
+}
 
 // Handles are `Send` according to ODBC spec, since they must be able to be used from different
 // threads. They even must protect their inner state. This would also make them `Sync`, yet they do
