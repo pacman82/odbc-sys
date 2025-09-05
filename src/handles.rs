@@ -55,6 +55,10 @@ impl HDesc {
     pub fn null() -> Self {
         Self(null_mut())
     }
+
+    pub fn as_handle(self) -> Handle {
+        Handle(self.0)
+    }
 }
 
 /// The connection handle references storage of all information about the connection to the data
