@@ -11,11 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- [**breaking**] Opaque types referenced by handles are no longer represented by
-
-### Other
-
-- Remove superfluous header in Changelog
+- [**breaking**] Opaque types referenced by handles are no longer represented by empty enums. Instead handles are strict aliases of `c_void`.
+- `HEnv`, `HDbc` and `HStmt` now implement Send.
 
 ## [0.25.1](https://github.com/pacman82/odbc-sys/compare/v0.25.0...v0.25.1) - 2025-08-16
 
