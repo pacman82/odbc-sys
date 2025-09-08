@@ -92,4 +92,6 @@ unsafe impl Send for HEnv {}
 
 unsafe impl Send for HDbc {}
 
-unsafe impl Send for HStmt {}
+// Send may not be implemented for HStmt, since statements may bind other parameters and there is no
+// guarantee that the parameter pointers bound to the statement are `Send`. Safe abstractions over
+// statement handles may of course only allow `Send` parameters to bind and then implement `Send`.
