@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.0](https://github.com/pacman82/odbc-sys/compare/v0.26.3...v0.27.0) - 2025-09-08
+
+### Fixed
+
+- Remove `Send` from HStmt
+
 ## [0.26.3](https://github.com/pacman82/odbc-sys/compare/v0.26.2...v0.26.3) - 2025-09-05
 
 ### Added
