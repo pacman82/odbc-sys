@@ -61,30 +61,30 @@ fn ensure_configured(vendor_dir: &Path) {
 }
 
 #[cfg(all(feature = "static", not(feature = "iodbc")))]
-fn extract_version_from_configure_ac(configure_ac_path: &Path) -> Option<String> {
-    let content = std::fs::read_to_string(configure_ac_path).ok()?;
+fn unixodbc_version(configure_ac_path: &Path) -> String {
+    use std::{fs::File, io::BufRead, io::BufReader};
+    let content = File::open(configure_ac_path).expect("Failed to read configure.ac");
 
     // Look for AC_INIT line with version
     // Format: AC_INIT([name], [version], ...)
-    for line in content.lines() {
+    for line in BufReader::new(content).lines() {
+        let line = line.expect("Failed to read line from configure.ac");
         if line.trim_start().starts_with("AC_INIT") {
-            // Extract version from AC_INIT([name], [version], ...)
-            if let Some(version_part) = line.split('[').nth(2) {
-                if let Some(version) = version_part.split(']').next() {
-                    let version = version.trim();
-                    // Skip if it contains macro substitutions
-                    if !version.contains("V_") && !version.is_empty() {
-                        return Some(version.to_string());
-                    }
-                }
+            if let Some(version) = get_version(&line, 2) {
+                return format!("\"{}\"", version);
             }
         }
     }
-    None
+    panic!("Failed to find version in configure.ac");
+}
+
+#[cfg(feature = "static")]
+fn get_version(line: &str, n: usize) -> Option<String> {
+    line.split(['[', ']']).nth(n).map(str::to_lowercase)
 }
 
 #[cfg(all(feature = "static", feature = "iodbc"))]
-fn extract_iodbc_version(configure_ac_path: &Path) -> String {
+fn iodbc_version(configure_ac_path: &Path) -> String {
     use std::{fs::File, io::BufRead, io::BufReader};
 
     let content = File::open(configure_ac_path).expect("Failed to read configure.ac");
@@ -93,23 +93,19 @@ fn extract_iodbc_version(configure_ac_path: &Path) -> String {
     let mut minor = None;
     let mut patch = None;
 
-    fn get_version(line: &str) -> Option<String> {
-        line.split(['[', ']']).nth(1).map(str::to_lowercase)
-    }
-
     for line in BufReader::new(content).lines() {
         let line = line.expect("Failed to read line");
         if line.contains("m4_define(V_iodbc_major") {
-            major = get_version(&line);
+            major = get_version(&line, 1);
         } else if line.contains("m4_define(V_iodbc_minor") {
-            minor = get_version(&line);
+            minor = get_version(&line, 1);
         } else if line.contains("m4_define(V_iodbc_patch") {
-            patch = get_version(&line);
+            patch = get_version(&line, 1);
         }
     }
 
     format!(
-        "{}.{}.{}",
+        "\"{}.{}.{}\"",
         major.expect("major version not found").trim(),
         minor.expect("minor version not found").trim(),
         patch.expect("patch version not found").trim()
@@ -140,10 +136,7 @@ fn compile_odbc_from_source() {
     setup_compiler_flags(&mut build);
 
     let configure_ac = vendor_dir.join("configure.ac");
-    let version =
-        extract_version_from_configure_ac(&configure_ac).unwrap_or_else(|| "unknown".to_string());
-    let version_str = format!("\"{}\"", version);
-    build.define("VERSION", version_str.as_str());
+    build.define("VERSION", Some(unixodbc_version(&configure_ac).as_str()));
 
     let source_dirs = ["DriverManager", "odbcinst", "ini", "log", "lst"];
     build.files(c_files_in_dirs(&vendor_dir, &source_dirs));
@@ -183,9 +176,7 @@ fn compile_odbc_from_source() {
     build.define("HAVE_CONFIG_H", None);
 
     let configure_ac = iodbc_src.join("configure.ac");
-    let version = extract_iodbc_version(&configure_ac);
-    let version_str = format!("\"{}\"", version);
-    build.define("VERSION", version_str.as_str());
+    build.define("VERSION", Some(iodbc_version(&configure_ac).as_str()));
 
     // Collect all source files from all directories
     let source_dirs = ["iodbc", "iodbc/trace", "iodbcinst"];
