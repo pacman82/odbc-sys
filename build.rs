@@ -256,22 +256,14 @@ fn compile_odbc_from_source() {
 
 #[cfg(feature = "static")]
 fn add_c_files(build: &mut cc::Build, dir: &Path) {
-    if !dir.exists() {
-        return;
-    }
-
-    let entries = match std::fs::read_dir(dir) {
-        Ok(entries) => entries,
-        Err(_) => return,
-    };
-
-    let files: Vec<_> = entries
-        .flatten()
-        .map(|e| e.path())
-        .filter(|p| p.extension().map_or(false, |ext| ext == "c"))
-        .collect();
-
-    build.files(files);
+    let entries = std::fs::read_dir(dir).expect("Failed to read source files from directory");
+    build.files(entries.flatten().filter_map(|p| {
+        let path = p.path();
+        if path.extension().unwrap_or_default() == "c" {
+            return Some(path);
+        }
+        None
+    }));
 }
 
 fn print_paths(paths: &str) {
