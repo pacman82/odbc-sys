@@ -19,9 +19,35 @@ other libraries to build on top, rather than to be used directly.
 
 ## Linking
 
-This library will link against `odbc32.dll` (preinstalled) on Windows systems. On Linux and macOS it links against `libodbc.so` by default. This is typically provided by [unix-odbc](http://www.unixodbc.org/). Using the `--feature iodbc` you can also link against `libiodbc.so`. This may be interesting if you are trying to connect to some older data sources on macOS.
+This library will link against `odbc32.dll` (preinstalled) on Windows systems. On Linux and macOS it links against `libodbc.so` by default. This is typically provided by [unix-odbc](http://www.unixodbc.org/). Using the `--features iodbc` you can also link against `libiodbc.so`. This may be interesting if you are trying to connect to some older data sources on macOS.
 
-## Installing `unix-odbc`
+### Static Linking (Compile from Source)
+
+For easier distribution and development, you can enable the `static` feature to compile unixODBC or iODBC from source and link statically:
+
+```toml
+[dependencies]
+odbc-sys = { version = "0.27", features = ["static"] }
+```
+
+This will:
+- Automatically compile unixODBC (or iODBC if the `iodbc` feature is also enabled) from the included git submodules
+- Statically link the ODBC driver manager into your application
+- Eliminate the need to install system ODBC packages during development
+
+**Requirements:**
+- No external build tools required! The build is fully self-contained using only the `cc` crate.
+
+**Note:** You can still use `ODBC_SYS_STATIC_PATH` environment variable to point to a pre-built static library if you prefer:
+
+```bash
+export ODBC_SYS_STATIC_PATH=/usr/local/lib
+cargo build --features static
+```
+
+## Installing `unix-odbc` (Dynamic Linking)
+
+**Note:** If you're using the `static` feature, you don't need to install system ODBC packages. The sections below are only relevant for dynamic linking (the default).
 
 ### Linux
 

@@ -12,9 +12,12 @@ edition = "2021"
 
 [dependencies]
 
+[build-dependencies]
+cc = { version = "1.0", optional = true }
+
 [features]
 default = ["odbc_version_3_80"]
-static = []
+static = ["cc"]
 iodbc = []
 
 odbc_version_3_50 = []

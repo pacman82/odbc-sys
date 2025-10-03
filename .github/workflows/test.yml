@@ -6,62 +6,44 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  build-linux:
-    name: Build & Test on Ubuntu Latest
+  test:
+    name: ${{ matrix.target }} ${{ matrix.features }}
 
-    runs-on: ubuntu-latest
+    runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
 
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Install unixODBC
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y unixodbc-dev
-        shell: sudo bash {0}
-      - name: Run tests
-        run: cargo test
-
-  build-win64:
-    name: Build & Test on Windows 64Bit
-
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
-
-  build-win32:
-    name: Build & Test on Windows 32Bit
-
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu # x86-based Linux
+          - aarch64-apple-darwin # ARM-based macOS
+          - x86_64-pc-windows-msvc # 64-bit Windows
+          - i686-pc-windows-msvc # 32-bit Windows
+        features:
+          - "" # dynamic linking
+          - "static" # static linking with unixodbc
+          - "static,iodbc" # static linking with iodbc
+        exclude:
+          - target: x86_64-pc-windows-msvc
+            features: ""
+          - target: x86_64-pc-windows-msvc
+            features: "static"
+          - target: x86_64-pc-windows-msvc
+            features: "static,iodbc"
+          - target: i686-pc-windows-msvc
+            features: ""
+          - target: i686-pc-windows-msvc
+            features: "static"
+          - target: i686-pc-windows-msvc
+            features: "static,iodbc"
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-
-      - name: Install 32Bit toolchain
-        uses: dtolnay/rust-toolchain@stable
         with:
-          target: i686-pc-windows-msvc
+          submodules: "recursive"
 
-      - name: Build
-        run: cargo build --verbose
+      - if: ${{ contains(matrix.target, 'linux') && !contains(matrix.features, 'static') }}
+        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
+      - if: ${{ contains(matrix.target, 'darwin') && !contains(matrix.features, 'static') }}
+        run: brew install unixodbc
 
-      - name: Run tests
-        run: cargo test --verbose
-
-  build-osx:
-    name: Build & Test on OS-X
-
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Build
-        run: |
-          brew install unixodbc
-          cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
+      - run: cargo test --target "${{ matrix.target }}" --features "${{ matrix.features }}"
