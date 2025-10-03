@@ -84,43 +84,40 @@ fn extract_version_from_configure_ac(configure_ac_path: &Path) -> Option<String>
 }
 
 #[cfg(all(feature = "static", feature = "iodbc"))]
-fn extract_iodbc_version(configure_ac_path: &Path) -> Option<String> {
-    let content = std::fs::read_to_string(configure_ac_path).ok()?;
+fn extract_iodbc_version(configure_ac_path: &Path) -> String {
+    use std::{fs::File, io::BufRead, io::BufReader};
+
+    let content = File::open(configure_ac_path).expect("Failed to read configure.ac");
 
     let mut major = None;
     let mut minor = None;
     let mut patch = None;
 
-    for line in content.lines() {
+    fn get_version(line: &str) -> Option<String> {
+        line.split('[')
+            .nth(1)?
+            .split(']')
+            .next()
+            .map(|s| s.trim().to_string())
+    }
+
+    for line in BufReader::new(content).lines() {
+        let line = line.expect("Failed to read line");
         if line.contains("m4_define(V_iodbc_major") {
-            major = line
-                .split('[')
-                .nth(1)?
-                .split(']')
-                .next()
-                .map(|s| s.trim().to_string());
+            major = get_version(&line);
         } else if line.contains("m4_define(V_iodbc_minor") {
-            minor = line
-                .split('[')
-                .nth(1)?
-                .split(']')
-                .next()
-                .map(|s| s.trim().to_string());
+            minor = get_version(&line);
         } else if line.contains("m4_define(V_iodbc_patch") {
-            patch = line
-                .split('[')
-                .nth(1)?
-                .split(']')
-                .next()
-                .map(|s| s.trim().to_string());
+            patch = get_version(&line);
         }
     }
 
-    if let (Some(maj), Some(min), Some(pat)) = (major, minor, patch) {
-        Some(format!("{}.{}.{}", maj, min, pat))
-    } else {
-        None
-    }
+    format!(
+        "{}.{}.{}",
+        major.expect("major version not found"),
+        minor.expect("minor version not found"),
+        patch.expect("patch version not found")
+    )
 }
 
 #[cfg(all(feature = "static", not(feature = "iodbc")))]
@@ -225,7 +222,7 @@ fn compile_odbc_from_source() {
     build.define("HAVE_CONFIG_H", None);
 
     let configure_ac = vendor_dir.join("configure.ac");
-    let version = extract_iodbc_version(&configure_ac).unwrap_or_else(|| "unknown".to_string());
+    let version = extract_iodbc_version(&configure_ac);
     let version_str = format!("\"{}\"", version);
     build.define("VERSION", version_str.as_str());
 
