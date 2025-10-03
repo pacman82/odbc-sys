@@ -94,11 +94,7 @@ fn extract_iodbc_version(configure_ac_path: &Path) -> String {
     let mut patch = None;
 
     fn get_version(line: &str) -> Option<String> {
-        line.split('[')
-            .nth(1)?
-            .split(']')
-            .next()
-            .map(|s| s.trim().to_string())
+        line.split(['[', ']']).nth(1).map(str::to_lowercase)
     }
 
     for line in BufReader::new(content).lines() {
@@ -114,9 +110,9 @@ fn extract_iodbc_version(configure_ac_path: &Path) -> String {
 
     format!(
         "{}.{}.{}",
-        major.expect("major version not found"),
-        minor.expect("minor version not found"),
-        patch.expect("patch version not found")
+        major.expect("major version not found").trim(),
+        minor.expect("minor version not found").trim(),
+        patch.expect("patch version not found").trim()
     )
 }
 
