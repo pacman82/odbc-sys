@@ -62,20 +62,17 @@
 #ifdef __linux__
 #define PLATFORM_LINUX 1
 #define SHLIBEXT ".so"
-#define DEFLIB_PATH "/usr/lib:/usr/local/lib"
-#define SYSTEM_FILE_PATH "/etc"
-#define ODBCINST_SYSTEM_INI "odbcinst.ini"
-#define ODBC_SYSTEM_INI "odbc.ini"
 #endif
 
 #ifdef __APPLE__
 #define PLATFORM_MACOS 1
 #define SHLIBEXT ".dylib"
+#endif
+
 #define DEFLIB_PATH "/usr/lib:/usr/local/lib"
 #define SYSTEM_FILE_PATH "/etc"
 #define ODBCINST_SYSTEM_INI "odbcinst.ini"
 #define ODBC_SYSTEM_INI "odbc.ini"
-#endif
 
 #endif
 
