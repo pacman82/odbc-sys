@@ -89,27 +89,23 @@ fn iodbc_version(configure_ac_path: &Path) -> String {
 
     let content = File::open(configure_ac_path).expect("Failed to read configure.ac");
 
-    let mut major = None;
-    let mut minor = None;
-    let mut patch = None;
+    let defines = ["V_iodbc_major", "V_iodbc_minor", "V_iodbc_patch"];
+    let mut version_components = [None, None, None];
 
     for line in BufReader::new(content).lines() {
         let line = line.expect("Failed to read line");
-        if line.contains("m4_define(V_iodbc_major") {
-            major = get_version(&line, 1);
-        } else if line.contains("m4_define(V_iodbc_minor") {
-            minor = get_version(&line, 1);
-        } else if line.contains("m4_define(V_iodbc_patch") {
-            patch = get_version(&line, 1);
+        for (i, &define) in defines.iter().enumerate() {
+            if line.contains(define) && line.contains("m4_define") {
+                version_components[i] = get_version(&line, 1);
+            }
         }
     }
 
-    format!(
-        "\"{}.{}.{}\"",
-        major.expect("major version not found").trim(),
-        minor.expect("minor version not found").trim(),
-        patch.expect("patch version not found").trim()
-    )
+    let version: Vec<String> = version_components
+        .into_iter()
+        .map(|c| c.expect("version not found").trim().to_string())
+        .collect();
+    format!("\"{}\"", version.join("."))
 }
 
 #[cfg(all(feature = "static", not(feature = "iodbc")))]
