@@ -265,31 +265,13 @@ fn add_c_files(build: &mut cc::Build, dir: &Path) {
         Err(_) => return,
     };
 
-    for entry in entries.flatten() {
-        let path = entry.path();
-        if path.is_file() {
-            if let Some(ext) = path.extension() {
-                if ext == "c" {
-                    // Skip certain files that shouldn't be compiled
-                    let filename = path.file_name().unwrap().to_str().unwrap();
+    let files: Vec<_> = entries
+        .flatten()
+        .map(|e| e.path())
+        .filter(|p| p.extension().map_or(false, |ext| ext == "c"))
+        .collect();
 
-                    // Skip test files, utilities, and GUI components
-                    if filename.starts_with("test")
-                        || filename == "dltest.c"
-                        || filename == "isql.c"
-                        || filename == "iusql.c"
-                        || filename == "odbcinst.c"
-                        || filename == "odbc-config.c"
-                        || filename == "slencheck.c"
-                    {
-                        continue;
-                    }
-
-                    build.file(&path);
-                }
-            }
-        }
-    }
+    build.files(files);
 }
 
 fn print_paths(paths: &str) {
