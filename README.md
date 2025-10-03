@@ -30,15 +30,13 @@ For easier distribution and development, you can enable the `static` feature to 
 odbc-sys = { version = "0.27", features = ["static"] }
 ```
 
-This will:
-- Automatically compile unixODBC (or iODBC if the `iodbc` feature is also enabled) from the included git submodules
-- Statically link the ODBC driver manager into your application
-- Eliminate the need to install system ODBC packages during development
+This will compile and statically link unixODBC (or iODBC if the `iodbc` feature is enabled)
+into your binary. This eliminatee the need to install system ODBC packages.
 
-**Requirements:**
-- No external build tools required! The build is fully self-contained using only the `cc` crate.
+This requires you to have a **C compiler** installed at build time.
 
-**Note:** You can still use `ODBC_SYS_STATIC_PATH` environment variable to point to a pre-built static library if you prefer:
+You can use the `ODBC_SYS_STATIC_PATH` environment variable to point
+to a pre-built static library if you prefer:
 
 ```bash
 export ODBC_SYS_STATIC_PATH=/usr/local/lib
@@ -55,6 +53,12 @@ Use your systems packet manager to install `unixodbc-dev`. E.g. on Ubuntu / Debi
 
 ```shell
 sudo apt install unixodbc-dev
+```
+
+On Fedora:
+
+```shell
+sudo dnf install unixODBC-devel
 ```
 
 ### macOS
