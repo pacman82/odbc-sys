@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::process::Command;
 
 fn main() {
@@ -126,28 +126,18 @@ fn compile_odbc_from_source() {
     let out_dir_path = Path::new(&out_dir);
 
     std::fs::copy("vendor/unixodbc_config.h", out_dir_path.join("config.h"))
-        .expect("Failed to copy unixodbc_config.h to OUT_DIR/config.h");
+        .expect("copy unixodbc_config.h to OUT_DIR/config.h");
 
     std::fs::copy("vendor/ltdl.h", out_dir_path.join("ltdl.h"))
-        .expect("Failed to copy ltdl.h to OUT_DIR/ltdl.h");
+        .expect("copy ltdl.h to OUT_DIR/ltdl.h");
 
     let mut build = cc::Build::new();
 
-    build.include(out_dir_path);
-    build.include(vendor_dir.join("include"));
-    build.include(vendor_dir.join("DriverManager"));
-    build.include(vendor_dir.join("odbcinst"));
-    build.include(vendor_dir.join("ini"));
-    build.include(vendor_dir.join("log"));
-    build.include(vendor_dir.join("lst"));
-    build.include(vendor_dir);
+    build.includes([out_dir_path, vendor_dir]);
+    let header_dirs = ["include", "DriverManager", "odbcinst", "ini", "log", "lst"];
+    build.includes(header_dirs.iter().map(|s| vendor_dir.join(s)));
 
-    build.flag_if_supported("-fPIC");
-    build.flag_if_supported("-std=gnu99");
-    build.flag_if_supported("-Wno-error");
-    build.flag_if_supported("-Wno-implicit-function-declaration");
-    build.flag_if_supported("-Wno-int-conversion");
-    build.flag_if_supported("-w");
+    setup_compiler_flags(&mut build);
 
     let configure_ac = vendor_dir.join("configure.ac");
     let version =
@@ -155,25 +145,8 @@ fn compile_odbc_from_source() {
     let version_str = format!("\"{}\"", version);
     build.define("VERSION", version_str.as_str());
 
-    // Collect all source files from DriverManager
-    let driver_manager_dir = vendor_dir.join("DriverManager");
-    add_c_files(&mut build, &driver_manager_dir);
-
-    // Collect all source files from odbcinst
-    let odbcinst_dir = vendor_dir.join("odbcinst");
-    add_c_files(&mut build, &odbcinst_dir);
-
-    // Collect all source files from ini
-    let ini_dir = vendor_dir.join("ini");
-    add_c_files(&mut build, &ini_dir);
-
-    // Collect all source files from log
-    let log_dir = vendor_dir.join("log");
-    add_c_files(&mut build, &log_dir);
-
-    // Collect all source files from lst
-    let lst_dir = vendor_dir.join("lst");
-    add_c_files(&mut build, &lst_dir);
+    let source_dirs = ["DriverManager", "odbcinst", "ini", "log", "lst"];
+    build.files(c_files_in_dirs(&vendor_dir, &source_dirs));
 
     build.compile("odbc");
 
@@ -189,9 +162,9 @@ fn compile_odbc_from_source() {
 
 #[cfg(all(feature = "static", feature = "iodbc"))]
 fn compile_odbc_from_source() {
-    let vendor_dir = Path::new("vendor/iODBC");
+    let iodbc_src = Path::new("vendor/iODBC");
 
-    ensure_configured(vendor_dir);
+    ensure_configured(iodbc_src);
 
     let out_dir = std::env::var("OUT_DIR").expect("OUT_DIR not set");
     let out_dir_path = Path::new(&out_dir);
@@ -201,39 +174,22 @@ fn compile_odbc_from_source() {
 
     let mut build = cc::Build::new();
 
-    build.include(out_dir_path);
-    build.include(vendor_dir.join("include"));
-    build.include(vendor_dir.join("iodbc"));
-    build.include(vendor_dir.join("iodbcinst"));
-    build.include(vendor_dir.join("iodbcadm"));
-    build.include(vendor_dir);
+    build.includes([out_dir_path, iodbc_src]);
+    let include_dirs = ["include", "iodbc", "iodbcinst", "iodbcadm"];
+    build.includes(include_dirs.iter().map(|s| iodbc_src.join(s)));
 
-    build.flag_if_supported("-fPIC");
-    build.flag_if_supported("-std=gnu99");
-    build.flag_if_supported("-Wno-error");
-    build.flag_if_supported("-Wno-implicit-function-declaration");
-    build.flag_if_supported("-Wno-int-conversion");
-    build.flag_if_supported("-w");
+    setup_compiler_flags(&mut build);
 
     build.define("HAVE_CONFIG_H", None);
 
-    let configure_ac = vendor_dir.join("configure.ac");
+    let configure_ac = iodbc_src.join("configure.ac");
     let version = extract_iodbc_version(&configure_ac);
     let version_str = format!("\"{}\"", version);
     build.define("VERSION", version_str.as_str());
 
-    // Collect all source files from iodbc
-    let iodbc_dir = vendor_dir.join("iodbc");
-    add_c_files(&mut build, &iodbc_dir);
-
-    // Collect trace files from iodbc/trace
-    let trace_dir = vendor_dir.join("iodbc/trace");
-    add_c_files(&mut build, &trace_dir);
-
-    // Collect all source files from iodbcinst
-    let iodbcinst_dir = vendor_dir.join("iodbcinst");
-    add_c_files(&mut build, &iodbcinst_dir);
-
+    // Collect all source files from all directories
+    let source_dirs = ["iodbc", "iodbc/trace", "iodbcinst"];
+    build.files(c_files_in_dirs(&iodbc_src, &source_dirs));
     build.compile("iodbc");
 
     // Link pthread for iODBC
@@ -248,15 +204,24 @@ fn compile_odbc_from_source() {
 }
 
 #[cfg(feature = "static")]
-fn add_c_files(build: &mut cc::Build, dir: &Path) {
-    let entries = std::fs::read_dir(dir).expect("Failed to read source files from directory");
-    build.files(entries.flatten().filter_map(|p| {
-        let path = p.path();
-        if path.extension().unwrap_or_default() == "c" {
-            return Some(path);
-        }
-        None
-    }));
+fn c_files_in_dirs(base_dir: &Path, paths: &[&str]) -> Vec<PathBuf> {
+    paths
+        .iter()
+        .map(|p| base_dir.join(p))
+        .flat_map(|dir| std::fs::read_dir(dir).expect("read source directory"))
+        .map(|p| p.expect("read source file").path())
+        .filter(|p| p.extension().unwrap_or_default() == "c")
+        .collect()
+}
+
+#[cfg(feature = "static")]
+fn setup_compiler_flags(build: &mut cc::Build) {
+    build.flag_if_supported("-fPIC");
+    build.flag_if_supported("-std=gnu99");
+    build.flag_if_supported("-Wno-error");
+    build.flag_if_supported("-Wno-implicit-function-declaration");
+    build.flag_if_supported("-Wno-int-conversion");
+    build.flag_if_supported("-w");
 }
 
 fn print_paths(paths: &str) {
