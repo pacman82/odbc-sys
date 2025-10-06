@@ -1,26 +1,17 @@
-[package]
-name = "odbc-sys"
-version = "0.27.0"
+[workspace]
+resolver = "2"
+members = [
+    "odbc-sys-core",
+    "unixodbc-sys",
+    "iodbc-sys",
+]
+
+[workspace.package]
 authors = ["Markus Klein"]
-license = "MIT"
-description = "ODBC ffi bindings"
 repository = "https://github.com/pacman82/odbc-sys"
-keywords = ["sql","database","odbc","ffi"]
-build = "build.rs"
+keywords = ["sql", "database", "odbc", "ffi"]
 categories = ["external-ffi-bindings", "database"]
 edition = "2021"
 
-[dependencies]
-
-[build-dependencies]
-cc = { version = "1.0", optional = true }
-
-[features]
-default = ["odbc_version_3_80"]
-static = ["cc"]
-iodbc = []
-
-odbc_version_3_50 = []
-odbc_version_3_80 = ["odbc_version_3_50"]
-odbc_version_4 = ["odbc_version_3_80"]
-
+[profile.release]
+lto = true

@@ -7,24 +7,6 @@ use crate::{
 
 pub static mut NUM_ENVIRONMENT: u32 = 0;
 
-// static linking is not currently supported here for windows
-#[cfg_attr(windows, link(name = "odbc32"))]
-#[cfg_attr(
-    all(not(windows), not(feature = "static"), not(feature = "iodbc")),
-    link(name = "odbc")
-)]
-#[cfg_attr(
-    all(not(windows), feature = "static", not(feature = "iodbc")),
-    link(name = "odbc", kind = "static")
-)]
-#[cfg_attr(
-    all(not(windows), not(feature = "static"), feature = "iodbc"),
-    link(name = "iodbc")
-)]
-#[cfg_attr(
-    all(not(windows), feature = "static", feature = "iodbc"),
-    link(name = "iodbc", kind = "static")
-)]
 extern "system" {
     /// Allocates an environment, connection, statement, or descriptor handle.
     ///
@@ -739,7 +721,7 @@ extern "system" {
     /// Rowsets can be specified at an absolute or relative position or by bookmark.
     ///
     /// # Returns
-    /// 
+    ///
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `STILL_EXECUTING`.
     pub fn SQLFetchScroll(
         statement_handle: HStmt,
@@ -749,11 +731,11 @@ extern "system" {
 
     /// Sets the cursor position in a rowset and allows an application to refresh, update or delete
     /// data in the rowset.
-    /// 
+    ///
     /// See: <https://learn.microsoft.com/sql/odbc/reference/syntax/sqlsetpos-function>
-    /// 
+    ///
     /// # Parameters
-    /// 
+    ///
     /// * `statement_handle`: Statement Handle
     /// * `row_number`: Position of the row in the rowset on which to perform the operation
     ///   specified with the Operation argument. If `row_number` is 0, the operation applies to
@@ -761,9 +743,9 @@ extern "system" {
     /// * `operation`: Operation to perform
     /// * `lock_type`: Specifies how to lock the row after performing the operation specified in the
     ///   Operation argument.
-    /// 
+    ///
     /// # Returns
-    /// 
+    ///
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `NEED_DATA`, `STILL_EXECUTING`, `ERROR`, or
     /// `INVALID_HANDLE`.
     pub fn SQLSetPos(

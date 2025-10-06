@@ -7,43 +7,50 @@ env:
 
 jobs:
   test:
-    name: ${{ matrix.target }} ${{ matrix.features }}
+    name: ${{ matrix.crate }} on ${{ matrix.target }} ${{ matrix.features }}
 
     runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
 
     strategy:
       matrix:
+        crate:
+          - unixodbc-sys
+          - iodbc-sys
         target:
-          - x86_64-unknown-linux-gnu # x86-based Linux
-          - aarch64-apple-darwin # ARM-based macOS
-          - x86_64-pc-windows-msvc # 64-bit Windows
-          - i686-pc-windows-msvc # 32-bit Windows
+          - x86_64-unknown-linux-gnu
+          - aarch64-apple-darwin
+          - x86_64-pc-windows-msvc
+          - i686-pc-windows-msvc
         features:
-          - "" # dynamic linking
-          - "static" # static linking with unixodbc
-          - "static,iodbc" # static linking with iodbc
+          - ""
+          - "static"
         exclude:
           - target: x86_64-pc-windows-msvc
-            features: ""
-          - target: x86_64-pc-windows-msvc
-            features: "static"
-          - target: x86_64-pc-windows-msvc
-            features: "static,iodbc"
-          - target: i686-pc-windows-msvc
-            features: ""
-          - target: i686-pc-windows-msvc
             features: "static"
           - target: i686-pc-windows-msvc
-            features: "static,iodbc"
+            features: "static"
 
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
         with:
           submodules: "recursive"
 
-      - if: ${{ contains(matrix.target, 'linux') && !contains(matrix.features, 'static') }}
+      - if: ${{ contains(matrix.target, 'linux') && matrix.crate == 'unixodbc-sys' && matrix.features == '' }}
         run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
-      - if: ${{ contains(matrix.target, 'darwin') && !contains(matrix.features, 'static') }}
+      - if: ${{ contains(matrix.target, 'linux') && matrix.crate == 'iodbc-sys' && matrix.features == '' }}
+        run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.crate == 'unixodbc-sys' && matrix.features == '' }}
         run: brew install unixodbc
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.crate == 'iodbc-sys' && matrix.features == '' }}
+        run: brew install libiodbc
 
-      - run: cargo test --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+      - run: cargo test -p ${{ matrix.crate }} --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+
+  test-core:
+    name: Test odbc-sys-core
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
+        with:
+          submodules: "recursive"
+      - run: cargo clippy --all-targets -- -D warnings

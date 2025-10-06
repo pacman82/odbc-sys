@@ -1,4 +1,3 @@
-target
-Cargo.lock
-.idea
-.vscode
+target/
+**/*.rs.bk
+*.pdb

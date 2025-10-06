@@ -2,105 +2,146 @@
 
 [![Docs](https://docs.rs/odbc-sys/badge.svg)](https://docs.rs/odbc-sys/)
 [![MIT licensed](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/pacman82/odbc-sys/blob/main/LICENSE)
-[![Crates.io version](https://img.shields.io/crates/v/odbc-sys)](https://crates.io/crates/odbc-sys)
 
-FFI (Foreign Function Interface) bindings for ODBC (Open Database Connectivity)
-As ffi bindings to C-APIs are low level by nature this library is intended to be the foundation of
-other libraries to build on top, rather than to be used directly.
+FFI (Foreign Function Interface) bindings for ODBC (Open Database Connectivity).
 
-## Design Goals
+ODBC is a standard C API for accessing databases. Applications call ODBC functions, which are handled by a **driver manager** (the intermediary layer), which then routes calls to database-specific **drivers**.
+On Unix-like systems, you choose between driver managers: [unixODBC](http://www.unixodbc.org/) (most common on Linux) or [iODBC](http://www.iodbc.org/) (common on older macOS, BSD). Windows includes a built-in driver manager. This workspace provides separate crates for each driver manager to match their respective licenses while sharing common ODBC declarations.
 
-* Providing declarations of ODBC Symbols compatible to the C-Interface of an ODBC Driver Manager
-* Provide correct definition of symbols for Unix and Windows in either 32Bit or 64Bit flavour
-* Not to abstract away any power of the underlying API
-* Increase type safety where feasible
-* As it is as of now unlikely to happen that anyone is writing ODBC 2.0 applications in Rust
-  therefore deprecated symbols like 'SQLAllocEnv' have been left out intentionally.
+This repository contains a workspace with multiple crates to support different driver managers.
 
-## Linking
+## Crates
 
-This library will link against `odbc32.dll` (preinstalled) on Windows systems. On Linux and macOS it links against `libodbc.so` by default. This is typically provided by [unix-odbc](http://www.unixodbc.org/). Using the `--features iodbc` you can also link against `libiodbc.so`. This may be interesting if you are trying to connect to some older data sources on macOS.
+### [`unixodbc-sys`](./unixodbc-sys)
 
-### Static Linking (Compile from Source)
+[![Crates.io version](https://img.shields.io/crates/v/unixodbc-sys)](https://crates.io/crates/unixodbc-sys)
 
-For easier distribution and development, you can enable the `static` feature to compile unixODBC or iODBC from source and link statically:
+FFI bindings for ODBC. Licensed under LGPL-2.1-or-later to match unixODBC's license.
+When using the `static` feature, the LGPL requires you to distribute your work
+in a manner that allows the final user to re-compile the application to a different version of unixODBC:
+https://www.gnu.org/licenses/gpl-faq.html#LGPLStaticVsDynamic
+
+#### Links to
+- UNIX: `libodbc` (typically [unixODBC](http://www.unixodbc.org/))
+  - Needs installing when the `static` crate feature is not enabled:
+    - Debian/Ubuntu: `sudo apt install unixodbc-dev`
+    - Fedora: `sudo dnf install unixODBC-devel`
+    - macOS: `brew install unixodbc`
+- Windows: `odbc32.dll` (built-in, nothing to install)
+
+#### Usage
 
 ```toml
 [dependencies]
-odbc-sys = { version = "0.27", features = ["static"] }
+unixodbc-sys = "0.1"
 ```
 
-This will compile and statically link unixODBC (or iODBC if the `iodbc` feature is enabled)
-into your binary. This eliminatee the need to install system ODBC packages.
+### [`iodbc-sys`](./iodbc-sys)
 
-This requires you to have a **C compiler** installed at build time.
+[![Crates.io version](https://img.shields.io/crates/v/iodbc-sys)](https://crates.io/crates/iodbc-sys)
 
-You can use the `ODBC_SYS_STATIC_PATH` environment variable to point
-to a pre-built static library if you prefer:
+FFI bindings for ODBC. Licensed under MIT (to match iODBC's license).
+
+#### Links to
+- UNIX: `libiodbc` (iODBC - useful for older data sources)
+  - Needs installing when the `static` crate feature is not enabled:
+    - Debian/Ubuntu: `sudo apt install libiodbc2-dev`
+    - macOS: `brew install libiodbc`
+- Windows: `odbc32.dll` (built-in, nothing to install)
+
+#### Usage
+
+```toml
+[dependencies]
+iodbc-sys = "0.1"
+```
+
+## Design Goals
+
+- Provide ODBC symbol declarations compatible with the C-Interface
+- Support Unix and Windows in 32-bit and 64-bit
+- Don't abstract away the underlying API
+- Increase type safety where feasible
+- Omit deprecated ODBC 2.0 symbols (e.g., `SQLAllocEnv`)
+
+## Static Linking
+
+Both crates support a `static` feature to compile from source, eliminating the need to install system packages.
+Only the driver manager is statically linked; you still need to install individual database drivers on your system.
+
+```toml
+[dependencies]
+unixodbc-sys = { version = "0.1", features = ["static"] }
+```
+
+#### Requirements
+- C compiler at build time
+- Git submodules initialized: `git submodule update --init --recursive`
+- **No static linking on Windows**. Since windows ships with a built-in ODBC driver manager, it does not make sense to embed a separate driver manager in your binary.
+
+#### Use pre-built static library
+
+Set `ODBC_SYS_STATIC_PATH` to point to a directory containing the static library:
 
 ```bash
 export ODBC_SYS_STATIC_PATH=/usr/local/lib
-cargo build --features static
+cargo build -p unixodbc-sys --features static
 ```
 
-## Installing `unix-odbc` (Dynamic Linking)
+## Version Features
 
-**Note:** If you're using the `static` feature, you don't need to install system ODBC packages. The sections below are only relevant for dynamic linking (the default).
+Both crates support ODBC version features:
 
-### Linux
+- `odbc_version_3_50` - ODBC 3.5 symbols
+- `odbc_version_3_80` - ODBC 3.8 symbols (default)
+- `odbc_version_4` - ODBC 4.0 symbols (experimental)
 
-Use your systems packet manager to install `unixodbc-dev`. E.g. on Ubuntu / Debian
+## Platform Support
 
-```shell
-sudo apt install unixodbc-dev
+| Platform | unixodbc-sys | iodbc-sys | Static Linking |
+|----------|--------------|-----------|----------------|
+| Linux    | ✅ Primary   | ✅ Supported | ✅ |
+| macOS    | ✅ Supported | ✅ Primary   | ✅ |
+| BSD      | ✅ Supported | ✅ Supported | ✅ |
+| Windows  | ✅ | ✅ | ❌ (uses built-in `odbc32.dll`) |
+
+On Windows, both crates link to the same system library - choose based on license requirements or cross-platform consistency.
+
+## Architecture
+
+```
+odbc-sys/
+├── odbc-sys-core/      # Shared types/declarations (internal, not published)
+├── unixodbc-sys/       # Re-exports core, links to libodbc/odbc32.dll - LGPL
+└── iodbc-sys/          # Re-exports core, links to libiodbc/odbc32.dll - MIT
 ```
 
-On Fedora:
+This avoids code duplication while enabling separate licensing and publishing.
 
-```shell
-sudo dnf install unixODBC-devel
+## Development
+
+### Testing
+
+You typically only have one ODBC driver manager installed at a time on UNIX. Test the installed one:
+
+```bash
+# With unixODBC (most Linux):
+cargo test -p unixodbc-sys -p odbc-sys-core
+
+# With iODBC (some macOS):
+cargo test -p iodbc-sys -p odbc-sys-core
+
+# Windows (both work):
+cargo test --workspace
 ```
 
-### macOS
-
-On Intel based architectures you can install `unix-odbc` using homebrew.
-
-```shell
-brew install unixodbc
-```
-
-Note for **ARM** based macOS Systems (M1 processors and later):
-
-`cargo build` is not going to pick up `libodbc.so` installed via homebrew due to the fact that homebrew on ARM Mac installs into `/opt/homebrew/Cellar` as opposed to `/usr/local/opt/`.
-
-You find documentation on what directories are searched during build here: <https://doc.rust-lang.org/cargo/reference/environment-variables.html#dynamic-library-paths>.
-
-You can also install unixODBC from source:
-
-1. copy the unixODBC-2.3.9.tar.gz file somewhere you can create files and directories
-2. gunzip unixODBC*.tar.gz
-3. tar xvf unixODBC*.tar
-4. `./configure`
-5. `make`
-6. `make install`
-
-Thanks to @TBPixel for testing this!
-
-### Windows
-
-As windows does ship with ODBC preinstalled, you are good to go out of the box.
-
-## Current State
-
-Symbols are added to this library as we go along implementing uses cases in higher level APIs. If you miss something please do not hesitate to contribute.
-
-## Documentation
-
-Thanks to the folks of [docs.rs] for building and hosting the [documentation]!
+Running `cargo test --workspace` on UNIX will fail for the crate whose library isn't installed - this is expected.
 
 ## Contributing
 
-Want to help out? Just create an issue or pull request.
+Create an issue or pull request!
 
-[docs.rs]: https://docs.rs
-[documentation]: https://docs.rs/odbc-sys/
+## Documentation
+
+- [unixodbc-sys docs](https://docs.rs/unixodbc-sys/)
+- [iodbc-sys docs](https://docs.rs/iodbc-sys/)

@@ -1,0 +1,26 @@
+[package]
+name = "unixodbc-sys"
+version = "0.1.0"
+authors.workspace = true
+license = "LGPL-2.1-or-later"
+description = "FFI bindings for unixODBC"
+repository.workspace = true
+keywords.workspace = true
+build = "build.rs"
+categories.workspace = true
+edition.workspace = true
+
+[dependencies]
+odbc-sys-core = { path = "../odbc-sys-core", version = "0.1.0" }
+
+[build-dependencies]
+cc = { version = "1.0", optional = true }
+
+[features]
+default = ["odbc_version_3_80"]
+static = ["cc"]
+
+odbc_version_3_50 = ["odbc-sys-core/odbc_version_3_50"]
+odbc_version_3_80 = ["odbc_version_3_50", "odbc-sys-core/odbc_version_3_80"]
+odbc_version_4 = ["odbc_version_3_80", "odbc-sys-core/odbc_version_4"]
+

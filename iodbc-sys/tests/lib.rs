@@ -1,6 +1,5 @@
-//! Contains test for the ffi layer
-extern crate odbc_sys;
-use odbc_sys::*;
+extern crate iodbc_sys;
+use iodbc_sys::*;
 #[test]
 fn allocate_environment() {
     let mut env = Handle::null();
@@ -55,7 +54,6 @@ fn allocate_connection_error() {
             SQLAllocHandle(HandleType::Env, Handle::null(), &mut env as *mut Handle)
         );
 
-        // Allocating connection without setting ODBC Version first should result in an error
         assert_eq!(
             SqlReturn::ERROR,
             SQLAllocHandle(HandleType::Dbc, env, &mut conn as *mut Handle)

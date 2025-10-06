@@ -1,6 +1,6 @@
-[submodule "vendor/unixODBC"]
-	path = vendor/unixODBC
+[submodule "unixodbc-sys/vendor/unixODBC"]
+	path = unixodbc-sys/vendor/unixODBC
 	url = https://github.com/lurcher/unixODBC
-[submodule "vendor/iODBC"]
-	path = vendor/iODBC
+[submodule "iodbc-sys/vendor/iODBC"]
+	path = iodbc-sys/vendor/iODBC
 	url = https://github.com/openlink/iODBC
