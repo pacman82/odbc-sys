@@ -1,23 +1,12 @@
-#[allow(unused_imports)]
-use std::path::{Path, PathBuf};
-use std::process::Command;
-
 fn main() {
     link_odbc();
-
-    if cfg!(target_os = "macos") {
-        if let Some(homebrew_lib_path) = homebrew_library_path() {
-            print_paths(&homebrew_lib_path);
-        }
-
-        if let Some(dyld_paths) = option_env!("DYLD_LIBRARY_PATH") {
-            print_paths(dyld_paths);
-        }
-        if let Some(dyld_fallback_paths) = option_env!("DYLD_FALLBACK_LIBRARY_PATH") {
-            print_paths(dyld_fallback_paths);
-        }
-    }
 }
+
+#[cfg(not(feature = "static"))]
+fn link_odbc() {}
+
+#[cfg(feature = "static")]
+use std::path::{Path, PathBuf};
 
 #[cfg(feature = "static")]
 fn link_odbc() {
@@ -29,9 +18,6 @@ fn link_odbc() {
     }
     compile_odbc_from_source();
 }
-
-#[cfg(not(feature = "static"))]
-fn link_odbc() {}
 
 #[cfg(feature = "static")]
 fn ensure_configured(vendor_dir: &Path) {
@@ -130,22 +116,4 @@ fn setup_compiler_flags(build: &mut cc::Build) {
     build.flag_if_supported("-Wno-implicit-function-declaration");
     build.flag_if_supported("-Wno-int-conversion");
     build.flag_if_supported("-w");
-}
-
-fn print_paths(paths: &str) {
-    for path in paths.split(':').filter(|x| !x.is_empty()) {
-        println!("cargo:rustc-link-search=native={path}")
-    }
-}
-
-fn homebrew_library_path() -> Option<String> {
-    let output = Command::new("brew").arg("--prefix").output().ok()?;
-    if !output.status.success() {
-        return None;
-    }
-    let prefix =
-        String::from_utf8(output.stdout).expect("brew --prefix must yield utf8 encoded response");
-    let prefix = prefix.trim();
-    let lib_path = prefix.to_owned() + "/lib";
-    Some(lib_path)
 }

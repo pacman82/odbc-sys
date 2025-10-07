@@ -19,7 +19,7 @@ default = ["odbc_version_3_80"]
 unixodbc-sys = ["static", "unixodbc", "dep:unixodbc-sys", "unixodbc-sys/static"]
 iodbc-sys = ["static", "iodbc", "dep:iodbc-sys", "iodbc-sys/static"]
 static = []
-iodbc = []
+iodbc = ["odbc-sys-core/iodbc"]
 unixodbc = []
 
 odbc_version_3_50 = ["odbc-sys-core/odbc_version_3_50"]

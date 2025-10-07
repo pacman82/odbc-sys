@@ -8,6 +8,16 @@
 //! ODBC 4.0 is still under development by Microsoft, so these symbols are deactivated by default
 //! in the cargo.toml
 
+#[cfg(feature = "iodbc")]
+#[cfg_attr(windows, link(name = "odbc32"))]
+#[cfg_attr(not(windows), link(name = "iodbc"))]
+extern "system" {}
+
+#[cfg(not(feature = "iodbc"))]
+#[cfg_attr(windows, link(name = "odbc32"))]
+#[cfg_attr(not(windows), link(name = "odbc"))]
+extern "system" {}
+
 mod attributes;
 mod bulk_operation;
 mod c_data_type;
