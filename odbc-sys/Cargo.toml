@@ -16,8 +16,8 @@ iodbc-sys = { path = "../iodbc-sys", version = "0.1.0", features = ["static"], o
 
 [features]
 default = ["odbc_version_3_80"]
-unixodbc-sys = ["static", "unixodbc", "dep:unixodbc-sys"]
-iodbc-sys = ["static", "iodbc", "dep:iodbc-sys"]
+unixodbc-sys = ["static", "unixodbc", "dep:unixodbc-sys", "unixodbc-sys/static"]
+iodbc-sys = ["static", "iodbc", "dep:iodbc-sys", "iodbc-sys/static"]
 static = []
 iodbc = []
 unixodbc = []
