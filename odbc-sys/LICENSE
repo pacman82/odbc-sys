@@ -1,0 +1,11 @@
+This crate is dual-licensed under MIT OR LGPL-2.1-or-later.
+
+When using the `unixodbc` feature, the LGPL-2.1-or-later license applies
+(as inherited from unixODBC).
+
+When using the `iodbc` feature, the MIT license applies
+(as inherited from iODBC).
+
+See the respective LICENSE files in the unixodbc-sys and iodbc-sys directories
+for full license text.
+

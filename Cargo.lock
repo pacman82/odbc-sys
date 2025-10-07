@@ -27,6 +27,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "odbc-sys"
+version = "0.1.0"
+dependencies = [
+ "iodbc-sys",
+ "odbc-sys-core",
+ "unixodbc-sys",
+]
+
+[[package]]
 name = "odbc-sys-core"
 version = "0.1.0"
 

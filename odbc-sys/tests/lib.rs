@@ -1,5 +1,5 @@
-extern crate iodbc_sys;
-use iodbc_sys::*;
+use odbc_sys::*;
+
 #[test]
 fn allocate_environment() {
     let mut env = Handle::null();

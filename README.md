@@ -12,6 +12,42 @@ This repository contains a workspace with multiple crates to support different d
 
 ## Crates
 
+### [`odbc-sys`](./odbc-sys)
+
+[![Crates.io version](https://img.shields.io/crates/v/odbc-sys)](https://crates.io/crates/odbc-sys)
+
+**Recommended**: A unified crate that re-exports either `unixodbc-sys`, `iodbc-sys`, or `odbc-sys-core` based on feature flags.
+This is the easiest way to use ODBC bindings in your project while choosing the driver manager implementation.
+
+#### Features
+- `unixodbc-sys`: Statically link to unixODBC
+- `iodbc-sys` - Statically link to iODBC
+- `unixodbc` - Dynamically link to unixODBC
+- `iodbc` - Dynamically link to iODBC
+
+On windows, dynamic linking to the system's ODBC driver is always activated.
+
+#### Usage with static linking
+
+Install a C compiler, then:
+
+```toml
+[dependencies]
+odbc-sys = { version = "0.1", features = ["unixodbc-sys"] }
+```
+
+#### With dynamic linking
+
+
+```bash
+sudo apt install unixodbc-dev
+```
+
+```toml
+[dependencies]
+odbc-sys = { version = "0.1", features = ["unixodbc-sys"] }
+```
+
 ### [`unixodbc-sys`](./unixodbc-sys)
 
 [![Crates.io version](https://img.shields.io/crates/v/unixodbc-sys)](https://crates.io/crates/unixodbc-sys)
@@ -113,10 +149,11 @@ On Windows, both crates link to the same system library - choose based on licens
 odbc-sys/
 ├── odbc-sys-core/      # Shared types/declarations (internal, not published)
 ├── unixodbc-sys/       # Re-exports core, links to libodbc/odbc32.dll - LGPL
-└── iodbc-sys/          # Re-exports core, links to libiodbc/odbc32.dll - MIT
+├── iodbc-sys/          # Re-exports core, links to libiodbc/odbc32.dll - MIT
+└── odbc-sys/           # Unified re-export with feature flags - MIT OR LGPL
 ```
 
-This avoids code duplication while enabling separate licensing and publishing.
+This avoids code duplication while enabling separate licensing and publishing. The `odbc-sys` crate provides a convenient unified interface.
 
 ## Development
 
@@ -143,5 +180,6 @@ Create an issue or pull request!
 
 ## Documentation
 
+- [odbc-sys docs](https://docs.rs/odbc-sys/) - Recommended unified interface
 - [unixodbc-sys docs](https://docs.rs/unixodbc-sys/)
 - [iodbc-sys docs](https://docs.rs/iodbc-sys/)

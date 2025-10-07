@@ -4,6 +4,7 @@ members = [
     "odbc-sys-core",
     "unixodbc-sys",
     "iodbc-sys",
+    "odbc-sys",
 ]
 
 [workspace.package]

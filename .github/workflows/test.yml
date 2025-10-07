@@ -7,46 +7,42 @@ env:
 
 jobs:
   test:
-    name: ${{ matrix.crate }} on ${{ matrix.target }} ${{ matrix.features }}
+    name: ${{ matrix.features }} on ${{ matrix.target }}
 
     runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
 
     strategy:
       matrix:
-        crate:
-          - unixodbc-sys
-          - iodbc-sys
         target:
           - x86_64-unknown-linux-gnu
           - aarch64-apple-darwin
           - x86_64-pc-windows-msvc
           - i686-pc-windows-msvc
         features:
-          - ""
-          - "static"
-        exclude:
-          - target: x86_64-pc-windows-msvc
-            features: "static"
-          - target: i686-pc-windows-msvc
-            features: "static"
+          - "unixodbc"
+          - "iodbc"
+          - "iodbc-sys"
+          - "unixodbc-sys"
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
         with:
           submodules: "recursive"
 
-      - if: ${{ contains(matrix.target, 'linux') && matrix.crate == 'unixodbc-sys' && matrix.features == '' }}
+      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'unixodbc' }}
         run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
-      - if: ${{ contains(matrix.target, 'linux') && matrix.crate == 'iodbc-sys' && matrix.features == '' }}
+      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'iodbc' }}
         run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.crate == 'unixodbc-sys' && matrix.features == '' }}
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'unixodbc' }}
         run: brew install unixodbc
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.crate == 'iodbc-sys' && matrix.features == '' }}
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
         run: brew install libiodbc
 
-      - run: cargo test -p ${{ matrix.crate }} --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+      - run: cargo test --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+        # static linking is not supported on windows
+        if: ${{ !contains(matrix.target, 'windows') || !contains(matrix.features, '-sys') }}
 
-  test-core:
+  clippy:
     name: Test odbc-sys-core
     runs-on: ubuntu-latest
     steps:
