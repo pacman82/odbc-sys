@@ -13,16 +13,13 @@ jobs:
 
     strategy:
       matrix:
-        target:
-          - x86_64-unknown-linux-gnu
-          - aarch64-apple-darwin
-          - x86_64-pc-windows-msvc
-          - i686-pc-windows-msvc
-        features:
-          - "unixodbc"
-          - "iodbc"
-          - "iodbc-sys"
-          - "unixodbc-sys"
+        target: ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin"]
+        features: ["unixodbc", "iodbc", "iodbc-sys", "unixodbc-sys"]
+        include: # windows always links dynamically to the system's driver manager
+          - target: "x86_64-pc-windows-msvc"
+            features: ""
+          - target: "i686-pc-windows-msvc"
+            features: ""
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
@@ -42,6 +39,3 @@ jobs:
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
 
       - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
-        # static linking is not supported on windows
-        if: ${{ !contains(matrix.target, 'windows') || !contains(matrix.features, '-sys') }}
-
