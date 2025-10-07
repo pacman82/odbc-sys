@@ -1,6 +1,6 @@
 [package]
 name = "odbc-sys-core"
-version = "0.1.0"
+version = "0.27.0"
 authors.workspace = true
 license = "MIT"
 description = "Core ODBC types and declarations (internal use only)"

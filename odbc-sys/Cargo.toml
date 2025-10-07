@@ -1,6 +1,6 @@
 [package]
 name = "odbc-sys"
-version = "0.1.0"
+version = "0.27.0"
 authors.workspace = true
 license = "MIT OR LGPL-2.1-or-later"
 description = "FFI bindings for ODBC (supports unixODBC and iODBC)"
@@ -10,9 +10,9 @@ categories.workspace = true
 edition.workspace = true
 
 [dependencies]
-odbc-sys-core = { path = "../odbc-sys-core", version = "0.1.0" }
-unixodbc-sys = { path = "../unixodbc-sys", version = "0.1.0", features = ["static"], optional = true }
-iodbc-sys = { path = "../iodbc-sys", version = "0.1.0", features = ["static"], optional = true }
+odbc-sys-core = { path = "../odbc-sys-core", version = "0.27.0" }
+unixodbc-sys = { path = "../unixodbc-sys", version = "0.27.0", features = ["static"], optional = true }
+iodbc-sys = { path = "../iodbc-sys", version = "0.27.0", features = ["static"], optional = true }
 
 [features]
 default = ["odbc_version_3_80"]

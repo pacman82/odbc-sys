@@ -20,7 +20,7 @@ checksum = "0399f9d26e5191ce32c498bebd31e7a3ceabc2745f0ac54af3f335126c3f24b3"
 
 [[package]]
 name = "iodbc-sys"
-version = "0.1.0"
+version = "0.27.0"
 dependencies = [
  "cc",
  "odbc-sys-core",
@@ -28,7 +28,7 @@ dependencies = [
 
 [[package]]
 name = "odbc-sys"
-version = "0.1.0"
+version = "0.27.0"
 dependencies = [
  "iodbc-sys",
  "odbc-sys-core",
@@ -37,7 +37,7 @@ dependencies = [
 
 [[package]]
 name = "odbc-sys-core"
-version = "0.1.0"
+version = "0.27.0"
 
 [[package]]
 name = "shlex"
@@ -47,7 +47,7 @@ checksum = "0fda2ff0d084019ba4d7c6f371c95d8fd75ce3524c3cb8fb653a3023f6323e64"
 
 [[package]]
 name = "unixodbc-sys"
-version = "0.1.0"
+version = "0.27.0"
 dependencies = [
  "cc",
  "odbc-sys-core",

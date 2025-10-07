@@ -1,6 +1,6 @@
 [package]
 name = "unixodbc-sys"
-version = "0.1.0"
+version = "0.27.0"
 authors.workspace = true
 license = "LGPL-2.1-or-later"
 description = "FFI bindings for unixODBC"
@@ -11,7 +11,7 @@ categories.workspace = true
 edition.workspace = true
 
 [dependencies]
-odbc-sys-core = { path = "../odbc-sys-core", version = "0.1.0" }
+odbc-sys-core = { path = "../odbc-sys-core", version = "0.27.0" }
 
 [build-dependencies]
 cc = { version = "1.0", optional = true }
