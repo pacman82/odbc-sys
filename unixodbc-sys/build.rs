@@ -94,7 +94,7 @@ fn compile_odbc_from_source() {
     build.define("VERSION", Some(unixodbc_version(&configure_ac).as_str()));
 
     let source_dirs = ["DriverManager", "odbcinst", "ini", "log", "lst"];
-    build.files(c_files_in_dirs(&vendor_dir, &source_dirs));
+    build.files(c_files_in_dirs(vendor_dir, &source_dirs));
 
     build.compile("odbc");
 

@@ -98,7 +98,7 @@ fn compile_odbc_from_source() {
     build.define("VERSION", Some(iodbc_version(&configure_ac).as_str()));
 
     let source_dirs = ["iodbc", "iodbc/trace", "iodbcinst"];
-    build.files(c_files_in_dirs(&iodbc_src, &source_dirs));
+    build.files(c_files_in_dirs(iodbc_src, &source_dirs));
     build.compile("iodbc");
 
     println!("cargo:rustc-link-lib=pthread");

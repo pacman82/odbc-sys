@@ -38,15 +38,10 @@ jobs:
       - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
         run: brew install libiodbc
 
-      - run: cargo test --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+      - run: cargo fmt --all -- --check
+      - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
+
+      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
         # static linking is not supported on windows
         if: ${{ !contains(matrix.target, 'windows') || !contains(matrix.features, '-sys') }}
 
-  clippy:
-    name: Test odbc-sys-core
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11
-        with:
-          submodules: "recursive"
-      - run: cargo clippy --all-targets -- -D warnings
