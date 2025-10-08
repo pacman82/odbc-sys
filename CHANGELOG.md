@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.1](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.0...odbc-sys-v0.27.1) - 2025-10-08
+
+### Added
+
+- Introduce vendored-unix-odbc flag. This enables building and linking against unixODBC as part of cargo build
+
 ## [0.27.0](https://github.com/pacman82/odbc-sys/compare/v0.26.3...v0.27.0) - 2025-09-08
 
 ### Fixed
