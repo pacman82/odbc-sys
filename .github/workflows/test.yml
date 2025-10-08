@@ -6,6 +6,16 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  vendored-unix-odbc-linux:
+    name: Build & Test with vendored unixODBC on Ubuntu Latest
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+      - name: Run tests
+        run: cargo test --features vendored-unixodbc
+
   build-linux:
     name: Build & Test on Ubuntu Latest
 
