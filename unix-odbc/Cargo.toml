@@ -1,0 +1,17 @@
+[package]
+name = "unix-odbc"
+version = "0.1.0"
+edition = "2024"
+description = '''
+The unixODBC driver manager. It builds the unixODBC C-library, not the rust bindings to it. It is
+intended to support the `vendored-unix-odbc` feature `odbc-sys`. Therefore it is recommend to use
+`odbc-sys` as a dependency rather than to consume this crate directly.
+'''
+license = "LGPL-2.1-or-later"
+
+[dependencies]
+
+[build-dependencies]
+autotools = "0.2.7"
+flate2 = "1.1.4"
+tar = "0.4.44"
