@@ -7,7 +7,7 @@ env:
 
 jobs:
   test:
-    name: ${{ matrix.features || 'dynamic' }} on ${{ matrix.target }}
+    name: ${{ matrix.features || 'dynamic unixodbc' }} on ${{ matrix.target }}
     runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
 
     strategy:
@@ -24,11 +24,11 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: "recursive"
-      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'unixodbc' }}
+      - if: ${{ contains(matrix.target, 'linux') && matrix.features == '' }}
         run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
       - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'iodbc' }}
         run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'unixodbc' }}
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == '' }}
         run: brew install unixodbc
       - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
         run: brew install libiodbc
