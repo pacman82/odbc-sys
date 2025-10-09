@@ -6,72 +6,31 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  vendored-unix-odbc-linux:
-    name: Build & Test with vendored unixODBC on Ubuntu Latest
+  test:
+    name: ${{ matrix.features || 'dynamic' }} on ${{ matrix.target }}
+    runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
 
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Run tests
-        run: cargo test --features vendored-unix-odbc
-
-  build-linux:
-    name: Build & Test on Ubuntu Latest
-
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Install unixODBC
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y unixodbc-dev
-        shell: sudo bash {0}
-      - name: Run tests
-        run: cargo test
-
-  build-win64:
-    name: Build & Test on Windows 64Bit
-
-    runs-on: windows-latest
+    strategy:
+      matrix:
+        target: ["x86_64-unknown-linux-gnu", "aarch64-apple-darwin"]
+        features: ["unixodbc", "iodbc", "vendored-unix-odbc"]
+        include: # windows always links dynamically to the system's driver manager
+          - target: "x86_64-pc-windows-msvc"
+            features: ""
+          - target: "i686-pc-windows-msvc"
+            features: ""
 
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Build
-        run: cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
-
-  build-win32:
-    name: Build & Test on Windows 32Bit
-
-    runs-on: windows-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-
-      - name: Install 32Bit toolchain
-        uses: dtolnay/rust-toolchain@stable
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
-          target: i686-pc-windows-msvc
-
-      - name: Build
-        run: cargo build --verbose
-
-      - name: Run tests
-        run: cargo test --verbose
-
-  build-osx:
-    name: Build & Test on OS-X
-
-    runs-on: macos-latest
-
-    steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
-      - name: Build
-        run: |
-          brew install unixodbc
-          cargo build --verbose
-      - name: Run tests
-        run: cargo test --verbose
+          submodules: "recursive"
+      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'unixodbc' }}
+        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
+      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'iodbc' }}
+        run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'unixodbc' }}
+        run: brew install unixodbc
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
+        run: brew install libiodbc
+      - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
+      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
