@@ -15,7 +15,9 @@ fn main() {
     archive.unpack(&out_dir).unwrap();
 
     let unix_odbc_source_path = out_dir.join("unixODBC-2.3.9");
-    let path = Config::new(unix_odbc_source_path).build();
+    let path = Config::new(unix_odbc_source_path)
+        .cflag("-std=gnu99")
+        .build();
     let path = path.join("lib");
     println!("cargo:rustc-link-search=native={}", path.display());
 }
