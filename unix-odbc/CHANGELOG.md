@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1](https://github.com/pacman82/odbc-sys/compare/unix-odbc-v0.1.0...unix-odbc-v0.1.1) - 2025-10-09
+
+### Fixed
+
+- fix static compilation
+
+### Other
+
+- release v0.27.1
+
 ## [0.1.0](https://github.com/pacman82/odbc-sys/releases/tag/unix-odbc-v0.1.0) - 2025-10-08
 
 ### Added
