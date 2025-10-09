@@ -45,16 +45,7 @@ Note for **ARM** based macOS Systems (M1 processors and later):
 
 You find documentation on what directories are searched during build here: <https://doc.rust-lang.org/cargo/reference/environment-variables.html#dynamic-library-paths>.
 
-You can also install unixODBC from source:
-
-1. copy the unixODBC-2.3.9.tar.gz file somewhere you can create files and directories
-2. gunzip unixODBC*.tar.gz
-3. tar xvf unixODBC*.tar
-4. `./configure`
-5. `make`
-6. `make install`
-
-Thanks to @TBPixel for testing this!
+When using the `vendored-unix-odbc` feature, unixODBC is built from source using its vendored source code.
 
 ### Windows
 

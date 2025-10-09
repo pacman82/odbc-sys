@@ -1,0 +1,35 @@
+.TH dltest 1 "Thu 07 Jan 2021" "version 2.3.12" "unixODBC manual pages"
+
+.SH NAME
+dltest - A simple library symbol test program
+
+.SH SYNOPSIS
+.B dltest
+[
+.I library symbol
+]
+
+.SH DESCRIPTION
+\fBdltest\fR is a simple program that determines whether a \fIsymbol\fR
+appears in a (shared object) \fIlibrary\fR.
+
+The name of the \fIlibrary\fR must be prefixed by a full system path.
+
+If no parameters are provided, \fBdltest\fR prints a short help message.
+
+.SH EXAMPLES
+To determine if the symbol \fBprintf\fR is found in \fIlibc-2\.18\.so\fR, run:
+
+.RS
+$ dltest /usr/lib/libc-2.18.so printf
+.RE
+
+.SH AUTHORS
+The authors of unixODBC are Peter Harvey <\fIpharvey@codebydesign.com\fR> and
+Nick Gorham <\fInick@lurcher.org\fR>.
+
+For a full list of contributors, refer to the \fIAUTHORS\fR file.
+
+.SH COPYRIGHT
+unixODBC is licensed under the GNU Lesser General Public License. For details
+about the license, see the \fICOPYING\fR file.
