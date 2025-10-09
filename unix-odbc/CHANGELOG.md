@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- fix static compilation
+- An issue has been fixed which prevent the build on mac-os
 
 ### Other
 
