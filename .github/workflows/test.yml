@@ -13,6 +13,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+      - name: Fix autotools dependencies
+        run: find unix-odbc/unixODBC -name "*.in" -o -name "*.m4" | xargs touch
       - name: Run tests
         run: cargo test --features vendored-unix-odbc
 
