@@ -18,7 +18,6 @@
 
 #include	<nncol.h>
 #include	"nncol.ci"
-#include	"driver.h"
 
 int	nnsql_getcolidxbyname( char* col_name )
 {

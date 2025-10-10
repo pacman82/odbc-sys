@@ -10,11 +10,6 @@
  * Peter Harvey		- pharvey@codebydesign.com
  **************************************************/
 #include <config.h>
-
-#ifdef UNIXODBC_SOURCE
-#include <ltdl.h>
-#endif
-
 #include <odbcinstext.h>
 
 /*! 
@@ -148,9 +143,6 @@ BOOL SQLManageDataSources( HWND hWnd )
         inst_logPushMsg( __FILE__, __FILE__, __LINE__, LOG_CRITICAL, ODBC_ERROR_GENERAL_ERR, "lt_dlinit() failed" );
 		return FALSE;
     }
-#ifdef MODULEDIR
-    lt_dlsetsearchpath(MODULEDIR);
-#endif
 
     /* get plugin name */
     _appendUIPluginExtension( szNameAndExtension, _getUIPluginName( szName, hODBCInstWnd->szUI ) );

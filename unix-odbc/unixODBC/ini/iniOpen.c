@@ -184,8 +184,6 @@ int iniOpen( HINI *hIni, char *pszFileName, char *cComment, char cLeftBracket, c
 
     /* INIT STATEMENT */
     *hIni = malloc( sizeof(INI) );
-    if ( !*hIni )
-        return INI_ERROR;
     if ( pszFileName && pszFileName != STDINFILE )
         strncpy((*hIni)->szFileName, pszFileName, ODBC_FILENAME_MAX );
     else if ( pszFileName == STDINFILE )
@@ -365,8 +363,6 @@ int iniOpen( HINI *hIni, char *pszFileName, char *cComment, char cLeftBracket, c
 
     /* INIT STATEMENT */
     *hIni = malloc( sizeof(INI) );
-    if ( !*hIni )
-        return INI_ERROR;
     if ( pszFileName && pszFileName != STDINFILE )
         strncpy((*hIni)->szFileName, pszFileName, ODBC_FILENAME_MAX );
     else if ( pszFileName == STDINFILE )

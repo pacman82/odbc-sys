@@ -91,7 +91,7 @@ typedef struct cl_statement
     char                *sql_text;      /* text of current statement */
     char                **column_names; /* names of each column */
     SQLSMALLINT         *data_type;
-    SQLULEN             *column_size;
+    SQLLEN              *column_size;
     SQLSMALLINT         *decimal_digits;
     int                 driver_stmt_closed;
     int                 not_from_select;
@@ -105,11 +105,7 @@ typedef struct cl_statement
     int                 rowset_complete;
     FILE                *rowset_file;
     char                *rowset_buffer;
-#ifdef HAVE_FSEEKO
-    off_t               buffer_length;
-#else
-    long                buffer_length;
-#endif
+    int                 buffer_length;
     int                 column_count;
     int                 curr_rowset_start;
     int                 cursor_pos;

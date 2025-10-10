@@ -291,8 +291,6 @@ SQLRETURN SQLCopyDesc( SQLHDESC source_desc_handle,
                     target_descriptor -> msg );
         }
 
-        thread_release( SQL_HANDLE_DBC, src_descriptor -> connection );
-
         return function_return( IGNORE_THREAD, target_descriptor, ret, DEFER_R3 );
     }
     else
@@ -394,7 +392,7 @@ SQLRETURN SQLCopyDesc( SQLHDESC source_desc_handle,
                                         target_descriptor -> driver_desc,
                                         0, 
                                         header_fields[ i ].field_identifier,
-                                        (SQLPOINTER)(intptr_t) ival,
+                                        ival,
                                         sizeof( ival ));
                     }
                     else if ( header_fields[ i ].field_type == SQL_SMALLINT )
@@ -403,7 +401,7 @@ SQLRETURN SQLCopyDesc( SQLHDESC source_desc_handle,
                                         target_descriptor -> driver_desc,
                                         0, 
                                         header_fields[ i ].field_identifier,
-                                        (SQLPOINTER)(intptr_t) sval,
+                                        sval,
                                         sizeof( sval ));
                     }
                     else if ( header_fields[ i ].field_type == SQL_VARCHAR )
@@ -472,7 +470,7 @@ SQLRETURN SQLCopyDesc( SQLHDESC source_desc_handle,
                                             target_descriptor -> driver_desc,
                                             rec, 
                                             rec_fields[ i ].field_identifier,
-                                            (SQLPOINTER)(intptr_t) ival,
+                                            ival,
                                             sizeof( ival ));
                         }
                         else if ( rec_fields[ i ].field_type == SQL_SMALLINT )
@@ -481,7 +479,7 @@ SQLRETURN SQLCopyDesc( SQLHDESC source_desc_handle,
                                             target_descriptor -> driver_desc,
                                             rec, 
                                             rec_fields[ i ].field_identifier,
-                                            (SQLPOINTER)(intptr_t) sval,
+                                            sval,
                                             sizeof( sval ));
                         }
                         else if ( rec_fields[ i ].field_type == SQL_VARCHAR )

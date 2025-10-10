@@ -335,12 +335,6 @@ SQLRETURN CLConnect( DMHDBC connection, struct driver_helper_funcs *dh )
             connection -> functions[ i ].can_supply =
                 cl_connection -> functions[ i ].can_supply;
         }
-        /*
-         * prevent the DM from tring to get via the W functions, the cursor lib is 
-         * ascii only
-         */
-
-        connection -> functions[ i ].funcW = NULL;
     }
 
     /*
@@ -369,7 +363,6 @@ SQLRETURN CLConnect( DMHDBC connection, struct driver_helper_funcs *dh )
 
     connection -> functions[ DM_SQLBULKOPERATIONS ].can_supply = 0;
     connection -> functions[ DM_SQLBULKOPERATIONS ].func = NULL;
-
 
     /*
      * intercept the driver dbc
@@ -418,33 +411,30 @@ SQLRETURN CLDisconnect( SQLHDBC connection_handle )
      * disconnect from the driver
      */
 
-    ret = cl_connection -> functions ?
-            SQLDISCONNECT( cl_connection, cl_connection -> driver_dbc ) :
-            -1;
+    ret = SQLDISCONNECT( cl_connection, 
+            cl_connection -> driver_dbc );
 
     if ( SQL_SUCCEEDED( ret ))
     {
         /*
          * replace the function pointers with the ones from the
-         * cursor lib, this may be cleared if its a pooled connection
+         * cursor lib
          */
 
-        if ( connection ) {
-            for ( i = 0; 
-                i < sizeof( cl_template_func ) / sizeof( cl_template_func[ 0 ] ); 
-                i ++ )
-            {
-                connection -> functions[ i ] =
-                    cl_connection -> functions[ i ];
-            }
-
-            /*
-             * replace the driver dbc
-             */
-    
-            connection -> driver_dbc = 
-                cl_connection -> driver_dbc;
+        for ( i = 0; 
+            i < sizeof( cl_template_func ) / sizeof( cl_template_func[ 0 ] ); 
+            i ++ )
+        {
+            connection -> functions[ i ] =
+                cl_connection -> functions[ i ];
         }
+
+        /*
+         * replace the driver dbc
+         */
+
+        connection -> driver_dbc = 
+            cl_connection -> driver_dbc;
 
         /*
          * release the allocated memory

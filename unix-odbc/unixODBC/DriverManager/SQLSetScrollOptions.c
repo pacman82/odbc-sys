@@ -401,7 +401,7 @@ SQLRETURN SQLSetScrollOptions(
             ret = SQLSETSTMTATTR( statement -> connection,
                         statement -> driver_stmt,
                         SQL_ATTR_CONCURRENCY,
-                        (SQLPOINTER)(intptr_t) f_concurrency,
+                        f_concurrency,
                         0 );
         }
         else if ( CHECK_SQLSETSTMTATTRW( statement -> connection ))
@@ -409,7 +409,7 @@ SQLRETURN SQLSetScrollOptions(
             ret = SQLSETSTMTATTRW( statement -> connection,
                         statement -> driver_stmt,
                         SQL_ATTR_CONCURRENCY,
-                        (SQLPOINTER)(intptr_t) f_concurrency,
+                        f_concurrency,
                         0 );
         }
 
@@ -470,7 +470,7 @@ SQLRETURN SQLSetScrollOptions(
              ret = SQLSETSTMTATTR( statement -> connection,
                                    statement -> driver_stmt,
                                    SQL_ATTR_CURSOR_TYPE,
-                                   (SQLPOINTER)(intptr_t) info_type,
+                                   info_type,
                                    0 );
         }
         else if(CHECK_SQLSETSTMTATTRW( statement -> connection ))
@@ -478,7 +478,7 @@ SQLRETURN SQLSetScrollOptions(
              ret = SQLSETSTMTATTRW( statement -> connection,
                                    statement -> driver_stmt,
                                    SQL_ATTR_CURSOR_TYPE,
-                                   (SQLPOINTER)(intptr_t) info_type,
+                                   info_type,
                                    0 );
         }
 
@@ -500,7 +500,7 @@ SQLRETURN SQLSetScrollOptions(
                  ret = SQLSETSTMTATTR( statement -> connection,
                                        statement -> driver_stmt,
                                        SQL_ATTR_KEYSET_SIZE,
-                                       (SQLPOINTER)(intptr_t) crow_keyset,
+                                       crow_keyset,
                                        0 );
             }
             else if(CHECK_SQLSETSTMTATTRW( statement -> connection ))
@@ -508,7 +508,7 @@ SQLRETURN SQLSetScrollOptions(
                  ret = SQLSETSTMTATTRW( statement -> connection,
                                        statement -> driver_stmt,
                                        SQL_ATTR_KEYSET_SIZE,
-                                       (SQLPOINTER)(intptr_t) crow_keyset,
+                                       crow_keyset,
                                        0 );
             }
 
@@ -528,7 +528,7 @@ SQLRETURN SQLSetScrollOptions(
              ret = SQLSETSTMTATTR( statement -> connection,
                                    statement -> driver_stmt,
                                    SQL_ROWSET_SIZE,
-                                   (SQLPOINTER)(intptr_t) crow_rowset,
+                                   crow_rowset,
                                    0 );
         }
         else if(CHECK_SQLSETSTMTATTRW( statement -> connection ))
@@ -536,7 +536,7 @@ SQLRETURN SQLSetScrollOptions(
              ret = SQLSETSTMTATTRW( statement -> connection,
                                    statement -> driver_stmt,
                                    SQL_ROWSET_SIZE,
-                                   (SQLPOINTER)(intptr_t) crow_rowset,
+                                   crow_rowset,
                                    0 );
         }
     }

@@ -506,40 +506,15 @@ SQLRETURN SQLSetConnectOption( SQLHDBC connection_handle,
         else
         {
             /*
-             * save any unknown attributes until connect
+             * save any unknown attributes untill connect
              */
 
-            struct save_attr sa, *sap;
-            
-            memset( &sa, 0, sizeof( sa ));
-            
-            sa.attr_type = option;
-            sa.intptr_attr = value;
-            
-            sap = connection -> save_attr;
-            
-            while ( sap )
-            {
-                if ( sap -> attr_type == option )
-                {
-                    free( sap -> str_attr );
-                    break;
-                }
-                sap = sap -> next;
-            }
+            struct save_attr *sa = calloc( 1, sizeof( struct save_attr ));
 
-            if ( sap )
-            {
-                *sap = sa;
-            }
-            else
-            {
-                sap = malloc( sizeof( struct save_attr ));
-                *sap = sa;
-
-                sap -> next = connection -> save_attr;
-                connection -> save_attr = sap;
-            }
+            sa -> attr_type = option;
+            sa -> intptr_attr = value;
+            sa -> next = connection -> save_attr;
+            connection -> save_attr = sa;
         }
 
         if ( log_info.log_flag )
@@ -643,7 +618,7 @@ SQLRETURN SQLSetConnectOption( SQLHDBC connection_handle,
                 ret = SQLSETCONNECTATTR( connection,
                         connection -> driver_dbc,
                         option,
-                        (SQLPOINTER)(intptr_t) value,
+                        value,
                         string_length );
             }
             else

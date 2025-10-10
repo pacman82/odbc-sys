@@ -226,7 +226,7 @@ SQLRETURN SQLParamOptions(
         ret = SQLSETSTMTATTR( statement -> connection,
                 statement -> driver_stmt,
                 SQL_ATTR_PARAMSET_SIZE, 
-                (SQLPOINTER)(intptr_t) crow,
+                crow, 
                 0 );
         if ( SQL_SUCCEEDED( ret ))
         {
@@ -242,7 +242,7 @@ SQLRETURN SQLParamOptions(
         ret = SQLSETSTMTATTRW( statement -> connection,
                 statement -> driver_stmt,
                 SQL_ATTR_PARAMSET_SIZE, 
-                (SQLPOINTER)(intptr_t) crow,
+                crow, 
                 0 );
         if ( SQL_SUCCEEDED( ret ))
         {

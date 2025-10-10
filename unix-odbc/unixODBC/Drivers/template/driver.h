@@ -31,7 +31,6 @@
 #include <sqlext.h>
 #include <odbcinstext.h>
 #include "driverextras.h"
-#include "prototypes.h"
 
 #define SQL_MAX_CURSOR_NAME 100
 

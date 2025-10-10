@@ -365,7 +365,7 @@ void __clear_ini_cache( void )
 
 #endif
 
-int __SQLGetPrivateProfileStringNL( LPCSTR  pszSection,
+int SQLGetPrivateProfileString( LPCSTR  pszSection,
                                 LPCSTR  pszEntry,
                                 LPCSTR  pszDefault,
                                 LPSTR   pRetBuffer,
@@ -605,23 +605,6 @@ int __SQLGetPrivateProfileStringNL( LPCSTR  pszSection,
     return ret;
 }
 
-int SQLGetPrivateProfileString( LPCSTR  pszSection,
-                                LPCSTR  pszEntry,
-                                LPCSTR  pszDefault,
-                                LPSTR   pRetBuffer,
-                                int     nRetBuffer,
-                                LPCSTR  pszFileName
-                              )
-{
-int ret;
-
-    __lock_config_mode();
-    ret = __SQLGetPrivateProfileStringNL( pszSection, pszEntry, pszDefault, pRetBuffer, nRetBuffer, pszFileName );
-    __unlock_config_mode();
-
-    return ret;
-}
-
 int  INSTAPI SQLGetPrivateProfileStringW( LPCWSTR lpszSection,
                                         LPCWSTR lpszEntry,
                                         LPCWSTR lpszDefault,
@@ -659,7 +642,7 @@ int  INSTAPI SQLGetPrivateProfileStringW( LPCWSTR lpszSection,
 		buf = NULL;
 	}
 
-	ret = buf ? SQLGetPrivateProfileString( sect, entry, def, buf, cbRetBuffer, name ) : -1;
+	ret = SQLGetPrivateProfileString( sect, entry, def, buf, cbRetBuffer, name );
 
 	if ( sect )
 		free( sect );
@@ -675,9 +658,9 @@ int  INSTAPI SQLGetPrivateProfileStringW( LPCWSTR lpszSection,
 		if ( buf && lpszRetBuffer )
 		{
             if ( !lpszSection || !lpszEntry )
-                ret = _multi_string_copy_to_wide( lpszRetBuffer, buf, ret );
+                _multi_string_copy_to_wide( lpszRetBuffer, buf, ret );
             else
-                ret = _single_copy_to_wide( lpszRetBuffer, buf, ret );
+                _single_copy_to_wide( lpszRetBuffer, buf, ret );
 		}
 	}
 

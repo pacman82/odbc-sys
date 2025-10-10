@@ -437,7 +437,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
                 ret = SQLSETSTMTOPTION( statement -> connection,
                     statement -> driver_stmt,
                     attribute,
-                    (SQLULEN) statement -> implicit_ard -> driver_desc );
+                    statement -> implicit_ard -> driver_desc );
             }
 
 			if ( ret != SQL_SUCCESS ) 
@@ -579,7 +579,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
                 ret = SQLSETSTMTOPTION( statement -> connection,
                     statement -> driver_stmt,
                     attribute,
-                    (SQLULEN) drv_desc );
+                    drv_desc );
             }
 
 			if ( ret != SQL_SUCCESS ) 
@@ -758,7 +758,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
                 ret = SQLSETSTMTOPTION( statement -> connection,
                     statement -> driver_stmt,
                     attribute,
-                    (SQLULEN) value );
+                    value );
             }
         }
         ret = SQL_SUCCESS;
@@ -793,7 +793,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
                 ret = SQLSETSTMTOPTION( statement -> connection,
                     statement -> driver_stmt,
                     attribute,
-                    (SQLULEN) value );
+                    value );
             }
         }
         ret = SQL_SUCCESS;
@@ -828,7 +828,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
                 ret = SQLSETSTMTOPTION( statement -> connection,
                     statement -> driver_stmt,
                     attribute,
-                    (SQLULEN) value );
+                    value );
             }
         }
         ret = SQL_SUCCESS;
@@ -862,7 +862,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
             ret = SQLSETSTMTOPTION( statement -> connection,
                 statement -> driver_stmt,
                 SQL_ROWSET_SIZE,
-                (SQLULEN) value );
+                value );
         }
     }
     else if ( CHECK_SQLSETSTMTATTR( statement -> connection ))
@@ -906,7 +906,7 @@ SQLRETURN SQLSetStmtAttr( SQLHSTMT statement_handle,
         ret = SQLSETSTMTOPTION( statement -> connection,
                     statement -> driver_stmt,
                     attribute,
-                    (SQLULEN) value );
+                    value );
     }
 
     /*

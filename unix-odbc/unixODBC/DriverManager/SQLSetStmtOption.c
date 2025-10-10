@@ -393,7 +393,7 @@ SQLRETURN SQLSetStmtOption( SQLHSTMT statement_handle,
             ret = SQLSETSTMTATTR( statement -> connection,
                     statement -> driver_stmt,
                     option,
-                    (SQLPOINTER)(intptr_t) value,
+                    value,
                     SQL_NTS );
             break;
         }
@@ -438,7 +438,7 @@ SQLRETURN SQLSetStmtOption( SQLHSTMT statement_handle,
             ret = SQLSETSTMTATTRW( statement -> connection,
                     statement -> driver_stmt,
                     option,
-                    (SQLPOINTER)(intptr_t) value,
+                    value,
                     SQL_NTS );
             break;
         }

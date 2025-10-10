@@ -14,7 +14,7 @@ License:
 	
 	All libraries are LGPL Version 2.1
 	
-	All programs are GPL Version 2.0.
+	All programs are GPL Version 2.1.
 
 Parts:
 	unixODBC includes the following;
@@ -51,6 +51,4 @@ Config Files:
       
 Resources:
 
-        https://sourceforge.net/projects/unixodbc/
-        https://github.com/lurcher/unixODBC/
-        https://www.unixodbc.org/
+        http://sourceforge.net/projects/unixodbc/

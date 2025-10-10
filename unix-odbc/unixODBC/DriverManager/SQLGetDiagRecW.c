@@ -326,10 +326,13 @@ static SQLRETURN extract_sql_error_rec_w( EHEAD *head,
 
             if ( SQL_SUCCEEDED( ret ) && sqlstate )
             {
-                if ( as1 )
+                if ( sqlstate )
                 {
-                    ansi_to_unicode_copy( sqlstate,(char*) as1, SQL_NTS, __get_connection( head ), NULL );
-                    __map_error_state_w( sqlstate, __get_version( head ));
+                    if ( as1 )
+                    {
+                        ansi_to_unicode_copy( sqlstate,(char*) as1, SQL_NTS, __get_connection( head ), NULL );
+                        __map_error_state_w( sqlstate, __get_version( head ));
+                    }
                 }
                 if ( message_text )
                 {
@@ -421,7 +424,7 @@ SQLRETURN SQLGetDiagRecW( SQLSMALLINT handle_type,
         SQLSMALLINT *text_length_ptr )
 {
     SQLRETURN ret;
-    SQLCHAR s0[ 64 ], s1[ 100 + LOG_MESSAGE_LEN ];
+    SQLCHAR s0[ 32 ], s1[ 100 + LOG_MESSAGE_LEN ];
     SQLCHAR s2[ 100 + LOG_MESSAGE_LEN ];
     SQLCHAR s3[ 100 + LOG_MESSAGE_LEN ];
 

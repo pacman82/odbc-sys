@@ -70,7 +70,6 @@ SQLRETURN CLError( SQLHENV environment_handle,
            SQLSMALLINT buffer_length,
            SQLSMALLINT *text_length )
 {
-
     if ( statement_handle )
     {
         CLHSTMT cl_statement = (CLHSTMT) statement_handle; 

@@ -190,12 +190,7 @@ SQLRETURN SQLDataSources( SQLHENV environment_handle,
 
     if ( log_info.log_flag )
     {
-#ifdef HAVE_SNPRINTF
-            snprintf( environment -> msg, sizeof(  environment -> msg ),
-#else
-            sprintf( environment -> msg, 
-#endif
-                "\n\t\tEntry:\
+        sprintf( environment -> msg, "\n\t\tEntry:\
 \n\t\t\tEnvironment = %p",
                 environment );
 
@@ -392,11 +387,7 @@ SQLRETURN SQLDataSources( SQLHENV environment_handle,
 
     if ( log_info.log_flag )
     {
-#ifdef HAVE_SNPRINTF
-        snprintf( environment -> msg, sizeof(  environment -> msg ),
-#else
         sprintf( environment -> msg, 
-#endif
                 "\n\t\tExit:[%s]",
                     __get_return_status( SQL_SUCCESS, s1 ));
 

@@ -284,8 +284,6 @@ static pth_mutex_t mutex_pool = PTH_MUTEX_INIT;
 static pth_mutex_t mutex_iconv = PTH_MUTEX_INIT;
 static int pth_init_called = 0;
 
-static pth_cond_t cond_pool = PTH_COND_INIT;
-
 static int local_mutex_entry( pth_mutex_t *mutex )
 {
     if ( !pth_init_called )
@@ -301,17 +299,6 @@ static int local_mutex_exit( pth_mutex_t *mutex )
     return pth_mutex_release( mutex );
 }
 
-static int local_cond_timedwait( pth_cond_t *cond, pth_mutex_t *mutex, struct timespec *until )
-{
-    /* NOTE: timedwait is not present in PTH */
-    return pth_cond_await( cond, mutex, 0 );
-}
-
-static void local_cond_signal( pth_cond_t *cond )
-{
-    pth_cond_notify( cond, 0 );
-}
-
 #elif HAVE_LIBPTHREAD
 
 #include <pthread.h>
@@ -320,8 +307,6 @@ static pthread_mutex_t mutex_lists = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t mutex_env = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t mutex_pool = PTHREAD_MUTEX_INITIALIZER;
 static pthread_mutex_t mutex_iconv = PTHREAD_MUTEX_INITIALIZER;
-
-static pthread_cond_t cond_pool = PTHREAD_COND_INITIALIZER;
 
 static int local_mutex_entry( pthread_mutex_t *mutex )
 {
@@ -333,16 +318,6 @@ static int local_mutex_exit( pthread_mutex_t *mutex )
     return pthread_mutex_unlock( mutex );
 }
 
-static int local_cond_timedwait( pthread_cond_t *cond, pthread_mutex_t *mutex, struct timespec *until )
-{
-    return pthread_cond_timedwait( cond, mutex, until );
-}
-
-static void local_cond_signal( pthread_cond_t *cond )
-{
-    pthread_cond_signal( cond );
-}
-
 #elif HAVE_LIBTHREAD
 
 #include <thread.h>
@@ -351,8 +326,6 @@ static mutex_t mutex_lists;
 static mutex_t mutex_env;
 static mutex_t mutex_pool;
 static mutex_t mutex_iconv;
-
-static cond_t cond_pool;
 
 static int local_mutex_entry( mutex_t *mutex )
 {
@@ -364,22 +337,10 @@ static int local_mutex_exit( mutex_t *mutex )
     return mutex_unlock( mutex );
 }
 
-static int local_cond_timedwait( cond_t *cond, mutex_t *mutex, struct timespec *until )
-{
-    return cond_timedwait( cond, mutex, until );
-}
-
-static void local_cond_signal( cond_t *cond )
-{
-    cond_signal( cond );
-}
-
 #else
 
 #define local_mutex_entry(x)
 #define local_mutex_exit(x)
-#define local_cond_timedwait(x,y,z) 0
-#define local_cond_signal(x)
 
 #endif
 
@@ -426,9 +387,15 @@ void mutex_lib_exit( void )
     local_mutex_exit( &mutex_lists );
 }
 
-static DMHENV __locked_alloc_env()
+/*
+ * allocate and register a environment handle
+ */
+
+DMHENV __alloc_env( void )
 {
-    DMHENV environment;
+    DMHENV environment = NULL;
+
+    local_mutex_entry( &mutex_lists );
 
     environment = calloc( sizeof( *environment ), 1 );
 
@@ -499,49 +466,6 @@ static DMHENV __locked_alloc_env()
 
     }
 
-    return environment;
-}
-
-static DMHENV shared_environment;
-
-DMHENV __share_env( int *first )
-{
-    DMHENV environment;
-
-    local_mutex_entry( &mutex_lists );
-
-    if ( shared_environment ) {
-
-        *first = 0;
-
-        environment = shared_environment;
-    }
-    else {
-        environment = __locked_alloc_env();
-
-        *first = 1;
-
-        shared_environment = environment;
-    }
-
-    local_mutex_exit( &mutex_lists );
-
-    return environment;
-}
-
-
-/*
- * allocate and register a environment handle
- */
-
-DMHENV __alloc_env( void )
-{
-    DMHENV environment = NULL;
-
-    local_mutex_entry( &mutex_lists );
-
-    environment = __locked_alloc_env();
-
     local_mutex_exit( &mutex_lists );
 
     return environment;
@@ -551,12 +475,8 @@ DMHENV __alloc_env( void )
  * check that a env is real
  */
 
-int __validate_env_mark_released( DMHENV env )
+int __validate_env( DMHENV env )
 {
-    if ( shared_environment && env == shared_environment ) {
-        return 1;
-    }
-
 #ifdef FAST_HANDLE_VALIDATE
 
     if ( env && *(( int * ) env ) == HENV_MAGIC )
@@ -578,55 +498,6 @@ int __validate_env_mark_released( DMHENV env )
         if ( ptr == env )
         {
             ret = 1;
-            env -> released = 1;
-            break;
-        }
-
-        ptr = ptr -> next_class_list;
-    }
-
-    local_mutex_exit( &mutex_lists );
-
-    return ret;
-
-#endif
-}
-
-int __validate_env( DMHENV env )
-{
-    if ( shared_environment && env == shared_environment ) {
-        return 1;
-    }
-
-#ifdef FAST_HANDLE_VALIDATE
-
-    if ( env && *(( int * ) env ) == HENV_MAGIC )
-        return 1;
-    else
-        return 0;
-
-#else
-
-    DMHENV ptr;
-    int ret = 0;
-
-    local_mutex_entry( &mutex_lists );
-
-    ptr = environment_root;
-
-    while( ptr )
-    {
-        if ( ptr == env )
-        {
-            if ( env -> released ) 
-            {
-                fprintf( stderr, "unixODBC: API Error, env handle used after being free\n" );
-                ret = 0;
-            }
-            else 
-            {
-                ret = 1;
-            }
             break;
         }
 
@@ -648,10 +519,6 @@ void __release_env( DMHENV environment )
 {
     DMHENV last = NULL;
     DMHENV ptr;
-
-    if ( shared_environment && environment == shared_environment ) {
-        return;
-    } 
 
     local_mutex_entry( &mutex_lists );
 
@@ -892,31 +759,6 @@ void __release_dbc( DMHDBC connection )
 #elif HAVE_LIBTHREAD
     mutex_destroy( &connection -> mutex );
 #endif
-
-    if ( connection -> save_attr )
-    {
-        struct save_attr *sa = connection -> save_attr;
-        while ( sa )
-        {
-            struct save_attr *nsa = sa -> next;
-            free( sa -> str_attr );
-            free( sa );
-            sa = nsa;
-        }
-    }
-
-    if ( connection -> _driver_connect_string ) {
-        free( connection -> _driver_connect_string );
-    }
-    if ( connection -> _user ) {
-        free( connection -> _user );
-    }
-    if ( connection -> _password ) {
-        free( connection -> _password );
-    }
-    if ( connection -> _server ) {
-        free( connection -> _server );
-    }
 
     /*
      * clear just to make sure
@@ -1893,61 +1735,6 @@ void thread_release( int type, void *handle )
         }
         break;
     }
-}
-
-/*
- * Waits on pool condition variable until signaled, or 1s timeout elapses.
- *
- * Will be called with mutexes locked according to threading level as follows:
- *
- * 0   - mutex_pool
- * 1,2 - connection->mutex mutex_pool
- * 3   - mutex_env mutex_pool
- *
- * Returns
- *   nonzero on timeout
- *   zero when signaled
- */
-
-
-int pool_timedwait( DMHDBC connection )
-{
-    int ret = 0;
-    struct timespec waituntil;
-
-#ifdef HAVE_CLOCK_GETTIME
-    clock_gettime( CLOCK_REALTIME, &waituntil );
-    waituntil.tv_sec ++;
-#else
-    waituntil.tv_sec = time( NULL );
-    waituntil.tv_nsec = 0;
-
-    waituntil.tv_sec ++;
-#endif
-
-    switch ( connection -> protection_level )
-    {
-        case TS_LEVEL3:
-            mutex_pool_exit();
-            ret = local_cond_timedwait( &cond_pool, &mutex_env, &waituntil );
-            mutex_pool_entry();
-            break;
-        case TS_LEVEL2:
-        case TS_LEVEL1:
-            mutex_pool_exit();
-            ret = local_cond_timedwait( &cond_pool, &connection -> mutex, &waituntil );
-            mutex_pool_entry();
-            break;
-        case TS_LEVEL0:
-            ret = local_cond_timedwait( &cond_pool, &mutex_pool, &waituntil );
-            break;
-    }
-    return ret;
-}
-
-void pool_signal()
-{
-    local_cond_signal( &cond_pool );
 }
 
 #endif

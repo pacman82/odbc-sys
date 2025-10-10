@@ -11,7 +11,6 @@
  **************************************************/
 
 #include <config.h>
-#include <ctype.h>
 #define UNICODE
 #include "isql.h"
 #include "ini.h"
@@ -34,7 +33,6 @@ static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUI
 static int CloseDatabase( SQLHENV hEnv, SQLHDBC hDbc );
 static int ExecuteSQL( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
 static int ExecuteHelp( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
-static int ExecuteEcho( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
 
 static void WriteHeaderHTMLTable( SQLHSTMT hStmt );
 static void WriteHeaderDelimited( SQLHSTMT hStmt, char cDelimiter );
@@ -47,7 +45,6 @@ static int DumpODBCLog( SQLHENV hEnv, SQLHDBC hDbc, SQLHSTMT hStmt );
 
 
 int     bVerbose                    = 0;
-int     nUserWidth                  = 0;
 SQLHENV hEnv                        = 0;
 SQLHDBC hDbc                        = 0;
 int     buseED                      = 0;
@@ -129,9 +126,6 @@ int main( int argc, char *argv[] )
                 case 's':
                     buffer_size = atoi( &(argv[nArg][2]) );
                     break;
-                case 'm':
-                    nUserWidth = atoi( &(argv[nArg][2]) );
-                    break;
                 case 'w':
                     bHTMLTable = 1;
                     break;
@@ -170,32 +164,16 @@ int main( int argc, char *argv[] )
             }
             continue;
         }
-        else if ( count == 1 ) {
-            if ( nArg < argc ) {
-                szDSN = argv[nArg];
-            }
-        }
-        else if ( count == 2 ) {
-            if ( nArg < argc ) {
-                szUID = argv[nArg];
-            }
-        }
-        else if ( count == 3 ) {
-            if ( nArg < argc ) {
-                szPWD = argv[nArg];
-            }
-        }
+        else if ( count == 1 )
+            szDSN = argv[nArg];
+        else if ( count == 2 )
+            szUID = argv[nArg];
+        else if ( count == 3 )
+            szPWD = argv[nArg];
         count++;
     }
 
     szSQL = calloc( 1, buffer_size + 1 );
-
-#ifdef HAVE_SETVBUF
-    /* Ensure result lines are available to reader of whatever stdout */
-    if (bBatch) {
-        (void)setvbuf(stdout, NULL, _IOLBF, (size_t) 0);
-    }
-#endif
 
     /****************************
      * CONNECT
@@ -213,7 +191,6 @@ int main( int argc, char *argv[] )
         printf( "|                                       |\n" );
         printf( "| sql-statement                         |\n" );
         printf( "| help [tablename]                      |\n" );
-        printf( "| echo [string]                         |\n" );
         printf( "| quit                                  |\n" );
         printf( "|                                       |\n" );
         printf( "+---------------------------------------+\n" );
@@ -296,8 +273,6 @@ int main( int argc, char *argv[] )
                 szSQL[1] = '\0';
             else if ( strncmp( szSQL, "help", 4 ) == 0 )
                 ExecuteHelp( hDbc, szSQL, cDelimiter, bColumnNames, bHTMLTable );
-            else if ( strncmp( szSQL, "echo", 4 ) == 0 )
-                ExecuteEcho( hDbc, szSQL, cDelimiter, bColumnNames, bHTMLTable );
             else if (memcmp(szSQL, "--", 2) != 0)
                 ExecuteSQL( hDbc, szSQL, cDelimiter, bColumnNames, bHTMLTable );
         }
@@ -313,49 +288,13 @@ int main( int argc, char *argv[] )
 }
 
 /****************************
- * OptimalDisplayWidth
- ***************************/
-static SQLUINTEGER
-OptimalDisplayWidth( SQLHSTMT hStmt, SQLINTEGER nCol, int nUserWidth )
-{
-    SQLUINTEGER nLabelWidth                     = 10;
-    SQLULEN nDataWidth                      = 10;
-    SQLUINTEGER nOptimalDisplayWidth            = 10;
-    SQLCHAR     szColumnName[MAX_DATA_WIDTH+1]; 
-
-    *szColumnName = '\0';
-
-    SQLColAttribute( hStmt, nCol, SQL_DESC_DISPLAY_SIZE, NULL, 0, NULL, (SQLLEN*)&nDataWidth );
-    SQLColAttribute( hStmt, nCol, SQL_DESC_LABEL, szColumnName, sizeof(szColumnName), NULL, NULL );
-    nLabelWidth = strlen((char*) szColumnName );
-
-    /*
-     * catch sqlserver var(max) types
-     */
-
-    if ( nDataWidth == 0 ) {
-        nDataWidth = MAX_DATA_WIDTH;
-    }
-
-    nOptimalDisplayWidth = max( nLabelWidth, nDataWidth );
-
-    if ( nUserWidth > 0 )
-        nOptimalDisplayWidth = min( nOptimalDisplayWidth, nUserWidth );
-
-    if ( nOptimalDisplayWidth > MAX_DATA_WIDTH )
-        nOptimalDisplayWidth = MAX_DATA_WIDTH;
-
-    return nOptimalDisplayWidth;
-}
-
-/****************************
  * OpenDatabase - do everything we have to do to get a viable connection to szDSN
  ***************************/
 static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUID, char *szPWD )
 {
     SQLCHAR dsn[ 1024 ], uid[ 1024 ], pwd[ 1024 ];
     SQLTCHAR cstr[ 1024 ];
-    char zcstr[ 1024 * 2 ], tmp[ 1024 * 8 ];
+    char zcstr[ 1024 ], tmp[ 1024 ];
     int i;
     size_t zclen;
 
@@ -376,7 +315,7 @@ static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUI
     if ( szDSN )
     {
         size_t DSNlen=strlen( szDSN );
-        for ( i = 0; i < DSNlen && i < sizeof( dsn ) - 1; i ++ )
+        for ( i = 0; i < DSNlen; i ++ )
         {
             dsn[ i ] = szDSN[ i ];
         }
@@ -390,7 +329,7 @@ static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUI
     if ( szUID )
     {
         size_t UIDlen=strlen( szUID );
-        for ( i = 0; i < UIDlen && i < sizeof( uid ) - 1; i ++ )
+        for ( i = 0; i < UIDlen; i ++ )
         {
             uid[ i ] = szUID[ i ];
         }
@@ -404,7 +343,7 @@ static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUI
     if ( szPWD )
     {
         size_t PWDlen=strlen( szPWD );
-        for ( i = 0; i < PWDlen && i < sizeof( pwd ) - 1; i ++ )
+        for ( i = 0; i < PWDlen; i ++ )
         {
             pwd[ i ] = szPWD[ i ];
         }
@@ -415,29 +354,16 @@ static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUI
         pwd[ 0 ] = '\0';
     }
 
-    /*
-     * Allow passing in a entire connect string in the first arg
-     *
-     * isql "DSN={Dsn Name};PWD={Pass world};UID={User Name}"
-     */
-
-    if ( !szPWD && !szUID && ( strstr( dsn, "DSN=" ) || strstr( dsn, "DRIVER=" ) || strstr( dsn, "FILEDSN=" ))) 
+    sprintf( zcstr, "DSN=%s", dsn );
+    if ( szUID )
     {
-        strcpy( zcstr, dsn );
+        sprintf( tmp, ";UID=%s", uid );
+        strcat( zcstr, tmp );
     }
-    else 
+    if ( szPWD )
     {
-        sprintf( zcstr, "DSN=%s", dsn );
-        if ( szUID )
-        {
-            sprintf( tmp, ";UID=%s", uid );
-            strcat( zcstr, tmp );
-        }
-        if ( szPWD )
-        {
-            sprintf( tmp, ";PWD=%s", pwd );
-            strcat( zcstr, tmp );
-        }
+        sprintf( tmp, ";PWD=%s", pwd );
+        strcat( zcstr, tmp );
     }
 
     zclen=strlen( zcstr );
@@ -676,24 +602,6 @@ static int ExecuteHelp( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnN
     return 1;
 }
 
-/****************************
- * ExecuteEcho - simply write as is the string (if any) to stdout
- ***************************/
-static int ExecuteEcho( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable )
-{
-    char *p;
-
-    for ( p = szSQL+4; *p != '\0' && isspace((int)*p) ; ++p )
-        ;
-    if ( *p != '\0' && p == szSQL+4 ) {
-        fprintf( stderr, "[ISQL]ERROR: incorrect echo call\n" );
-        return 0;
-    }
-
-    (void)printf( "%s\n", p );
-
-    return 1;
-}
 
 /****************************
  * CloseDatabase - cleanup in prep for exiting the program
@@ -872,10 +780,10 @@ void UWriteHeaderNormal( SQLHSTMT hStmt, SQLTCHAR *szSepLine )
 {
     SQLINTEGER      nCol                            = 0;
     SQLSMALLINT     nColumns                        = 0;
+    SQLULEN         nMaxLength                      = 10;
     SQLTCHAR            szColumn[MAX_DATA_WIDTH+20];    
     SQLTCHAR            szColumnName[MAX_DATA_WIDTH+1]; 
     SQLTCHAR            szHdrLine[32001];   
-    SQLUINTEGER     nOptimalDisplayWidth            = 10;
 
     szColumn[ 0 ]       = 0;    
     szColumnName[ 0 ]   = 0;    
@@ -886,20 +794,20 @@ void UWriteHeaderNormal( SQLHSTMT hStmt, SQLTCHAR *szSepLine )
 
     for ( nCol = 1; nCol <= nColumns; nCol++ )
     {
-        nOptimalDisplayWidth = OptimalDisplayWidth( hStmt, nCol, nUserWidth );
+        SQLColAttribute( hStmt, nCol, SQL_DESC_DISPLAY_SIZE, NULL, 0, NULL, (SQLLEN*)&nMaxLength );
         SQLColAttribute( hStmt, nCol, SQL_DESC_LABEL, szColumnName, sizeof(szColumnName), NULL, NULL );
-        if ( nOptimalDisplayWidth > MAX_DATA_WIDTH ) nOptimalDisplayWidth = MAX_DATA_WIDTH;
+        if ( nMaxLength > MAX_DATA_WIDTH ) nMaxLength = MAX_DATA_WIDTH;
 
         uc_to_ascii( szColumnName );
 
         /* SEP */
         memset( szColumn, '\0', sizeof(szColumn) );
-        memset( szColumn, '-', max( nOptimalDisplayWidth, strlen((char*)szColumnName) ) + 1 );
+        memset( szColumn, '-', max( nMaxLength, strlen((char*)szColumnName) ) + 1 );
         strcat((char*) szSepLine, "+" );
         strcat((char*) szSepLine,(char*) szColumn );
 
         /* HDR */
-        sprintf((char*) szColumn, "| %-*s", (int)max( nOptimalDisplayWidth, strlen((char*)szColumnName) ), (char*)szColumnName );
+        sprintf((char*) szColumn, "| %-*s", (int)max( nMaxLength, strlen((char*)szColumnName) ), (char*)szColumnName );
         strcat((char*) szHdrLine,(char*) szColumn );
     }
     strcat((char*) szSepLine, "+\n" );
@@ -918,10 +826,10 @@ static SQLLEN WriteBodyNormal( SQLHSTMT hStmt )
     SQLTCHAR        szColumn[MAX_DATA_WIDTH+20];
     SQLTCHAR        szColumnValue[MAX_DATA_WIDTH+1];
     SQLTCHAR        szColumnName[MAX_DATA_WIDTH+1]; 
+    SQLULEN         nMaxLength                      = 10;
     SQLRETURN       nReturn                         = 0;
     SQLRETURN       ret;
     SQLLEN          nRows                           = 0;
-    SQLUINTEGER     nOptimalDisplayWidth            = 10;
 
     szColumn[ 0 ]       = 0;
     szColumnValue[ 0 ]  = 0;
@@ -937,21 +845,21 @@ static SQLLEN WriteBodyNormal( SQLHSTMT hStmt )
         for ( nCol = 1; nCol <= nColumns; nCol++ )
         {
             SQLColAttribute( hStmt, nCol, SQL_DESC_LABEL, szColumnName, sizeof(szColumnName), NULL, NULL );
-            nOptimalDisplayWidth = OptimalDisplayWidth( hStmt, nCol, nUserWidth );
+            SQLColAttribute( hStmt, nCol, SQL_DESC_DISPLAY_SIZE, NULL, 0, NULL, (SQLLEN*)&nMaxLength );
 
             uc_to_ascii( szColumnName );
 
-            if ( nOptimalDisplayWidth > MAX_DATA_WIDTH ) nOptimalDisplayWidth = MAX_DATA_WIDTH;
+            if ( nMaxLength > MAX_DATA_WIDTH ) nMaxLength = MAX_DATA_WIDTH;
             nReturn = SQLGetData( hStmt, nCol, SQL_C_WCHAR, (SQLPOINTER)szColumnValue, sizeof(szColumnValue), &nIndicator );
             szColumnValue[MAX_DATA_WIDTH] = '\0';
             uc_to_ascii( szColumnValue );
 
             if ( nReturn == SQL_SUCCESS && nIndicator != SQL_NULL_DATA )
             {
-                if ( strlen((char*)szColumnValue) < max( nOptimalDisplayWidth, strlen((char*)szColumnName )))
+                if ( strlen((char*)szColumnValue) < max( nMaxLength, strlen((char*)szColumnName )))
                 {
                     int i;
-                    size_t maxlen=max( nOptimalDisplayWidth, strlen((char*)szColumnName ));
+                    size_t maxlen=max( nMaxLength, strlen((char*)szColumnName ));
                     strcpy((char*) szColumn, "| " );
                     strcat((char*) szColumn, (char*) szColumnValue );
 
@@ -973,7 +881,7 @@ static SQLLEN WriteBodyNormal( SQLHSTMT hStmt )
             }
             else
             {
-                sprintf((char*)  szColumn, "| %-*s", (int)max( nOptimalDisplayWidth, strlen((char*) szColumnName) ), "" );
+                sprintf((char*)  szColumn, "| %-*s", (int)max( nMaxLength, strlen((char*) szColumnName) ), "" );
             }
             fputs((char*)  szColumn, stdout );
         }

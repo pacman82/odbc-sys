@@ -22,7 +22,6 @@
 #include "qresult.h"
 #include "convert.h"
 #include "environ.h"
-#include "misc.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -414,7 +413,7 @@ mylog("recycle statement: self= %u\n", self);
 		break;
 
 	default:
-		SC_set_error(self, STMT_INTERNAL_ERROR, "An internal error occurred while recycling statements");
+		SC_set_error(self, STMT_INTERNAL_ERROR, "An internal error occured while recycling statements");
 		return FALSE;
 	}
 

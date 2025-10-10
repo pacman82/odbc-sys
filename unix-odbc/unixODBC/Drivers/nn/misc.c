@@ -15,7 +15,6 @@
 
 #include <config.h>
 #include	<nnconfig.h>
-#include "driver.h"
 
 int	upper_strneq(
 	char*	s1,

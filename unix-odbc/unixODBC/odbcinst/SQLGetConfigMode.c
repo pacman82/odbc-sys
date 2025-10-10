@@ -18,9 +18,7 @@ BOOL SQLGetConfigMode( UWORD *pnConfigMode )
 {
     inst_logClear();
 
-    __lock_config_mode();
     *pnConfigMode = __get_config_mode();
-    __unlock_config_mode();
 
     return TRUE;
 }

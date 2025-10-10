@@ -259,9 +259,6 @@ static char const rcsid[]= "$RCSfile: SQLAllocHandle.c,v $ $Revision: 1.13 $";
  */
 
 extern int pooling_enabled;
-extern int pool_max_size;
-extern int pool_wait_timeout;
-
 
 /*
  * this is used so that it can be called without falling
@@ -280,8 +277,6 @@ SQLRETURN __SQLAllocHandle( SQLSMALLINT handle_type,
         {
             DMHENV environment;
             char pooling_string[ 128 ];
-            char pool_max_size_string [ 128 ];
-            char pool_wait_timeout_string [ 128 ];
 
             if ( !output_handle ) 
             {
@@ -308,95 +303,9 @@ SQLRETURN __SQLAllocHandle( SQLSMALLINT handle_type,
             {
                 pooling_enabled = 1;
             }
-
-#ifdef WITH_SHARDENV
-            if ( pooling_enabled )
+            else
             {
-                int first;
-            
-                SQLGetPrivateProfileString( "ODBC", "PoolMaxSize", "0",
-                    pool_max_size_string, sizeof( pool_max_size_string ),
-                    "ODBCINST.INI" );
-                pool_max_size = atoi( pool_max_size_string );
-
-                SQLGetPrivateProfileString( "ODBC", "PoolWaitTimeout", "30",
-                    pool_wait_timeout_string, sizeof( pool_wait_timeout_string ),
-                    "ODBCINST.INI" );
-                pool_wait_timeout = atoi( pool_wait_timeout_string );
-
-                if ( !( environment = __share_env( &first )))
-                {
-                    *output_handle = SQL_NULL_HENV;
-                    return SQL_ERROR;
-                }
-                *output_handle = (SQLHANDLE) environment;
-
-                if ( first ) {
-                    /*
-                     * setup environment state
-                     */
-
-                    environment -> state = STATE_E1;
-                    environment -> requested_version = requested_version;
-                    environment -> version_set = !!requested_version;
-                    environment -> sql_driver_count = -1;
-
-                    /*
-                     * if SQLAllocEnv is called then it's probable that
-                     * the application wants ODBC2.X type behaviour
-                     *
-                     * In this case we don't need to set the version via
-                     * SQLSetEnvAttr()
-                     *
-                     */
-
-                    environment -> connection_count = 0;
-                }
-            }
-            else {
-
-                if ( !( environment = __alloc_env()))
-                {
-                    *output_handle = SQL_NULL_HENV;
-                    return SQL_ERROR;
-                }
-                *output_handle = (SQLHANDLE) environment;
-    
-                /*
-                * setup environment state
-                */
-    
-                environment -> state = STATE_E1;
-                environment -> requested_version = requested_version;
-                environment -> version_set = !!requested_version;
-        	    environment -> sql_driver_count = -1;
-    
-                /*
-                * if SQLAllocEnv is called then it's probable that
-                * the application wants ODBC2.X type behaviour
-                *
-                * In this case we don't need to set the version via
-                * SQLSetEnvAttr()
-                *
-                */
-    
-                environment -> connection_count = 0;
-           }
-#else
-
-            if ( pooling_enabled )
-            {
-                int first;
-            
-                SQLGetPrivateProfileString( "ODBC", "PoolMaxSize", "0",
-                    pool_max_size_string, sizeof( pool_max_size_string ),
-                    "ODBCINST.INI" );
-                pool_max_size = atoi( pool_max_size_string );
-
-                SQLGetPrivateProfileString( "ODBC", "PoolWaitTimeout", "30",
-                    pool_wait_timeout_string, sizeof( pool_wait_timeout_string ),
-                    "ODBCINST.INI" );
-                pool_wait_timeout = atoi( pool_wait_timeout_string );
+                pooling_enabled = 0;
             }
 
             if ( !( environment = __alloc_env()))
@@ -407,27 +316,26 @@ SQLRETURN __SQLAllocHandle( SQLSMALLINT handle_type,
             *output_handle = (SQLHANDLE) environment;
 
             /*
-            * setup environment state
-            */
+             * setup environment state
+             */
 
             environment -> state = STATE_E1;
             environment -> requested_version = requested_version;
             environment -> version_set = !!requested_version;
-            environment -> sql_driver_count = -1;
+        	environment -> sql_driver_count = -1;
 
             /*
-            * if SQLAllocEnv is called then it's probable that
-            * the application wants ODBC2.X type behaviour
-            *
-            * In this case we don't need to set the version via
-            * SQLSetEnvAttr()
-            *
-            */
-    
+             * if SQLAllocEnv is called then it's probable that
+             * the application wants ODBC2.X type behaviour
+             *
+             * In this case we don't need to set the version via
+             * SQLSetEnvAttr()
+             *
+             */
+
             environment -> connection_count = 0;
-#endif
-    
-           return SQL_SUCCESS;
+
+            return SQL_SUCCESS;
         }
         break;
 
@@ -574,6 +482,26 @@ SQLRETURN __SQLAllocHandle( SQLSMALLINT handle_type,
 #endif
 
             *output_handle = (SQLHANDLE) connection;
+
+#ifndef ENABLE_DRIVER_ICONV
+
+            /*
+             * initialize unicode
+             */
+
+            if ( !unicode_setup( connection ))
+            {
+                char txt[ 256 ];
+
+                sprintf( txt, "Can't initiate unicode conversion" );
+
+                dm_log_write( __FILE__,
+                        __LINE__,
+                        LOG_INFO,
+                        LOG_INFO,
+                        txt );
+            }
+#endif
 
             if ( log_info.log_flag )
             {

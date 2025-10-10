@@ -6,7 +6,6 @@ libtemplate_la_LDFLAGS = -no-undefined  -version-info 1:0:0
 
 EXTRA_DIST = \
 	driver.h \
-	prototypes.h \
 	driverextras.h 
 
 libtemplate_la_LIBADD = \

@@ -380,10 +380,6 @@ SQLRETURN SQLGetDescField( SQLHDESC descriptor_handle,
             if ( value && s1 )
             {
                 unicode_to_ansi_copy( value, buffer_length, s1, SQL_NTS, descriptor -> connection, NULL );
-
-                if ( string_length ) {
-                    *string_length /= sizeof( SQLWCHAR );
-                }
             }
         }
 

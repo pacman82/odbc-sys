@@ -311,7 +311,7 @@ SQLRETURN SQLError( SQLHENV environment_handle,
            SQLSMALLINT *text_length )
 {
     SQLRETURN ret;
-    SQLCHAR s0[ 64 ], s1[ 100 + LOG_MESSAGE_LEN ];
+    SQLCHAR s0[ 32 ], s1[ 100 + LOG_MESSAGE_LEN ];
     SQLCHAR s2[ 100 + LOG_MESSAGE_LEN ];
 
     DMHENV  environment = NULL;
@@ -404,11 +404,7 @@ SQLRETURN SQLError( SQLHENV environment_handle,
 
     if ( log_info.log_flag )
     {
-#ifdef HAVE_SNPRINTF
-        snprintf( handle_msg, LOG_MSG_MAX*2,
-#else
         sprintf( handle_msg,
-#endif
             "\n\t\tEntry:\
 \n\t\t\t%s = %p\
 \n\t\t\tSQLState = %p\
@@ -456,11 +452,7 @@ SQLRETURN SQLError( SQLHENV environment_handle,
     {
         if ( SQL_SUCCEEDED( ret ))
         {
-#ifdef HAVE_SNPRINTF
-            snprintf( handle_msg, LOG_MSG_MAX*2,
-#else
             sprintf( handle_msg,
-#endif
                 "\n\t\tExit:[%s]\
 \n\t\t\tSQLState = %s\
 \n\t\t\tNative = %s\
@@ -473,11 +465,7 @@ SQLRETURN SQLError( SQLHENV environment_handle,
         }
         else
         {
-#ifdef HAVE_SNPRINTF
-            snprintf( handle_msg, LOG_MSG_MAX*2,
-#else
             sprintf( handle_msg,
-#endif
                 "\n\t\tExit:[%s]",
                 __get_return_status( ret, s2 ));
         }

@@ -179,7 +179,7 @@ BOOL SQLInstallDriverEx(		LPCSTR	pszDriver,
     }
 	else
     {
-        if ( pszPathOut && nPathOutMax > 0 )
+        if ( pszPathOut )
         {
             if ( strlen( pszPathIn ) < nPathOutMax )
             {
@@ -248,7 +248,7 @@ BOOL INSTAPI SQLInstallDriverExW(LPCWSTR lpszDriver,
 		pout = NULL;
 	}
 
-	ret = pout ? SQLInstallDriverEx( drv, pth, pout, cbPathOutMax, &len, fRequest, lpdwUsageCount ) : FALSE;
+	ret = SQLInstallDriverEx( drv, pth, pout, cbPathOutMax, &len, fRequest, lpdwUsageCount );
 
 	if ( ret )
 	{

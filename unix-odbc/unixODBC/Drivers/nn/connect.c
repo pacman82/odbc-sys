@@ -129,7 +129,6 @@ readtoken(
 
 #if	!defined(WINDOWS) && !defined(WIN32) && !defined(OS2)
 # include	<pwd.h>
-# include	<unistd.h>
 # define	UNIX_PWD
 #endif
 

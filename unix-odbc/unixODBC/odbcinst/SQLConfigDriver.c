@@ -10,11 +10,6 @@
  * Peter Harvey		- pharvey@codebydesign.com
  **************************************************/
 #include <config.h>
-
-#ifdef UNIXODBC_SOURCE
-#include <ltdl.h>
-#endif
-
 #include <odbcinstext.h>
 
 static BOOL SQLConfigDriverWide( HWND	hWnd,
@@ -89,9 +84,6 @@ static BOOL SQLConfigDriverWide( HWND	hWnd,
      */
 
     lt_dlinit();
-#ifdef MODULEDIR
-    lt_dlsetsearchpath(MODULEDIR);
-#endif
 
 	/* process request */
 	switch ( nRequest )

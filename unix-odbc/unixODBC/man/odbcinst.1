@@ -1,102 +1,103 @@
-.TH odbcinst 1 "Sat 09 Jan 2021" "version 2.3.12" "unixODBC manual pages"
+.TH odbcinst 1 "Wed 26 Jun 2013" "version 2.3.6" "unixODBC manual pages"
 
 .SH NAME
-odbcinst - A unixODBC utility for managing configuration files
+odbcinst - An unixODBC tool for manipulating configuration files
 
 .SH SYNOPSIS
 .B odbcinst
 .I ACTION OBJECT OPTIONS
 
 .SH DESCRIPTION
-\fBodbcinst\fR is a command-line utility allowing users who develop install scripts or
-packages for ODBC drivers to easily create or remove entries in odbc.ini and odbcinst.ini.
-
-The utility is part of the odbcinst component of unixODBC and complements the
-shared library of the same name (libodbcinst).
+.B odbcinst
+is a command line tool which has been created for allowing people who
+are developing the install scripts/RPMs for Drivers to be able to easily
+create/remove entries in odbc.ini and odbcinst.ini. This command line tool is a
+complement to the shared library of the same name (libodbcinst.so). This tool is
+a part of the odbcinst component of unixODBC.
 
 .SH OPTIONS
 
 .SS ACTIONS
 
-.IP \-i
-Install a new \fIOBJECT\fR (by adding a section to a configuration file).
+.IP -i
+Install (add section to config file) new \fIOBJECT\fR.
 
-.IP \-u
-Uninstall an existing \fIOBJECT\fR (by removing a section from a configuration file).
+.IP -u
+Uninstall (remove section from config file) existing \fIOBJECT\fR.
 
-.IP \-q
-Query ODBC configuration files and print available options for the specified \fIOBJECT\fR.
+.IP -q
+Query the config files and print the options for specified \fIOBJECT\fR.
 
-.IP \-j
-Print the current configuration of unixODBC, including paths to configuration files.
+.IP -j
+Prints current configuration of unixODBC, listing (among others) the paths to the
+configuration files.
 
-.IP \-c
-Call SQLCreateDataSource.
+.IP -c
+Calls SQLCreateDataSource
 
-.IP \-m
-Call SQLManageDataSources.
+.IP -m
+Calls SQLManageDataSources
 
-.IP \-\-version
-Display the program version.
+.IP --version
+Prints program version and exits.
 
 .SS OBJECTS
 
-.IP \-d
-The specified \fIACTION\fR affects a driver (and thus the odbcinst.ini configuration file).
+.IP -d
+The \fIACTION\fR affect drivers (and thus the odbcinst.ini configuration file).
 
-.IP \-s
-The specified \fIACTION\fR affects a data source (and thus the user or system odbc.ini
+.IP -s
+The \fIACTION\fR affect data sources (and thus the user or system odbc.ini
 configuration file).
 
 .SS OPTIONS
 
-.IP "\-f \fIFILE\fR"
-\fIFILE\fR is a template describing the configuration of the installed
-\fIOBJECT\fR (only valid with the -i \fIACTION\fR).
+.IP "-f \fIFILE\fR"
+The \fIFILE\fR is template file, describing the configuration of installed
+\fIOBJECT\fR (only valid for the -i \fIACTION\fR).
 
-.IP \-r
-Act in the same way as for the \-f \fIOPTION\fR, but take standard input as the
-template file.
+.IP -r
+Same as the -f \fIOPTION\fR, only take the standard input as the template file.
 
-.IP "\-n \fINAME\fR"
+.IP "-n \fINAME\fR"
 Specifies the \fINAME\fR of the \fIOBJECT\fR.
 
-.IP \-v
-Disable all information, warning and error messages.
+.IP -v
+Turn off verbose mode. This turns off all information, warning and error
+messages.
 
-.IP \-l
-The specified data source is system-wide. This option is only valid when used
-with the \-s \fIOBJECT\fR.
+.IP -l
+The specified data source is system-wide. Has any effect only with the -s
+\fIOBJECT\fR.
 
-.IP \-h
-The specified data source is user-specific. This option is only valid when used
-with the \-s \fIOBJECT\fR.
+.IP -h
+The specified data source is user-specific. Has any effect only with the -s
+\fIOBJECT\fR.
 
 .SH "RETURN VALUES"
-odbcinst returns zero on success and a non-zero value on failure.
+This command returns zero on success and non-zero value on failure.
 
 .SH FILES
-.I /etc/odbcinst.ini
+
+.I /etc/odbinst.ini
 .RS
-Configuration file containing all database driver definitions. See
+Configuration file containing all the database drivers specifications. See
 .BR odbcinst.ini (5)
-for more information.
+for more details.
 .RE
 
 .I /etc/odbc.ini
 .RS
-Configuration file containing system-wide Data Source Name (DSN)
-definitions. See
+System-wide data sources specifications. See
 .BR odbc.ini (5)
-for more information.
+for more details.
 .RE
 
 .I $HOME/.odbc.ini
 .RS
-Configuration file containing user-specific Data Source Name (DSN)
-definitions. See
+User-specific data sources specifications. See
 .BR odbc.ini (5)
-for more information.
+for more details.
 .RE
 
 .SH "SEE ALSO"
@@ -105,10 +106,9 @@ for more information.
 
 .SH AUTHORS
 The authors of unixODBC are Peter Harvey <\fIpharvey@codebydesign.com\fR> and
-Nick Gorham <\fInick@lurcher.org\fR>.
-
-For a full list of contributors, refer to the \fIAUTHORS\fR file.
+Nick Gorham <\fInick@lurcher.org\fR>. For the full list of contributors see the
+AUTHORS file.
 
 .SH COPYRIGHT
 unixODBC is licensed under the GNU Lesser General Public License. For details
-about the license, see the \fICOPYING\fR file.
+about the license, see the COPYING file.

@@ -19,7 +19,6 @@
 #include    <string.h>
 #include	<errno.h>
 #include	<nntp.h>
-#include	"driver.h"
 
 # include	"nntp.ci"
 
@@ -29,8 +28,6 @@
 # include	<sys/socket.h>
 # include	<netdb.h>
 # include	<netinet/in.h>
-# include	<arpa/inet.h>
-# include	<unistd.h>
 
 #else
 
