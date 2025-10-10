@@ -1,6 +1,6 @@
 [package]
 name = "odbc-sys"
-version = "0.27.1"
+version = "0.27.2"
 authors = ["Markus Klein"]
 license = "MIT"
 description = "ODBC ffi bindings"
@@ -11,7 +11,7 @@ categories = ["external-ffi-bindings", "database"]
 edition = "2021"
 
 [dependencies]
-unix-odbc = { version ="0.1.0", path = "unix-odbc", optional = true }
+unix-odbc = { version = "0.1.1", path = "unix-odbc", optional = true }
 
 [features]
 default = ["odbc_version_3_80"]
