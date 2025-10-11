@@ -294,6 +294,8 @@ SQLRETURN SQLBrowseConnect(
      * are we at the start of a connection
      */
 
+    driver_name[ 0 ] = '\0';
+
     if ( connection -> state == STATE_C2 )
     {
         /*
@@ -433,7 +435,7 @@ SQLRETURN SQLBrowseConnect(
     {
         ret = SQLBROWSECONNECT( connection,
             connection -> driver_dbc,
-            in_str,
+            (SQLCHAR*) in_str,
             in_str_len,
             conn_str_out,
             conn_str_out_max,

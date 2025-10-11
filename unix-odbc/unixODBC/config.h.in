@@ -17,6 +17,9 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Enable versioned cursor library */
+#undef DEFINE_CURSOR_LIB_VER
+
 /* Lib directory */
 #undef DEFLIB_PATH
 
@@ -66,6 +69,9 @@
 /* Define to 1 if you have the `atoll' function. */
 #undef HAVE_ATOLL
 
+/* Define to 1 if you have the `clock_gettime' function. */
+#undef HAVE_CLOCK_GETTIME
+
 /* Define to 1 if you have the `closedir' function. */
 #undef HAVE_CLOSEDIR
 
@@ -113,14 +119,29 @@
 /* Define to 1 if the system has the type `error_t'. */
 #undef HAVE_ERROR_T
 
+/* Define to 1 if you have the `fseeko' function. */
+#undef HAVE_FSEEKO
+
 /* Define to 1 if you have the `ftime' function. */
 #undef HAVE_FTIME
 
 /* Define to 1 if you have the `ftok' function. */
 #undef HAVE_FTOK
 
+/* Define to 1 if you have the four-argument form of getpwuid_r(). */
+#undef HAVE_FUNC_GETPWUID_R_4
+
+/* Define to 1 if you have the five-argument form of getpwuid_r(). */
+#undef HAVE_FUNC_GETPWUID_R_5
+
+/* Define to 1 if you have the `getpid' function. */
+#undef HAVE_GETPID
+
 /* Define to 1 if you have the `getpwuid' function. */
 #undef HAVE_GETPWUID
+
+/* Define to 1 if you have some form of getpwuid_r(). */
+#undef HAVE_GETPWUID_R
 
 /* Define to 1 if you have the `gettimeofday' function. */
 #undef HAVE_GETTIMEOFDAY
@@ -130,6 +151,9 @@
 
 /* Define if you have the iconv() function. */
 #undef HAVE_ICONV
+
+/* Define to 1 if the system has the type `intptr_t'. */
+#undef HAVE_INTPTR_T
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -229,6 +253,9 @@
 
 /* Define to 1 if you have the `setlocale' function. */
 #undef HAVE_SETLOCALE
+
+/* Define to 1 if you have the `setvbuf' function. */
+#undef HAVE_SETVBUF
 
 /* Define if you have the shl_load function. */
 #undef HAVE_SHL_LOAD
@@ -383,6 +410,9 @@
 /* Define to the shared archive member specification, say "(shr.o)". */
 #undef LT_SHARED_LIB_MEMBER
 
+/* ODBC driver search path */
+#undef MODULEDIR
+
 /* Define if you need semundo union */
 #undef NEED_SEMUNDO_UNION
 
@@ -475,12 +505,32 @@
 /* Work with IBM drivers that use 32 bit handles on 64 bit platforms */
 #undef WITH_HANDLE_REDIRECT
 
+/* Using shared env handle */
+#undef WITH_SHARDENV
+
+/* Using utf8 ini encoding */
+#undef WITH_UTF8_INI
+
 /* Define to 1 if `lex' declares `yytext' as a `char *' by default, not a
    `char[]'. */
 #undef YYTEXT_POINTER
 
 /* Build flag for AIX */
 #undef _ALL_SOURCE
+
+/* Enable large inode numbers on Mac OS X 10.5.  */
+#ifndef _DARWIN_USE_64_BIT_INODE
+# define _DARWIN_USE_64_BIT_INODE 1
+#endif
+
+/* Number of bits in a file offset, on hosts where this is settable. */
+#undef _FILE_OFFSET_BITS
+
+/* Define to 1 to make fseeko visible on some hosts (e.g. glibc 2.2). */
+#undef _LARGEFILE_SOURCE
+
+/* Define for large files, on AIX-style hosts. */
+#undef _LARGE_FILES
 
 /* Build flag for AIX */
 #undef _LONG_LONG
@@ -499,6 +549,10 @@
 
 /* Define to `int' if <sys/types.h> doesn't define. */
 #undef gid_t
+
+/* Define to the type of a signed integer type wide enough to hold a pointer,
+   if such a type exists, and if the system does not define it. */
+#undef intptr_t
 
 /* Define to `unsigned int' if <sys/types.h> does not define. */
 #undef size_t

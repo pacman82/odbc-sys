@@ -17,9 +17,14 @@ BOOL SQLWriteFileDSN(			LPCSTR	pszFileName,
 								LPCSTR	pszString )
 {
 	HINI	hIni;
-	char	szFileName[ODBC_FILENAME_MAX+1];
+	char	szFileName[ODBC_FILENAME_MAX+7];
 
-	if ( pszFileName[0] == '/' )
+    if ( pszFileName == NULL ) 
+    {
+        inst_logPushMsg( __FILE__, __FILE__, __LINE__, LOG_CRITICAL, ODBC_ERROR_INVALID_PATH, "" );
+		return FALSE;
+    }
+	else if ( pszFileName[0] == '/' )
 	{
 		strncpy( szFileName, pszFileName, sizeof(szFileName) - 5 );
 	}
@@ -111,7 +116,7 @@ BOOL INSTAPI SQLWriteFileDSNW(LPCWSTR  lpszFileName,
 	key = lpszKeyName ? _single_string_alloc_and_copy( lpszKeyName ) : (char*)NULL;
 	str = lpszString ? _single_string_alloc_and_copy( lpszString ) : (char*)NULL;
 
-	ret = SQLWriteFileDSN( file, app, key, str );
+	ret = app ? SQLWriteFileDSN( file, app, key, str ) : FALSE;
 
 	if ( file )
 		free( file );

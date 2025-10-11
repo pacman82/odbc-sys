@@ -182,6 +182,8 @@
 
 static char const rcsid[]= "$RCSfile: SQLFreeHandle.c,v $ $Revision: 1.12 $";
 
+extern int pooling_enabled;
+
 SQLRETURN __SQLFreeHandle( SQLSMALLINT handle_type,
         SQLHANDLE handle )
 {
@@ -193,10 +195,13 @@ SQLRETURN __SQLFreeHandle( SQLSMALLINT handle_type,
             DMHENV environment = (DMHENV)handle;
 
             /*
-             * check environment
+             * check environment, the mark_released addition is to catch what seems to be a 
+             * race error in SQLAPI where it uses a env handle in one thread while its being released
+             * in another. releasing the handle at the end of this function is not fast enough for 
+             * the normal validation process to catch it.
              */
 
-            if ( !__validate_env( environment ))
+            if ( !__validate_env_mark_released( environment ))
             {
                 dm_log_write( __FILE__, 
                         __LINE__, 
@@ -225,6 +230,27 @@ SQLRETURN __SQLFreeHandle( SQLSMALLINT handle_type,
 
             thread_protect( SQL_HANDLE_ENV, environment );
 
+#ifdef WITH_SHARDENV
+            if ( pooling_enabled == 0 ) {
+                /*
+                 * check states
+                 */
+                if ( environment -> state != STATE_E1 )
+                {
+                    dm_log_write( __FILE__,
+                            __LINE__,
+                            LOG_INFO,
+                            LOG_INFO,
+                            "Error: HY010" );
+    
+                    __post_internal_error( &environment -> error,
+                            ERROR_HY010, NULL,
+                            environment -> requested_version );
+    
+                    return function_return_nodrv( SQL_HANDLE_ENV, environment, SQL_ERROR );
+                }
+            }
+#else
             /*
              * check states
              */
@@ -242,15 +268,23 @@ SQLRETURN __SQLFreeHandle( SQLSMALLINT handle_type,
 
                 return function_return_nodrv( SQL_HANDLE_ENV, environment, SQL_ERROR );
             }
+#endif
 
             thread_release( SQL_HANDLE_ENV, environment );
 
-            /*
-             * release any pooled connections that are using this environment
-             */
+#ifdef WITH_SHARDENV
+            if ( pooling_enabled == 0 ) {
+                /*
+                 * release any pooled connections that are using this environment
+                 */
+                __strip_from_pool( environment );
+            }
+#else
             __strip_from_pool( environment );
+#endif
 
             __release_env( environment );
+
             return SQL_SUCCESS;
         }
         break;
@@ -501,6 +535,7 @@ SQLRETURN __SQLFreeHandle( SQLSMALLINT handle_type,
         {
             DMHDESC descriptor = (DMHDESC)handle;
             DMHDBC connection;
+            SQLRETURN ret;
 
             /*
              * check descriptor
@@ -561,7 +596,7 @@ SQLRETURN __SQLFreeHandle( SQLSMALLINT handle_type,
             }
             else
             {
-                SQLFREEHANDLE( connection,
+                ret = SQLFREEHANDLE( connection,
                         handle_type,
                         descriptor -> driver_desc );
             }

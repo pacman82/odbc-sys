@@ -12,6 +12,7 @@
  **************************************************/
 
 #include <config.h>
+#include <ctype.h>
 #include "isql.h"
 #ifdef HAVE_READLINE
     #include <readline/readline.h>
@@ -31,6 +32,7 @@ static int OpenDatabase( SQLHENV *phEnv, SQLHDBC *phDbc, char *szDSN, char *szUI
 static int ExecuteSQL( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
 static int ExecuteHelp( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
 static int ExecuteSlash( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
+static int ExecuteEcho( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable );
 static int	CloseDatabase( SQLHENV hEnv, SQLHDBC hDbc );
 
 static void WriteHeaderHTMLTable( SQLHSTMT hStmt );
@@ -55,6 +57,7 @@ SQLHDBC hDbc                        = 0;
 int     bQuote                      = 0;
 int     version3                    = 0;
 int     bBatch                      = 0;
+int     bIntro                      = 0;
 int     ac_off                      = 0;
 int     bHTMLTable                  = 0;
 int     cDelimiter                  = 0;
@@ -80,10 +83,12 @@ int main( int argc, char *argv[] )
 #if defined(HAVE_EDITLINE) || defined(HAVE_READLINE)
     char    *rlhistory; /* readline history path */
 
+    if (getenv("HOME")) {
     rlhistory = strdup(getenv("HOME"));
     rlhistory = realloc(rlhistory, strlen(rlhistory)+16);
     strcat(rlhistory, "/.isql_history");
     read_history(rlhistory);
+    }
 #endif
 
     szDSN = NULL;
@@ -128,6 +133,9 @@ int main( int argc, char *argv[] )
                     break;
                 case 'b':
                     bBatch = 1;
+                    break;
+                case 'i':
+                    bIntro = 1;
                     break;
                 case 'c':
                     bColumnNames = 1;
@@ -189,17 +197,24 @@ int main( int argc, char *argv[] )
     szSQL = calloc( 1, buffer_size + 1 );
     line_buffer = calloc( 1, buffer_size + 1 );
 
+#ifdef HAVE_SETVBUF
+    /* Ensure result lines are available to reader of whatever stdout */
+    if (bBatch) {
+        (void)setvbuf(stdout, NULL, _IOLBF, (size_t) 0);
+    }
+#endif
+
     /****************************
      * CONNECT
      ***************************/
 
-    if ( !OpenDatabase( &hEnv, &hDbc, szDSN, szUID, szPWD ) )
+    if (!OpenDatabase( &hEnv, &hDbc, szDSN, szUID, szPWD ))
         exit( 1 );
 
     /****************************
      * EXECUTE
      ***************************/
-    if ( !bBatch )
+    if ( !bBatch && !bIntro)
     {
         printf( "+---------------------------------------+\n" );
         printf( "| Connected!                            |\n" );
@@ -214,12 +229,14 @@ int main( int argc, char *argv[] )
             printf( "| \\rollback                             |\n" );
             printf( "| \\tables                               |\n" );
             printf( "| \\columns <table-name>                 |\n" );
+            printf( "| \\echo [string]                        |\n" );
             printf( "| \\quit                                 |\n" );
         }
         else
         {
             printf( "| sql-statement                         |\n" );
             printf( "| help [tablename]                      |\n" );
+            printf( "| echo [string]                         |\n" );
             printf( "| quit                                  |\n" );
         }
         printf( "|                                       |\n" );
@@ -498,6 +515,10 @@ int main( int argc, char *argv[] )
                 if ( bufpos >= 4 && memcmp( szSQL, "help", 4 ) == 0 )
                 {
                     ExecuteHelp( hDbc, szSQL, cDelimiter, bColumnNames, bHTMLTable );
+                }
+                else if ( bufpos >= 4 && memcmp( szSQL, "echo", 4 ) == 0 )
+                {
+                    ExecuteEcho( hDbc, szSQL, cDelimiter, bColumnNames, bHTMLTable );
                 }
                 else
                 {
@@ -971,6 +992,19 @@ ExecuteSlash( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int 
             DumpODBCLog( hEnv, hDbc, 0 );
         }
     }
+    else if ( memcmp( szSQL, "echo", 4 ) == 0 )
+    {
+        char *p;
+
+        for ( p = szSQL+4; *p != '\0' && isspace((int)*p) ; ++p )
+            ;
+        if ( *p != '\0' && p == szSQL+4 ) {
+            fprintf( stderr, "[ISQL]ERROR: incorrect echo call\n" );
+            return 0;
+        }
+
+        (void)printf( "%s\n", p );
+    }
     else if ( memcmp( szSQL, "quit", 4 ) == 0 )
     {
         return 0;
@@ -1045,7 +1079,14 @@ ExecuteSQL( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bH
         }
     }
     else {
-        if ( SQLPrepare( hStmt, (SQLCHAR*)szSQL, strlen( szSQL )) != SQL_SUCCESS )
+        ret = SQLPrepare( hStmt, (SQLCHAR*)szSQL, strlen( szSQL ));
+
+        if ( ret == SQL_SUCCESS_WITH_INFO )
+        {
+            if ( bVerbose ) DumpODBCLog( hEnv, hDbc, hStmt );
+            fprintf( stderr, "[ISQL]INFO: SQLPrepare returned SQL_SUCCESS_WITH_INFO\n" );
+        }
+        else if ( ret != SQL_SUCCESS )
         {
             if ( bVerbose ) DumpODBCLog( hEnv, hDbc, hStmt );
             fprintf( stderr, "[ISQL]ERROR: Could not SQLPrepare\n" );
@@ -1282,6 +1323,25 @@ ExecuteHelp( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int b
     SQLFreeStmt( hStmt, SQL_DROP );
     free(szSepLine);
     free_args(args, sizeof(args) / sizeof(args[0]));
+    return 1;
+}
+
+/****************************
+ * ExecuteEcho - simply write as is the string (if any) to stdout
+ ***************************/
+static int ExecuteEcho( SQLHDBC hDbc, char *szSQL, char cDelimiter, int bColumnNames, int bHTMLTable )
+{
+    char *p;
+
+    for ( p = szSQL+4; *p != '\0' && isspace((int)*p) ; ++p )
+        ;
+    if ( *p != '\0' && p == szSQL+4 ) {
+        fprintf( stderr, "[ISQL]ERROR: incorrect echo call\n" );
+        return 0;
+    }
+
+    (void)printf( "%s\n", p );
+
     return 1;
 }
 
@@ -1813,7 +1873,11 @@ static int get_args(char *string, char **args, int maxarg) {
             args[nargs++] = NULL;
         else
             args[nargs++] = strdup(arg);
-        if (nargs > maxarg) return maxarg;
+        if (nargs > maxarg)
+        {
+            free(copy);
+            return maxarg;
+        }
     }
     free(copy);
     return nargs;

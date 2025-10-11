@@ -75,7 +75,7 @@ int ODBCINSTGetProperties( HODBCINSTPROPERTY hLastProperty )
 	hLastProperty->nPromptType			= ODBCINST_PROMPTTYPE_COMBOBOX;
 	hLastProperty->aPromptData          = malloc( sizeof( aColumnSeparators ) );
 	memcpy( hLastProperty->aPromptData, aColumnSeparators, sizeof( aColumnSeparators ) ); 
-	strncpy( hLastProperty->szName, "ColumnSeperator", INI_MAX_PROPERTY_NAME );
+	strncpy( hLastProperty->szName, "ColumnSeparators", INI_MAX_PROPERTY_NAME );
 	strncpy( hLastProperty->szValue, "|", INI_MAX_PROPERTY_VALUE );
 	hLastProperty->pszHelp				= strdup( "Column separator character used in table files.\nCANNOT EXIST IN COLUMN VALUES." );
 

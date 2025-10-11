@@ -8,6 +8,11 @@ svn:
 	@echo "*** Building config.h"
 	@autoheader
 	@sed -i '/UNIXODBC_SOURCE/d' unixodbc_conf.h.in
+	@sed -i '/ VERSION/d' unixodbc_conf.h.in
+	@sed -i '/ PACKAGE/d' unixodbc_conf.h.in
+	@echo "*** update config.guess and config.sub"
+	@wget -O config.guess 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.guess;hb=HEAD' --no-check-certificate
+	@wget -O config.sub 'https://git.savannah.gnu.org/gitweb/?p=config.git;a=blob_plain;f=config.sub;hb=HEAD' --no-check-certificate
 	@echo "*** Building configure"
 	@autoconf
 	@echo "*** Finished"

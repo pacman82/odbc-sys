@@ -20,6 +20,7 @@
 #include "statement.h"
 #include "qresult.h"
 #include "lobj.h"
+#include "misc.h"
 #include "dlg_specific.h"
 #include <stdio.h>
 #include <string.h>
@@ -994,6 +995,9 @@ static char msgbuffer[MAX_MESSAGE_LEN+1];
 char cmdbuffer[MAX_MESSAGE_LEN+1];	/* QR_set_command() dups this string so dont need static */
 
 
+	if ((NULL == query) || (query[0] == '\0'))
+		return NULL;
+
 	mylog("send_query(): conn=%u, query='%s'\n", self, query);
 	qlog("conn=%u, query='%s'\n", self, query);
 
@@ -1002,9 +1006,6 @@ char cmdbuffer[MAX_MESSAGE_LEN+1];	/* QR_set_command() dups this string so dont 
 		CC_set_error(self, CONNECTION_MSG_TOO_LONG, "Query string is too long");
 		return NULL;
 	}
-
-	if ((NULL == query) || (query[0] == '\0'))
-		return NULL;
 
 	if (SOCK_get_errcode(sock) != 0) {
 		CC_set_error(self, CONNECTION_COULD_NOT_SEND, "Could not send Query to backend");
@@ -1196,7 +1197,7 @@ char cmdbuffer[MAX_MESSAGE_LEN+1];	/* QR_set_command() dups this string so dont 
 			mylog("send_query: 'E' - %s\n", msgbuffer);
 			qlog("ERROR from backend during send_query: '%s'\n", msgbuffer);
 
-			/* We should report that an error occured. Zoltan */
+			/* We should report that an error occurred. Zoltan */
             if (res)
                 QR_Destructor(res);
 			res = QR_Constructor();

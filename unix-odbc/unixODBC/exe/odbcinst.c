@@ -174,7 +174,11 @@ int DriverInstall( char *pszTemplate )
         {
             iniProperty( hIni, szProperty );
             iniValue( hIni, szValue );
+#ifdef HAVE_SNPRINTF
+            snprintf( pChar, 10000 - ( pChar - szDriver ), "%s=%s", szProperty, szValue );
+#else
             sprintf( pChar, "%s=%s", szProperty, szValue );
+#endif
             pChar += ( strlen( szProperty ) + strlen( szValue ) + 2 );
             iniPropertyNext( hIni );
         }
@@ -182,6 +186,7 @@ int DriverInstall( char *pszTemplate )
         {
             SQLInstallerError( 1, &nError, szError, ODBC_FILENAME_MAX, NULL );
             if ( cVerbose == 0 ) printf( "odbcinst: SQLInstallDriverEx failed with %s.\n", szError );
+            iniClose( hIni );
             return 1;
         }
         if ( cVerbose == 0 ) printf( "odbcinst: Driver installed. Usage count increased to %d. \n    Target directory is %s\n", (int)nUsageCount, szPathOut );
@@ -462,7 +467,7 @@ void Syntax()
 void PrintConfigInfo()
 {
     char szFileName[ODBC_FILENAME_MAX+1];
-	char b1[ 256 ], b2[ 256 ];
+    char b1[ ODBC_FILENAME_MAX + 1 ], b2[ ODBC_FILENAME_MAX + 1 ];
 
     printf( "unixODBC " VERSION "\n" );
 

@@ -255,6 +255,8 @@ SQLRETURN SQLBrowseConnectW(
      * are we at the start of a connection
      */
 
+    driver_name[ 0 ] = '\0';
+
     if ( connection -> state == STATE_C2 )
     {
         char in_str_buf[ BUFFER_LEN ];
@@ -408,7 +410,7 @@ SQLRETURN SQLBrowseConnectW(
     {
         SQLCHAR *an_in_str = (SQLCHAR*) unicode_to_ansi_alloc( in_str, SQL_NTS, connection, 0 );
         SQLCHAR *ob = conn_str_out ? malloc( (conn_str_out_max + 1) * sizeof(SQLWCHAR) ) : 0;
-        SQLINTEGER len;
+        SQLSMALLINT len;
 
         ret = SQLBROWSECONNECT( connection,
                 connection -> driver_dbc,

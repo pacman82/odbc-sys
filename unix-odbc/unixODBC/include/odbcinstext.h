@@ -14,7 +14,6 @@
 
 #ifdef UNIXODBC_SOURCE
 
-#include <ltdl.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -24,7 +23,6 @@
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-#include <stdio.h>
 
 #ifndef ODBCVER
 #define ODBCVER 0x0380
@@ -210,6 +208,8 @@ BOOL _SQLDriverConnectPromptW(
 
 void __set_config_mode( int mode );
 int __get_config_mode( void );
+void __lock_config_mode( void );
+void __unlock_config_mode( void );
 
 int inst_logPushMsg( 
         char *pszModule, 
@@ -222,6 +222,13 @@ int inst_logPushMsg(
 int inst_logPeekMsg( long nMsg, HLOGMSG *phMsg );
 int inst_logClear();
 
+int __SQLGetPrivateProfileStringNL( LPCSTR  pszSection,
+                                LPCSTR  pszEntry,
+                                LPCSTR  pszDefault,
+                                LPSTR   pRetBuffer,
+                                int     nRetBuffer,
+                                LPCSTR  pszFileName
+                              );
 
 /*
  * we should look at caching this info, the calls can become expensive
@@ -332,8 +339,8 @@ typedef struct	tODBCINSTPROPERTY
 char* _multi_string_alloc_and_copy( LPCWSTR in );
 char* _single_string_alloc_and_copy( LPCWSTR in );
 void _single_string_copy_to_wide( SQLWCHAR *out, LPCSTR in, int len );
-void _multi_string_copy_to_wide( SQLWCHAR *out, LPCSTR in, int len );
-void _single_copy_to_wide( SQLWCHAR *out, LPCSTR in, int len );
+int _multi_string_copy_to_wide( SQLWCHAR *out, LPCSTR in, int len );
+int _single_copy_to_wide( SQLWCHAR *out, LPCSTR in, int len );
 SQLWCHAR* _multi_string_alloc_and_expand( LPCSTR in );
 SQLWCHAR* _single_string_alloc_and_expand( LPCSTR in );
 void _single_copy_from_wide( SQLCHAR *out, LPCWSTR in, int len );

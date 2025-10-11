@@ -120,6 +120,17 @@
 
 static char const rcsid[]= "$RCSfile: SQLConnectW.c,v $";
 
+/*
+ * connection pooling stuff
+ */
+
+extern int pooling_enabled;
+extern CPOOLHEAD *pool_head;
+extern int pool_max_size;
+extern int pool_wait_timeout;
+
+
+
 SQLRETURN SQLConnectW( SQLHDBC connection_handle,
            SQLWCHAR *server_name,
            SQLSMALLINT name_length1,
@@ -136,6 +147,7 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
     SQLCHAR ansi_dsn[ SQL_MAX_DSN_LENGTH + 1 ];
     SQLCHAR s1[ 100 + LOG_MESSAGE_LEN ], s2[ 100 + LOG_MESSAGE_LEN ], s3[ 100 + LOG_MESSAGE_LEN ], ansi_user[ SQL_MAX_DSN_LENGTH + 1 ], ansi_pwd[ SQL_MAX_DSN_LENGTH + 1 ];
     int warnings;
+    CPOOLHEAD *pooh = 0;
 
     /*
      * check connection
@@ -310,10 +322,203 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
     }
 
     /*
-     * No pooling for UNICODE at the moment
+     * can we find a pooled connection to use here ?
      */
 
     connection -> pooled_connection = NULL;
+
+    if ( pooling_enabled ) {
+
+        char *ansi_server_name, *ansi_user_name, *ansi_authentication;
+        int ansi_name_length1, ansi_name_length2, ansi_name_length3;
+        int retpool;
+        int retrying = 0;
+        time_t wait_begin = time( NULL );
+
+
+        if ( server_name ) {
+            ansi_server_name = unicode_to_ansi_alloc( server_name, name_length1, connection, &ansi_name_length1 );
+        }
+        else {
+            ansi_server_name = NULL;
+            ansi_name_length1 = 0;
+        }
+
+        if ( user_name ) {
+            ansi_user_name = unicode_to_ansi_alloc( user_name, name_length2, connection, &ansi_name_length2 );
+        }
+        else {
+            ansi_user_name = NULL;
+            ansi_name_length2 = 0;
+        }
+
+        if ( authentication ) {
+            ansi_authentication = unicode_to_ansi_alloc( authentication, name_length3, connection, &ansi_name_length3 );
+        }
+        else {
+            ansi_authentication = NULL;
+            ansi_name_length3 = 0;
+        }
+
+retry:
+        retpool = search_for_pool( connection, 
+                                        ansi_server_name, ansi_name_length1,
+                                        ansi_user_name, ansi_name_length2,
+                                        ansi_authentication, ansi_name_length3,
+                                        NULL, 0,
+                                        &pooh, retrying );
+
+        /*
+         * found usable existing connection from pool
+         */
+        if ( retpool == 1 )
+        {
+            ret_from_connect = SQL_SUCCESS;
+
+            if ( ansi_server_name ) {
+                free( ansi_server_name );
+            }
+            if ( ansi_user_name ) {
+                free( ansi_user_name );
+            }
+            if ( ansi_authentication ) {
+                free( ansi_authentication );
+            }
+
+            if ( log_info.log_flag )
+            {
+                sprintf( connection -> msg,
+                        "\n\t\tExit:[%s]",
+                            __get_return_status( ret_from_connect, s1 ));
+
+                dm_log_write( __FILE__,
+                            __LINE__,
+                        LOG_INFO,
+                        LOG_INFO,
+                        connection -> msg );
+            }
+
+            connection -> state = STATE_C4;
+
+            return function_return_nodrv( SQL_HANDLE_DBC, connection, ret_from_connect );
+        }
+
+        /*
+         * pool is at capacity
+         */
+        if ( retpool == 2 )
+        {
+            /*
+             * either no timeout or exceeded the timeout
+             */
+            if ( ! pool_wait_timeout || time( NULL ) - wait_begin > pool_wait_timeout )
+            {
+                if ( ansi_server_name ) {
+                    free( ansi_server_name );
+                }
+                if ( ansi_user_name ) {
+                    free( ansi_user_name );
+                }
+                if ( ansi_authentication ) {
+                    free( ansi_authentication );
+                }
+
+                mutex_pool_exit();
+                dm_log_write( __FILE__,
+                    __LINE__,
+                    LOG_INFO,
+                    LOG_INFO,
+                    "Error: HYT02" );
+
+                __post_internal_error( &connection -> error,
+                    ERROR_HYT02, NULL,
+                    connection -> environment -> requested_version );
+
+                return function_return_nodrv( SQL_HANDLE_DBC, connection, SQL_ERROR );
+            }
+
+            /*
+             * wait up to 1 second for a signal and try again
+             */
+            pool_timedwait( connection );
+            retrying = 1;
+            goto retry;
+        }
+
+        /*
+         * 1 pool entry has been reserved. Early exits henceforth need to unreserve.
+         */
+
+        /*
+         * else save the info for later
+         */
+
+        connection -> dsn_length = 0;
+
+        if ( ansi_server_name )
+        {
+            if ( ansi_name_length1 < 0 )
+            {
+                connection -> _server = strdup( ansi_server_name );
+            }
+            else
+            {
+                connection -> _server = malloc( ansi_name_length1 );
+                memcpy( connection -> _server, ansi_server_name, ansi_name_length1 );
+            }
+        }
+        else
+        {
+            connection -> _server = strdup( "" );
+        }
+        connection -> server_length = ansi_name_length1;
+
+        if ( ansi_user_name )
+        {
+            if ( ansi_name_length2 < 0 )
+            {
+                connection -> _user = strdup( ansi_user_name );
+            }
+            else
+            {
+                connection -> _user = malloc( ansi_name_length2 );
+                memcpy( connection -> _user, ansi_user_name, ansi_name_length2 );
+            }
+        }
+        else
+        {
+            connection -> _user = strdup( "" );
+        }
+        connection -> user_length = ansi_name_length2;
+
+        if ( ansi_authentication )
+        {
+            if ( ansi_name_length3 < 0 )
+            {
+                connection -> _password = strdup( ansi_authentication );
+            }
+            else
+            {
+                connection -> _password = malloc( ansi_name_length3 );
+                memcpy( connection -> _password, ansi_authentication, ansi_name_length3 );
+            }
+        }
+        else
+        {
+            connection -> _password = strdup( "" );
+        }
+        connection -> password_length = ansi_name_length3;
+
+        if ( ansi_server_name ) {
+            free( ansi_server_name );
+        }
+        if ( ansi_user_name ) {
+            free( ansi_user_name );
+        }
+        if ( ansi_authentication ) {
+            free( ansi_authentication );
+        }
+    }
 
     unicode_to_ansi_copy((char*) ansi_dsn, sizeof( ansi_dsn ), dsn, sizeof( ansi_dsn ), NULL, NULL );
 
@@ -335,6 +540,8 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
                     ERROR_IM002, NULL,
                     connection -> environment -> requested_version );
 
+            pool_unreserve( pooh );
+
             return function_return_nodrv( SQL_HANDLE_DBC, connection, SQL_ERROR );
         }
     }
@@ -355,6 +562,8 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
     {
         __disconnect_part_four( connection );       /* release unicode handles */
 
+        pool_unreserve( pooh );
+
         return function_return_nodrv( SQL_HANDLE_DBC, connection, SQL_ERROR );
     }
 
@@ -372,6 +581,8 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
         __post_internal_error( &connection -> error,
                 ERROR_IM001, NULL,
                 connection -> environment -> requested_version );
+
+        pool_unreserve( pooh );
 
         return function_return_nodrv( SQL_HANDLE_DBC, connection, SQL_ERROR );
     }
@@ -619,6 +830,8 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
             __disconnect_part_one( connection );
             __disconnect_part_four( connection );       /* release unicode handles */
 
+            pool_unreserve( pooh );
+
             return function_return( SQL_HANDLE_DBC, connection, ret_from_connect, DEFER_R0 );
         }
     }
@@ -656,6 +869,8 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
 
         connection -> state = STATE_C3;
 
+        pool_unreserve( pooh );
+
         return function_return( SQL_HANDLE_DBC, connection, SQL_ERROR, DEFER_R0 );
     }
 
@@ -675,6 +890,11 @@ SQLRETURN SQLConnectW( SQLHDBC connection_handle,
     if ( warnings && ret_from_connect == SQL_SUCCESS )
     {
         ret_from_connect = SQL_SUCCESS_WITH_INFO;
+    }
+
+    if ( pooling_enabled && !add_to_pool( connection, pooh ) )
+    {
+        pool_unreserve( pooh );
     }
 
     return function_return_nodrv( SQL_HANDLE_DBC, connection, ret_from_connect );

@@ -207,15 +207,23 @@ SQLRETURN get_column_names( CLHSTMT cl_statement )
 
     cl_statement -> column_names = malloc( sizeof(char *) 
             * cl_statement -> column_count );
+    if ( !cl_statement->column_names )
+        return SQL_ERROR;
 
     cl_statement -> data_type = malloc( sizeof( SQLSMALLINT ) 
             * cl_statement -> column_count );
+    if ( !cl_statement->data_type )
+        return SQL_ERROR;
 
     cl_statement -> column_size = malloc( sizeof( SQLULEN ) 
             * cl_statement -> column_count );
+    if ( !cl_statement->column_size )
+        return SQL_ERROR;
 
     cl_statement -> decimal_digits = malloc( sizeof( SQLSMALLINT ) 
             * cl_statement -> column_count );
+    if ( !cl_statement->decimal_digits )
+        return SQL_ERROR;
 
     for ( i = 1; i <= cl_statement -> column_count; i ++ )
     {
@@ -234,7 +242,7 @@ SQLRETURN get_column_names( CLHSTMT cl_statement )
         ret = SQLDESCRIBECOL( cl_statement -> cl_connection,
                 cl_statement -> driver_stmt,
                 i,
-                cname, 
+                (SQLCHAR*) cname,
                 sizeof( cname ),
                 NULL,
                 &cl_statement -> data_type[ i - 1 ], 
