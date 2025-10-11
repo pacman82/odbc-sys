@@ -7,7 +7,7 @@ use flate2::read::GzDecoder;
 use tar::Archive;
 
 fn main() {
-    // Extract unxi-odbc source to OUT_DIR so we do not pollute our source directory.
+    // Extract unix-odbc source to OUT_DIR so we do not pollute our source directory.
     let out_dir = env::var("OUT_DIR").unwrap();
     let out_dir = PathBuf::from(out_dir);
     let tar_gz = File::open("unixODBC-2.3.9.tar.gz").unwrap();

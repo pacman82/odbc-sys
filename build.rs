@@ -18,6 +18,10 @@ fn main() {
         }
     }
 
+    if env::var("CARGO_FEATURE_STATIC_LTDL").is_ok() {
+        println!("cargo:rustc-link-lib=static=ltdl");
+    }
+
     if cfg!(target_os = "macos") {
         if let Some(homebrew_lib_path) = homebrew_library_path() {
             print_paths(&homebrew_lib_path);
