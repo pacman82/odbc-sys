@@ -18,13 +18,17 @@ default = ["odbc_version_3_80"]
 static = []
 iodbc = []
 
+# unixODBC has a dependency on libltdl. If you want to create a fully statically linked executable
+# and unixODBC is your driver manager of choice you need also to link statically against libltdl.
+static_ltdl = []
+
 # Use this to build unixODBC as a dependency of odbc-sys and link statically againts it. This can
 # make installation of your artifact easier, because users may not need to install a driver manager.
 # However, please note that unixODBC is published under an LGPL license, so by statically linking
 # you need to take the implications for your artifact into account. `odbc-sys` itself is MIT
 # licensed. In order to build unixODBC it draws in an optional dependency containing the unixODBC
 # source code, which is licensed under the same terms as unixODBC itself.
-vendored-unix-odbc = ["dep:unix-odbc"]
+vendored-unix-odbc = ["dep:unix-odbc", "static"]
 
 odbc_version_3_50 = []
 odbc_version_3_80 = ["odbc_version_3_50"]

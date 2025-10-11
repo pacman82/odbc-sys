@@ -18,6 +18,16 @@ jobs:
       - name: Run tests
         run: cargo test --features vendored-unix-odbc
 
+  vendored-unix-odbc-mac-os:
+    name: Build & Test with vendored unixODBC on Mac OS
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # tag=v4.1.1
+      - name: Run tests
+        run: cargo test --features vendored-unix-odbc
+
   build-linux:
     name: Build & Test on Ubuntu Latest
 
