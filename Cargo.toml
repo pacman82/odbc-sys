@@ -1,6 +1,6 @@
 [package]
 name = "odbc-sys"
-version = "0.27.1"
+version = "0.27.2"
 authors = ["Markus Klein"]
 license = "MIT"
 description = "ODBC ffi bindings"
@@ -11,12 +11,16 @@ categories = ["external-ffi-bindings", "database"]
 edition = "2021"
 
 [dependencies]
-unix-odbc = { version ="0.1.0", path = "unix-odbc", optional = true }
+unix-odbc = { version = "0.1.1", path = "unix-odbc", optional = true }
 
 [features]
 default = ["odbc_version_3_80"]
 static = []
 iodbc = []
+
+# unixODBC has a dependency on libltdl. If you want to create a fully statically linked executable
+# and unixODBC is your driver manager of choice you need also to link statically against libltdl.
+static_ltdl = []
 
 # Use this to build unixODBC as a dependency of odbc-sys and link statically againts it. This can
 # make installation of your artifact easier, because users may not need to install a driver manager.
@@ -24,7 +28,7 @@ iodbc = []
 # you need to take the implications for your artifact into account. `odbc-sys` itself is MIT
 # licensed. In order to build unixODBC it draws in an optional dependency containing the unixODBC
 # source code, which is licensed under the same terms as unixODBC itself.
-vendored-unix-odbc = ["dep:unix-odbc"]
+vendored-unix-odbc = ["dep:unix-odbc", "static"]
 
 odbc_version_3_50 = []
 odbc_version_3_80 = ["odbc_version_3_50"]

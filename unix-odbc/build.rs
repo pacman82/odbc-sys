@@ -7,7 +7,10 @@ use flate2::read::GzDecoder;
 use tar::Archive;
 
 fn main() {
-    // Extract unxi-odbc source to OUT_DIR so we do not pollute our source directory.
+    if cfg!(target_os = "windows") {
+        return;
+    }
+    // Extract unix-odbc source to OUT_DIR so we do not pollute our source directory.
     let out_dir = env::var("OUT_DIR").unwrap();
     let out_dir = PathBuf::from(out_dir);
     let tar_gz = File::open("unixODBC-2.3.9.tar.gz").unwrap();
@@ -15,7 +18,9 @@ fn main() {
     archive.unpack(&out_dir).unwrap();
 
     let unix_odbc_source_path = out_dir.join("unixODBC-2.3.9");
-    let path = Config::new(unix_odbc_source_path).build();
+    let path = Config::new(unix_odbc_source_path)
+        .cflag("-std=gnu99")
+        .build();
     let path = path.join("lib");
     println!("cargo:rustc-link-search=native={}", path.display());
 }

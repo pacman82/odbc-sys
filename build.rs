@@ -1,14 +1,6 @@
 use std::{env, process::Command};
 
 fn main() {
-    if std::env::var("CARGO_FEATURE_VENDORED_UNIX_ODBC").is_ok() {
-        let static_path =
-            env::var("ODBC_SYS_STATIC_PATH").unwrap_or_else(|_| "/usr/lib".to_string());
-        println!("cargo:rerun-if-env-changed=ODBC_SYS_STATIC_PATH");
-        println!("cargo:rustc-link-search=native={static_path}");
-        println!("cargo:rustc-link-lib=static=odbc");
-    }
-
     if env::var("CARGO_FEATURE_STATIC").is_ok() {
         if cfg!(target_os = "windows") {
             panic!("odbc-sys does not currently support static linking on windows");
@@ -18,13 +10,16 @@ fn main() {
         println!("cargo:rerun-if-env-changed=ODBC_SYS_STATIC_PATH");
         println!("cargo:rustc-link-search=native={static_path}");
         println!("cargo:rustc-link-lib=static=odbc");
-        println!("cargo:rustc-link-lib=static=ltdl");
         if cfg!(target_os = "macos") {
             // Homebrew's unixodbc uses the system iconv, so we can't do a fully static linking
             // but this way we at least have only dependencies on built-in libraries
             // See also https://github.com/Homebrew/homebrew-core/pull/46145
             println!("cargo:rustc-link-lib=dylib=iconv");
         }
+    }
+
+    if env::var("CARGO_FEATURE_STATIC_LTDL").is_ok() {
+        println!("cargo:rustc-link-lib=static=ltdl");
     }
 
     if cfg!(target_os = "macos") {
