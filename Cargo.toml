@@ -24,7 +24,7 @@ iodbc = []
 # you need to take the implications for your artifact into account. `odbc-sys` itself is MIT
 # licensed. In order to build unixODBC it draws in an optional dependency containing the unixODBC
 # source code, which is licensed under the same terms as unixODBC itself.
-vendored-unix-odbc = ["dep:unix-odbc"]
+vendored-unix-odbc = ["dep:unix-odbc", "static"]
 
 odbc_version_3_50 = []
 odbc_version_3_80 = ["odbc_version_3_50"]
