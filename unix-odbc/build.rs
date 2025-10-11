@@ -7,6 +7,9 @@ use flate2::read::GzDecoder;
 use tar::Archive;
 
 fn main() {
+    if cfg!(target_os = "windows") {
+        return;
+    }
     // Extract unix-odbc source to OUT_DIR so we do not pollute our source directory.
     let out_dir = env::var("OUT_DIR").unwrap();
     let out_dir = PathBuf::from(out_dir);
