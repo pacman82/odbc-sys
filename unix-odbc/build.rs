@@ -1,7 +1,7 @@
 use std::{env, path::PathBuf};
 
 use autotools::Config;
-use fs_extra::dir::{copy, CopyOptions};
+use fs_extra::dir::{CopyOptions, copy};
 
 fn main() {
     if cfg!(target_os = "windows") {
@@ -15,9 +15,7 @@ fn main() {
 
     copy("unixODBC", &unix_odbc_src, &CopyOptions::new()).unwrap();
 
-    let path = Config::new(&unix_odbc_src)
-        .cflag("-std=gnu99")
-        .build();
+    let path = Config::new(&unix_odbc_src).cflag("-std=gnu99").build();
     let path = path.join("lib");
     println!("cargo:rustc-link-search=native={}", path.display());
 }
