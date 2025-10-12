@@ -12,4 +12,7 @@ license = "LGPL-2.1-or-later"
 [dependencies]
 
 [build-dependencies]
+# Used to build unixODBC
 autotools = "0.2.7"
+# Used to copy unixODBC source into our build directory
+fs_extra = "1.3.0"
