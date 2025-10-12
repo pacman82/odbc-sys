@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.3](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.2...odbc-sys-v0.27.3) - 2025-10-12
+
+### Added
+
+- unix-odbc crate, just does nothing than used with windows
+- introduce compile time feature static_ltdl to allow for explicit
+
+### Fixed
+
+- [**breaking**] using the `static` feature flag no longer implies libltdl is
+
+### Other
+
+- Prevent recreating configure script for unixODBC during build
+- formattig
+- Remove superfluous unixODBC tar.gz
+- build from unixODBC source included verbatum
+- Vendor source for unixODBC verbatum
+- update vendor script to include source verbatum
+- remove the need for cargo:rerun-if-env-changed
+- Re-fix #64
+- formattig
+- auto format on ci
+- install unixodbc on empty features in macos and linux
+- no unixodbc feature
+- make the ci script both simpler and more exhaustive
+- Fix issue with vendored unixODBC build not linking dynamically
+- build vendored-unix-odbc on mac os
+
 ## [0.27.2](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.1...odbc-sys-v0.27.2) - 2025-10-09
 
 ### Fixed

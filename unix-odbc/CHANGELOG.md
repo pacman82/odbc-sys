@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2](https://github.com/pacman82/odbc-sys/compare/unix-odbc-v0.1.1...unix-odbc-v0.1.2) - 2025-10-12
+
+### Added
+
+- unix-odbc crate, just does nothing than used with windows
+- introduce compile time feature static_ltdl to allow for explicit
+
+### Other
+
+- Prevent recreating configure script for unixODBC during build
+- formattig
+- Remove superfluous unixODBC tar.gz
+- build from unixODBC source included verbatum
+- Vendor source for unixODBC verbatum
+- update vendor script to include source verbatum
+- formattig
+
 ## [0.1.1](https://github.com/pacman82/odbc-sys/compare/unix-odbc-v0.1.0...unix-odbc-v0.1.1) - 2025-10-09
 
 ### Fixed
