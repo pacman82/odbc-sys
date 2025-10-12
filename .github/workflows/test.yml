@@ -6,7 +6,31 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Run formatter
+        run: cargo fmt
+      - name: Commit changes
+        run: |
+          if [[ `git status --porcelain` ]]; then
+            git config user.name "github-actions[bot]"
+            # Make formatting commits look lie they'r authored by the official github-actions[bot]
+            # instead of an anonymous user account.
+            # For the id see: https://api.github.com/users/github-actions%5Bbot%5D
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add .
+            git commit -m "style: formattig"
+            git push
+          fi
+
   test:
+    needs: [format]
     name: ${{ matrix.features || 'dynamic unixodbc' }} on ${{ matrix.target }}
     runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
 
