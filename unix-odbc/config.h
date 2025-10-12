@@ -43,13 +43,10 @@
 #define HAVE_WCSNCASECMP 1
 
 #define HAVE_LIBPTHREAD 1
-#define HAVE_LIBDL 1
 
 #define PACKAGE "unixODBC"
 
-#define ENABLE_UNICODE_SUPPORT 1
 #define SQL_WCHART_CONVERT 1
-#define DISABLE_LTDL 1
 
 #define TRUE 1
 #define FALSE 0
