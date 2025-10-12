@@ -1,0 +1,133 @@
+.TH odbcinst.ini 5 "Tue 12 Jan 2021" "version 2.3.12" "unixODBC manual pages"
+
+.SH NAME
+/etc/odbcinst.ini - unixODBC driver configuration file
+
+.SH DESCRIPTION
+\fB/etc/odbcinst.ini\fR is a configuration file for unixODBC drivers.
+
+The file can be updated by using the \fB odbcinst\fR utility (recommended)
+or edited by hand.
+
+.SH FILE FORMAT
+The general .ini file format is:
+
+.RS
+.nf
+.BI [ SectionName1 ]
+.IB key1 " = " value1
+.IB key2 " = " value2
+.B ...
+
+.BI [ SectionName2 ]
+.IB key1 " = " value1
+.IB key2 " = " value2
+.B ...
+.fi
+.RE
+
+Each ODBC driver has its own section and can be referred to by the name of that
+section in files such as odbc.ini. Within each section, unixODBC also recognises
+the following configuration keys:
+
+.IP \fBDescription
+A text string briefly describing the driver.
+
+.IP \fBDriver
+A filesystem path to the actual driver library.
+
+.IP \fBSetup
+A filesystem path to the driver setup library.
+
+.IP \fBFileUsage
+The section named \fB[ODBC]\fR configures global options. Keys recognised in
+the \fB[ODBC]\fR section include:
+
+.RS
+.IP \fBTrace
+Enable ODBC driver trace output, which is written to the file path specified
+by \fBTraceFile\fR.
+
+Some ODBC drivers have their own trace control options. Unlike the \fBTrace\fR
+option, these separate options are usually specified at the Data Source Name
+(DSN) level.
+
+\fBTrace\fR will be enabled if the corresponding value contains any case variant
+of "1", "y", "yes" or "on".
+
+.IP \fBTraceFile
+Specifies the system path or path-pattern to which ODBC driver trace output will
+be written. This option has no effect unless \fBTrace\fR is enabled. The default
+file location for trace output is \fB/tmp/sql.log\fR.
+
+\fIWARNING\fR: Setting \fBTraceFile\fR to a path writable by multiple users
+might not work correctly, as only the first user will be able to create and open
+the file.
+.RE
+
+.SH TEMPLATE FILES
+Many ODBC drivers come with .ini file templates, which can be installed by using
+the \fBodbcinst\fR utility.
+
+Template files use the same format as odbcinst.ini.
+
+.SH EXAMPLES
+To install the unixODBC PostgreSQL driver, the following configuration can be
+entered into odbcinst.ini:
+
+.RS
+.nf
+[PostgreSQL]
+Description = PostgreSQL driver for GNU/Linux
+Driver      = /usr/lib/psqlodbcw.so
+Setup       = /usr/lib/libodbcpsqlS.so
+FileUsage   = 1
+.fi
+.RE
+
+Driver paths can vary, depending on your operating system and whether
+your distribution is multi-arch enabled. Some drivers also require \fBDriver64\fR
+and \fBSetup64\fR entries.
+
+The above section can be referenced in \fBodbc.ini\fR as follows:
+
+.RS
+.nf
+Driver = PostgreSQL
+.fi
+.RE
+
+The recommended way of adding the PostgreSQL driver to your system is by creating
+a template file containing:
+
+.RS
+.nf
+[PostgreSQL]
+Description = PostgreSQL driver for GNU/Linux
+Driver      = /usr/lib/psqlodbcw.so
+Setup       = /usr/lib/libodbcpsqlS.so
+.fi
+.RE
+
+and calling \fBodbcinst\fR as follows:
+
+.RS
+.BI "# odbcinst \-i \-d \-f " template.ini
+.RE
+
+.SH "SEE ALSO"
+.BR unixODBC (7),
+.BR odbcinst (1),
+.BR odbc.ini (5)
+
+"The \fIunixODBC\fB Administrator Manual (HTML)\fR"
+
+.SH AUTHORS
+The authors of unixODBC are Peter Harvey <\fIpharvey@codebydesign.com\fR> and
+Nick Gorham <\fInick@lurcher.org\fR>.
+
+For a full list of contributors, refer to the \fIAUTHORS\fR file.
+
+.SH COPYRIGHT
+unixODBC is licensed under the GNU Lesser General Public License. For details
+about the license, see the \fICOPYING\fR file.
