@@ -1,11 +1,24 @@
+use std::{env, path::PathBuf};
+
 use autotools::Config;
+use fs_extra::dir::{CopyOptions, copy};
 
 fn main() {
     if cfg!(target_os = "windows") {
         return;
     }
 
-    let path = Config::new("unixODBC")
+    // OUT_DIR is an environment provided by cargo. It points to a temporary build directory. This
+    // allows us to keep our source tree clean.
+    let out_dir: PathBuf = env::var("OUT_DIR").unwrap().parse().unwrap();
+    let options = CopyOptions {
+        overwrite: true,
+        ..Default::default()
+    };
+    copy("unixODBC", &out_dir, &options).unwrap();
+    let unix_odbc_src = out_dir.join("unixODBC");
+
+    let path = Config::new(&unix_odbc_src)
         .cflag("-std=gnu99")
         // Prevent recreating the configure script
         .env("ACLOCAL", "true")
