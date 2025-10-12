@@ -58,3 +58,14 @@ jobs:
         run: brew install libiodbc
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
       - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+
+  # Verify that the build script does nothing nasty, which would prevent publishing to crates.io
+  test_publish_unix_odbc:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Test publish to crates.io
+        run: cargo publish -p unix-odbc --dry-run

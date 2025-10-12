@@ -13,3 +13,4 @@ license = "LGPL-2.1-or-later"
 
 [build-dependencies]
 autotools = "0.2.7"
+fs_extra = "1.3.0"
