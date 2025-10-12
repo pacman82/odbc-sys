@@ -10,13 +10,10 @@ fn main() {
 
     let configure_ac_path = vendor_dir.join("configure.ac");
     let configure_ac = read_to_string(configure_ac_path).expect("Failed to read configure.ac");
-    let version = configure_ac
-        .split("AC_INIT([unixODBC], [")
-        .nth(1)
-        .expect("Failed to find version in configure.ac")
-        .split(']')
-        .next()
-        .expect("Unparsable version in configure.ac");
+    let (version, _) = configure_ac
+        .split_once("AC_INIT([unixODBC], [")
+        .and_then(|(_, s)| s.split_once(']'))
+        .expect("Failed to parse version from configure.ac");
     let version_str = format!("\"{}\"", version);
 
     let mut build = cc::Build::new();
