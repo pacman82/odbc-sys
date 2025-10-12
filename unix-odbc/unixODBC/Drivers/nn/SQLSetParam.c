@@ -1,0 +1,1 @@
+/* Moved to SQLBindParameter.c. */
