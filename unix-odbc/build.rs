@@ -5,9 +5,7 @@ fn main() {
         return;
     }
 
-    let path = Config::new("unixODBC")
-        .cflag("-std=gnu99")
-        .build();
+    let path = Config::new("unixODBC").cflag("-std=gnu99").build();
     let path = path.join("lib");
     println!("cargo:rustc-link-search=native={}", path.display());
 }
