@@ -5,9 +5,8 @@ fn main() {
         if cfg!(target_os = "windows") {
             panic!("odbc-sys does not currently support static linking on windows");
         }
-        println!("cargo:rerun-if-env-changed=ODBC_SYS_STATIC_PATH");
         println!("cargo:rustc-link-lib=static=odbc");
-        if let Ok(static_path) = env::var("ODBC_SYS_STATIC_PATH") {
+        if let Some(static_path) = option_env!("ODBC_SYS_STATIC_PATH") {
             println!("cargo:rustc-link-search=native={static_path}");
         }
         if cfg!(target_os = "macos") {
