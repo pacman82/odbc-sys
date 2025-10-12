@@ -13,5 +13,3 @@ license = "LGPL-2.1-or-later"
 
 [build-dependencies]
 autotools = "0.2.7"
-flate2 = "1.1.4"
-tar = "0.4.44"
