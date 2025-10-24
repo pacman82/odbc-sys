@@ -46,8 +46,6 @@
 
 #define PACKAGE "unixODBC"
 
-#define SQL_WCHART_CONVERT 1
-
 #define TRUE 1
 #define FALSE 0
 
