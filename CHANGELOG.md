@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.27.4](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.3...odbc-sys-v0.27.4) - 2025-10-25
+
+### Other
+
+- updated the following local packages: unix-odbc
+
 ## [0.27.3](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.2...odbc-sys-v0.27.3) - 2025-10-12
 
 ### Added
