@@ -4,18 +4,18 @@ use odbc_sys::HandleType::*;
 use odbc_sys::*;
 use std::ptr;
 
-const SUCCESS: SqlReturn = SqlReturn::SUCCESS;
-
-fn succeeds(ret: SqlReturn) {
-    assert_eq!(SUCCESS, ret);
+macro_rules! succeeds {
+    ($function:ident($($args:expr),*)) => {
+        assert_eq!(SqlReturn::SUCCESS, $function($($args),*), "{} failed", stringify!($function));
+    };
 }
 
 #[test]
 fn allocate_environment() {
     let mut env = Handle::null();
     unsafe {
-        succeeds(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
-        succeeds(SQLFreeHandle(Env, env));
+        succeeds!(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
+        succeeds!(SQLFreeHandle(Env, env));
     }
 }
 
@@ -25,19 +25,19 @@ fn allocate_connection() {
     let mut conn = Handle::null();
 
     unsafe {
-        succeeds(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
+        succeeds!(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
 
-        succeeds(SQLSetEnvAttr(
+        succeeds!(SQLSetEnvAttr(
             env.as_henv(),
             EnvironmentAttribute::OdbcVersion,
             AttrOdbcVersion::Odbc3.into(),
-            0,
+            0
         ));
 
-        succeeds(SQLAllocHandle(Dbc, env, &mut conn as *mut Handle));
+        succeeds!(SQLAllocHandle(Dbc, env, &mut conn as *mut Handle));
 
-        succeeds(SQLFreeHandle(Dbc, conn));
-        succeeds(SQLFreeHandle(Env, env));
+        succeeds!(SQLFreeHandle(Dbc, conn));
+        succeeds!(SQLFreeHandle(Env, env));
     }
 }
 
@@ -47,14 +47,14 @@ fn allocate_connection_error() {
     let mut conn = Handle::null();
 
     unsafe {
-        succeeds(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
+        succeeds!(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
 
         assert_eq!(
             SqlReturn::ERROR,
             SQLAllocHandle(Dbc, env, &mut conn as *mut Handle)
         );
 
-        succeeds(SQLFreeHandle(Env, env));
+        succeeds!(SQLFreeHandle(Env, env));
     }
 }
 
@@ -66,17 +66,17 @@ fn select_42() {
     let mut stmt = Handle::null();
 
     unsafe {
-        succeeds(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
-        succeeds(SQLSetEnvAttr(
+        succeeds!(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
+        succeeds!(SQLSetEnvAttr(
             env.as_henv(),
             EnvironmentAttribute::OdbcVersion,
             AttrOdbcVersion::Odbc3.into(),
-            0,
+            0
         ));
-        succeeds(SQLAllocHandle(Dbc, env, &mut conn as *mut Handle));
+        succeeds!(SQLAllocHandle(Dbc, env, &mut conn as *mut Handle));
 
         let conn_str = b"DRIVER=SQLite3;Database=:memory:";
-        succeeds(SQLDriverConnect(
+        succeeds!(SQLDriverConnect(
             conn.as_hdbc(),
             ptr::null_mut(),
             conn_str.as_ptr(),
@@ -84,35 +84,35 @@ fn select_42() {
             ptr::null_mut(),
             0,
             ptr::null_mut(),
-            DriverConnectOption::NoPrompt,
+            DriverConnectOption::NoPrompt
         ));
 
-        succeeds(SQLAllocHandle(Stmt, conn, &mut stmt as *mut Handle));
+        succeeds!(SQLAllocHandle(Stmt, conn, &mut stmt as *mut Handle));
 
         let sql = b"SELECT 42";
-        succeeds(SQLExecDirect(
+        succeeds!(SQLExecDirect(
             stmt.as_hstmt(),
             sql.as_ptr(),
-            sql.len() as i32,
+            sql.len() as i32
         ));
 
         let mut result: i32 = 0;
         let mut indicator: isize = 0;
-        succeeds(SQLBindCol(
+        succeeds!(SQLBindCol(
             stmt.as_hstmt(),
             1,
             CDataType::SLong,
             &mut result as *mut i32 as *mut _,
             0,
-            &mut indicator as *mut isize,
+            &mut indicator as *mut isize
         ));
-        succeeds(SQLFetch(stmt.as_hstmt()));
+        succeeds!(SQLFetch(stmt.as_hstmt()));
         assert_eq!(42, result);
 
-        succeeds(SQLFreeHandle(Stmt, stmt));
-        succeeds(SQLDisconnect(conn.as_hdbc()));
-        succeeds(SQLFreeHandle(Dbc, conn));
-        succeeds(SQLFreeHandle(Env, env));
+        succeeds!(SQLFreeHandle(Stmt, stmt));
+        succeeds!(SQLDisconnect(conn.as_hdbc()));
+        succeeds!(SQLFreeHandle(Dbc, conn));
+        succeeds!(SQLFreeHandle(Env, env));
     }
 }
 
@@ -124,17 +124,17 @@ fn invalid_sql_error() {
     let mut stmt = Handle::null();
 
     unsafe {
-        succeeds(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
-        succeeds(SQLSetEnvAttr(
+        succeeds!(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
+        succeeds!(SQLSetEnvAttr(
             env.as_henv(),
             EnvironmentAttribute::OdbcVersion,
             AttrOdbcVersion::Odbc3.into(),
-            0,
+            0
         ));
-        succeeds(SQLAllocHandle(Dbc, env, &mut conn as *mut Handle));
+        succeeds!(SQLAllocHandle(Dbc, env, &mut conn as *mut Handle));
 
         let conn_str = b"DRIVER=SQLite3;Database=:memory:";
-        succeeds(SQLDriverConnect(
+        succeeds!(SQLDriverConnect(
             conn.as_hdbc(),
             ptr::null_mut(),
             conn_str.as_ptr(),
@@ -142,10 +142,10 @@ fn invalid_sql_error() {
             ptr::null_mut(),
             0,
             ptr::null_mut(),
-            DriverConnectOption::NoPrompt,
+            DriverConnectOption::NoPrompt
         ));
 
-        succeeds(SQLAllocHandle(Stmt, conn, &mut stmt as *mut Handle));
+        succeeds!(SQLAllocHandle(Stmt, conn, &mut stmt as *mut Handle));
 
         let sql = b"xurgblob";
         assert_eq!(
@@ -157,7 +157,7 @@ fn invalid_sql_error() {
         let mut native_error = 0i32;
         let mut message_text = [0u8; 512];
         let mut text_length = 0i16;
-        succeeds(SQLGetDiagRec(
+        succeeds!(SQLGetDiagRec(
             Stmt,
             stmt,
             1,
@@ -165,15 +165,15 @@ fn invalid_sql_error() {
             &mut native_error as *mut i32,
             message_text.as_mut_ptr(),
             message_text.len() as i16,
-            &mut text_length as *mut i16,
+            &mut text_length as *mut i16
         ));
         assert!(text_length > 0);
         let message_bytes = &message_text[..text_length as usize];
         assert!(message_bytes.ends_with(b"syntax error (1)"));
 
-        succeeds(SQLFreeHandle(Stmt, stmt));
-        succeeds(SQLDisconnect(conn.as_hdbc()));
-        succeeds(SQLFreeHandle(Dbc, conn));
-        succeeds(SQLFreeHandle(Env, env));
+        succeeds!(SQLFreeHandle(Stmt, stmt));
+        succeeds!(SQLDisconnect(conn.as_hdbc()));
+        succeeds!(SQLFreeHandle(Dbc, conn));
+        succeeds!(SQLFreeHandle(Env, env));
     }
 }
