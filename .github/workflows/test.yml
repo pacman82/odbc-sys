@@ -48,20 +48,13 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: "recursive"
-      - if: ${{ contains(matrix.target, 'linux') && matrix.features == '' }}
-        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev libsqliteodbc
-      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'vendored-unix-odbc' }}
-        run: sudo apt-get update && sudo apt-get install -y libsqliteodbc
-      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'iodbc' }}
-        run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev libsqliteodbc
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == '' }}
-        run: brew install unixodbc sqliteodbc
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'vendored-unix-odbc' }}
-        run: brew install sqliteodbc
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
-        run: brew install libiodbc sqliteodbc
-      - if: ${{ contains(matrix.target, 'windows') }}
-        run: choco install sqlite-odbc -y
+      - if: ${{ contains(matrix.target, 'linux') }}
+        run: sudo apt-get update && sudo apt-get install -y libsqliteodbc ${{ matrix.features == '' && 'unixodbc-dev' || matrix.features == 'iodbc' && 'libiodbc2-dev' || '' }}
+      - if: ${{ contains(matrix.target, 'darwin') }}
+        run: brew install sqliteodbc ${{ matrix.features == '' && 'unixodbc' || matrix.features == 'iodbc' && 'libiodbc' || '' }}
+      - if: ${{ contains(matrix.target, 'windows') && matrix.target == 'x86_64-pc-windows-msvc' }}
+        run: curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe && ./sqliteodbc.exe /S
+        shell: bash
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
       - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
       - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}" -- --ignored
