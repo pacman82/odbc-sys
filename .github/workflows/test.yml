@@ -56,8 +56,7 @@ jobs:
         run: curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe && ./sqliteodbc.exe /S
         shell: bash
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
-      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
-      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}" -- --ignored
+      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}" -- --include-ignored
 
   # Verify that the build script does nothing nasty, which would prevent publishing to crates.io
   test_publish_unix_odbc:
