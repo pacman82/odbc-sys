@@ -49,15 +49,22 @@ jobs:
         with:
           submodules: "recursive"
       - if: ${{ contains(matrix.target, 'linux') && matrix.features == '' }}
-        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
+        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev libsqliteodbc
+      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'vendored-unix-odbc' }}
+        run: sudo apt-get update && sudo apt-get install -y libsqliteodbc
       - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'iodbc' }}
-        run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev
+        run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev libsqliteodbc
       - if: ${{ contains(matrix.target, 'darwin') && matrix.features == '' }}
-        run: brew install unixodbc
+        run: brew install unixodbc sqliteodbc
+      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'vendored-unix-odbc' }}
+        run: brew install sqliteodbc
       - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
-        run: brew install libiodbc
+        run: brew install libiodbc sqliteodbc
+      - if: ${{ contains(matrix.target, 'windows') }}
+        run: choco install sqlite-odbc -y
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
       - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}" -- --ignored
 
   # Verify that the build script does nothing nasty, which would prevent publishing to crates.io
   test_publish_unix_odbc:

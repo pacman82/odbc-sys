@@ -466,7 +466,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
     pub fn SQLFreeStmt(hstmt: HStmt, option: FreeStmtOption) -> SqlReturn;
 
-    /// Binds application data bufferst to columns in the result set.
+    /// Binds application data buffers to columns in the result set.
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
