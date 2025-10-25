@@ -177,3 +177,62 @@ fn invalid_sql_error() {
         succeeds!(SQLFreeHandle(Env, env));
     }
 }
+
+#[test]
+#[ignore]
+fn list_drivers_and_check_sqlite3() {
+    let mut env = Handle::null();
+
+    unsafe {
+        succeeds!(SQLAllocHandle(Env, Handle::null(), &mut env as *mut Handle));
+        succeeds!(SQLSetEnvAttr(
+            env.as_henv(),
+            EnvironmentAttribute::OdbcVersion,
+            AttrOdbcVersion::Odbc3.into(),
+            0
+        ));
+
+        let mut drivers = Vec::<u8>::with_capacity(1024);
+        let mut direction = FetchOrientation::First;
+
+        loop {
+            let mut driver_desc_written: i16 = 0;
+            let mut driver_attributes = [0u8; 256];
+            let mut out_drvr_attr: i16 = 0;
+
+            let ret = SQLDrivers(
+                env.as_henv(),
+                direction,
+                drivers.spare_capacity_mut().as_mut_ptr() as *mut u8,
+                (drivers.capacity() - drivers.len()) as i16,
+                &mut driver_desc_written as *mut i16,
+                driver_attributes.as_mut_ptr(),
+                driver_attributes.len() as i16,
+                &mut out_drvr_attr as *mut i16,
+            );
+
+            if ret == SqlReturn::NO_DATA {
+                break;
+            }
+
+            assert_eq!(SqlReturn::SUCCESS, ret, "SQLDrivers failed");
+
+            if driver_desc_written > 0 {
+                drivers.set_len(drivers.len() + driver_desc_written as usize);
+                drivers.push(b',');
+            }
+
+            direction = FetchOrientation::Next;
+        }
+
+        let drivers_str = String::from_utf8_lossy(&drivers);
+
+        assert!(
+            drivers_str.contains("SQLITE3"),
+            "SQLite3 driver not found. Installed drivers: {}",
+            drivers_str
+        );
+
+        succeeds!(SQLFreeHandle(Env, env));
+    }
+}
