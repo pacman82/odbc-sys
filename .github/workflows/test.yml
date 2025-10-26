@@ -51,7 +51,16 @@ jobs:
       - if: ${{ contains(matrix.target, 'linux') }}
         run: sudo apt-get update && sudo apt-get install -y libsqliteodbc ${{ matrix.features == '' && 'unixodbc-dev' || matrix.features == 'iodbc' && 'libiodbc2-dev' || '' }}
       - if: ${{ contains(matrix.target, 'darwin') }}
-        run: brew install sqliteodbc ${{ matrix.features == '' && 'unixodbc' || matrix.features == 'iodbc' && 'libiodbc' || '' }}
+        run: |
+          brew install sqliteodbc ${{ matrix.features == '' && 'unixodbc' || matrix.features == 'iodbc' && 'libiodbc' || '' }}
+          cat > /tmp/sqlite3_driver.ini << 'EOF'
+          [SQLite3]
+          Description=SQLite ODBC Driver
+          Driver=/opt/homebrew/lib/libsqlite3odbc.dylib
+          Setup=/opt/homebrew/lib/libsqlite3odbc.dylib
+          EOF
+          odbcinst -i -d -f /tmp/sqlite3_driver.ini
+          odbcinst -q -d
       - if: ${{ contains(matrix.target, 'windows') && matrix.target == 'x86_64-pc-windows-msvc' }}
         run: curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe && ./sqliteodbc.exe /S
         shell: bash
