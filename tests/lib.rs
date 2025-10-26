@@ -1,6 +1,13 @@
-//! Contains test for the ffi layer
-extern crate odbc_sys;
 use odbc_sys::*;
+
+/// Connection string to our Microsoft SQL Database. Boot it up with docker-compose up
+#[allow(dead_code)] // Not used for now. Eventually we want to test against a real database.
+const MSSQL: &str = "Driver={ODBC Driver 18 for SQL Server};\
+    Server=localhost;\
+    UID=SA;\
+    PWD=My@Test@Password1;\
+    TrustServerCertificate=yes;";
+
 #[test]
 fn allocate_environment() {
     let mut env = Handle::null();
