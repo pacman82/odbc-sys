@@ -60,7 +60,7 @@ jobs:
           Setup=/opt/homebrew/lib/libsqlite3odbc.dylib
           EOF
           odbcinst -i -d -f /tmp/sqlite3_driver.ini
-      - if: ${{ contains(matrix.target, 'windows') && matrix.target == 'x86_64-pc-windows-msvc' }}
+      - if: ${{ contains(matrix.target, 'windows') }}
         run: curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe && ./sqliteodbc.exe /S
         shell: bash
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
