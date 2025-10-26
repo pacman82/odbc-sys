@@ -54,7 +54,7 @@ jobs:
         run: |
           brew install sqliteodbc ${{ matrix.features == '' && 'unixodbc' || matrix.features == 'iodbc' && 'libiodbc' || '' }}
           cat > /tmp/sqlite3_driver.ini << 'EOF'
-          [SQLite3]
+          [SQLITE3]
           Description=SQLite ODBC Driver
           Driver=/opt/homebrew/lib/libsqlite3odbc.dylib
           Setup=/opt/homebrew/lib/libsqlite3odbc.dylib

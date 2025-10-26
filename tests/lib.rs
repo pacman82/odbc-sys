@@ -229,7 +229,7 @@ fn list_drivers_and_check_sqlite3() {
 
         assert!(
             drivers_str.contains("SQLITE3"),
-            "SQLite3 driver not found. Installed drivers: {}",
+            "SQLITE3 driver not found. Installed drivers: {}",
             drivers_str
         );
 
