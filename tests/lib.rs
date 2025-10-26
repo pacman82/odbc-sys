@@ -192,10 +192,11 @@ fn list_drivers_and_check_sqlite3() {
             0
         ));
 
-        let mut drivers = Vec::<u8>::with_capacity(1024);
+        let mut drivers = Vec::<String>::with_capacity(10);
         let mut direction = FetchOrientation::First;
 
         loop {
+            let mut driver_name = [0u8; 256];
             let mut driver_desc_written: i16 = 0;
             let mut driver_attributes = [0u8; 256];
             let mut out_drvr_attr: i16 = 0;
@@ -203,8 +204,8 @@ fn list_drivers_and_check_sqlite3() {
             let ret = SQLDrivers(
                 env.as_henv(),
                 direction,
-                drivers.spare_capacity_mut().as_mut_ptr() as *mut u8,
-                (drivers.capacity() - drivers.len()) as i16,
+                driver_name.as_mut_ptr(),
+                driver_name.len() as i16,
                 &mut driver_desc_written as *mut i16,
                 driver_attributes.as_mut_ptr(),
                 driver_attributes.len() as i16,
@@ -218,19 +219,18 @@ fn list_drivers_and_check_sqlite3() {
             assert_eq!(SqlReturn::SUCCESS, ret, "SQLDrivers failed");
 
             if driver_desc_written > 0 {
-                drivers.set_len(drivers.len() + driver_desc_written as usize);
-                drivers.push(b',');
+                let name = String::from_utf8_lossy(&driver_name[..driver_desc_written as usize])
+                    .to_ascii_lowercase();
+                drivers.push(name);
             }
 
             direction = FetchOrientation::Next;
         }
 
-        let drivers_str = String::from_utf8_lossy(&drivers);
-
         assert!(
-            drivers_str.to_lowercase().contains("sqlite3"),
-            "SQLite3 driver not found. Installed drivers: {}",
-            drivers_str
+            drivers.contains(&String::from("sqlite3")),
+            "SQLite3 driver not found. Installed drivers: {:?}",
+            drivers
         );
 
         succeeds!(SQLFreeHandle(Env, env));
