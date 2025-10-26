@@ -67,7 +67,7 @@ jobs:
       - run: cargo test -p odbc-sys
               --target "${{ matrix.target }}"
               --features "${{ matrix.features }}"
-              -- ${{  matrix.features !=  'iodbc' && '--include-ignored' || '' }} # ignored tests depend on the sqlite driver
+              -- ${{  matrix.features !=  'vendored-unix-odbc' && '--include-ignored' || '' }} # ignored tests depend on the sqlite driver
 
   # Verify that the build script does nothing nasty, which would prevent publishing to crates.io
   test_publish_unix_odbc:
