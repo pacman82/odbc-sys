@@ -62,9 +62,14 @@ jobs:
           odbcinst -i -d -f /tmp/sqlite3_driver.ini
       - if: ${{ contains(matrix.target, 'windows') }}
         run: |
-          curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe
-          Start-Process -FilePath ".\sqliteodbc.exe" -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/SP-" -Wait -NoNewWindow
-        shell: pwsh
+          $arch = "${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}"
+          $installPath = if ($arch -eq "_w64") { "C:\Program Files\SQLite ODBC Driver" } else { "C:\Program Files (x86)\SQLite ODBC Driver" }
+          Invoke-WebRequest "http://www.ch-werner.de/sqliteodbc/sqliteodbc$arch.exe" -OutFile C:\sqliteodbc.exe
+          7z x C:\sqliteodbc.exe -o"$installPath"
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers" /v "SQLite3 ODBC Driver" /t REG_SZ /d Installed /f
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\SQLite3 ODBC Driver" /v "Driver" /t REG_SZ /d "$installPath\sqlite3odbc.dll" /f
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\SQLite3 ODBC Driver" /v "Setup" /t REG_SZ /d "$installPath\sqlite3odbc.dll" /f
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\SQLite3 ODBC Driver" /v "UsageCount" /t REG_DWORD /d 1 /f
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
       - run: cargo test -p odbc-sys
               --target "${{ matrix.target }}"
