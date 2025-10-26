@@ -228,8 +228,8 @@ fn list_drivers_and_check_sqlite3() {
         let drivers_str = String::from_utf8_lossy(&drivers);
 
         assert!(
-            drivers_str.contains("SQLITE3"),
-            "SQLITE3 driver not found. Installed drivers: {}",
+            drivers_str.to_lowercase().contains("sqlite3"),
+            "SQLite3 driver not found. Installed drivers: {}",
             drivers_str
         );
 
