@@ -61,13 +61,15 @@ jobs:
           EOF
           odbcinst -i -d -f /tmp/sqlite3_driver.ini
       - if: ${{ contains(matrix.target, 'windows') }}
-        run: curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe && ./sqliteodbc.exe /S
-        shell: bash
+        run: |
+          curl -L -o sqliteodbc.exe http://www.ch-werner.de/sqliteodbc/sqliteodbc${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}.exe
+          Start-Process -FilePath ".\sqliteodbc.exe" -ArgumentList "/VERYSILENT","/SUPPRESSMSGBOXES","/NORESTART","/SP-" -Wait -NoNewWindow
+        shell: pwsh
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
       - run: cargo test -p odbc-sys
               --target "${{ matrix.target }}"
               --features "${{ matrix.features }}"
-              -- ${{  matrix.features !=  'vendored-unix-odbc' && matrix.features !=  'iodbc' && '--include-ignored' || '' }} # ignored tests depend on the sqlite driver
+              -- ${{ matrix.features !=  'iodbc' && '--include-ignored' || '' }} # ignored tests depend on the sqlite driver
 
   # Verify that the build script does nothing nasty, which would prevent publishing to crates.io
   test_publish_unix_odbc:
