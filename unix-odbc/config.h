@@ -67,8 +67,8 @@
 #ifdef __APPLE__
 #define PLATFORM_MACOS 1
 #define SHLIBEXT ".dylib"
-#define DEFLIB_PATH "/usr/lib:/usr/local/lib"
-#define SYSTEM_FILE_PATH "/etc"
+#define DEFLIB_PATH "/usr/lib:/usr/local/lib:/opt/homebrew/lib"
+#define SYSTEM_FILE_PATH "/opt/homebrew/etc"
 #define ODBCINST_SYSTEM_INI "odbcinst.ini"
 #define ODBC_SYSTEM_INI "odbc.ini"
 #endif
