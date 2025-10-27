@@ -49,7 +49,9 @@ jobs:
         with:
           submodules: "recursive"
       - if: ${{ contains(matrix.target, 'linux') }}
-        run: sudo apt-get update && sudo apt-get install -y libsqliteodbc ${{ matrix.features == '' && 'unixodbc-dev' || matrix.features == 'iodbc' && 'libiodbc2-dev' || '' }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y libsqliteodbc ${{ matrix.features == '' && 'unixodbc-dev' || matrix.features == 'iodbc' && 'libiodbc2-dev' || '' }}
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc" >> "$GITHUB_ENV"
       - if: ${{ contains(matrix.target, 'darwin') }}
         run: |
           brew install sqliteodbc ${{ matrix.features == '' && 'unixodbc' || matrix.features == 'iodbc' && 'libiodbc' || '' }}
