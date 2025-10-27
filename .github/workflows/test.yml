@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 env:
   CARGO_TERM_COLOR: always
+  MALLOC_CHECK_: 3  # Print diagnostic to stderr and abort on heap corruption (0=ignore, 1=print, 2=abort, 3=print+abort)
+  MALLOC_PERTURB_: 170  # Fill allocated memory with 0x55, freed memory with 0xAA to catch use-after-free
 
 jobs:
   format:
