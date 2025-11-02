@@ -15,24 +15,24 @@ pub enum EnvironmentAttribute {
     OutputNts = 10001,
 }
 
+
 /// ODBC verions
 ///
-/// Possible values for `OdbcVersion` attribute set with `SQLSetEnvAttr` to declare ODBC version
-#[repr(i32)]
+/// `OdbcVersion` attribute set with [`SQLSetEnvAttr`] to declare ODBC version
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum AttrOdbcVersion {
-    // Not supported by this crate
-    // SQL_OV_ODBC2 = 2,
-    Odbc3 = 3,
+pub struct AttrOdbcVersion(pub i32);
+
+impl AttrOdbcVersion {
+    pub const ODBC_3: AttrOdbcVersion = AttrOdbcVersion(3);
     #[cfg(feature = "odbc_version_3_80")]
-    Odbc3_80 = 380,
+    pub const ODBC_3_80: AttrOdbcVersion = AttrOdbcVersion(380);
     #[cfg(feature = "odbc_version_4")]
-    Odbc4 = 400,
+    pub const ODBC_4_00: AttrOdbcVersion = AttrOdbcVersion(400);
 }
 
 impl From<AttrOdbcVersion> for Pointer {
     fn from(source: AttrOdbcVersion) -> Pointer {
-        source as i32 as Pointer
+        source.0 as Pointer
     }
 }
 /// Connection pool configuration
