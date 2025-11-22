@@ -347,14 +347,43 @@ pub enum CompletionType {
     Rollback = 1,
 }
 
+/// This means we use 128 bits (16 bytes) to for the numeric value. This excludes the sign, which is
+/// stored separetly.
 pub const MAX_NUMERIC_LEN: usize = 16;
+
+/// Equivalent of `SQL_NUMERIC_STRUCT` in the ODBC C API.
+///
+/// # Examples
+///
+/// ## Store value in Numeric
+///
+/// ```
+/// use odbc_sys::Numeric;
+///
+/// /// Store 123.45 in `Numeric`
+/// let mut num = Numeric {
+///     precision: 5, // 123.45 uses five digits
+///     scale: 2,   // two digits after the decimal point
+///     sign: 1,    // positive number
+///     val: 12345u128.to_le_bytes(), // store 12345 as little-endian bytes
+/// };
+/// ```
+///
+/// See:
+/// <https://learn.microsoft.com/en-us/sql/odbc/reference/appendixes/retrieve-numeric-data-sql-numeric-struct-kb222831>
 #[repr(C)]
 #[derive(Debug, PartialEq, Eq, Clone, Copy, Default)]
 pub struct Numeric {
-    pub precision: Char,
-    /// Number of decimal digits to the right of the decimal point.
-    pub scale: SChar,
+    /// Number of significant digits. `precision` and `scale` are ignored then using `Numeric` as
+    /// input.
+    pub precision: u8,
+    /// Number of decimal digits to the right of the decimal point. `precision` and `scale` are
+    /// ignored then using `Numeric` as input.
+    pub scale: i8,
     /// 1 if positive, 0 if negative
-    pub sign: Char,
-    pub val: [Char; MAX_NUMERIC_LEN],
+    pub sign: u8,
+    /// The value of the numeric as a little-endian array of bytes. The value is stored as an
+    /// unsigned integer without any decimal point. For example, the number -123.45 with
+    /// precision 5 and scale 2 is stored as 12345 (0x39 0x30 0x00 0x00 ...).
+    pub val: [u8; MAX_NUMERIC_LEN],
 }
