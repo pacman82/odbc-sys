@@ -50,7 +50,6 @@ use std::os::raw::{c_int, c_void};
 
 pub type SmallInt = i16;
 pub type USmallInt = u16;
-pub type UInteger = u32;
 pub type Pointer = *mut c_void;
 pub type Char = u8;
 pub type SChar = i8;
@@ -143,19 +142,19 @@ pub const IS_SMALLINT: i32 = -8;
 #[repr(C)]
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct YearMonth {
-    pub year: UInteger,
-    pub month: UInteger,
+    pub year: u32,
+    pub month: u32,
 }
 
 /// SQL_DAY_SECOND_STRUCT
 #[repr(C)]
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct DaySecond {
-    pub day: UInteger,
-    pub hour: UInteger,
-    pub minute: UInteger,
-    pub second: UInteger,
-    pub fraction: UInteger,
+    pub day: u32,
+    pub hour: u32,
+    pub minute: u32,
+    pub second: u32,
+    pub fraction: u32,
 }
 
 /// SQL_INTERVAL_UNION
@@ -203,7 +202,7 @@ pub struct Timestamp {
     pub hour: USmallInt,
     pub minute: USmallInt,
     pub second: USmallInt,
-    pub fraction: UInteger,
+    pub fraction: u32,
 }
 
 /// SQLGUID
