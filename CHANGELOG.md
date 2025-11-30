@@ -11,8 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- ConnectionAttribute is now a strict alias.
-- unixODBC build script early exits on windows.
+- ConnectionAttribute is now a strict alias of `i32`. This has been done to support driver specific Connection Attributes. E.g. `SQL_COPT_SS_ACCESS_TOKEN` for Microsoft SQL Server. If you are migrating from the previous version of `odbc-sys` you will find that each variant of the former `ConnectionAttribute` enumeration has an equivalent constant. E.g. `ConnectionAttribute::PacketSize` is now `ConnectionAttribute::PACKET_SIZE`.
+- unixODBC build script early exits on windows. This makes it easier to use the vendored unix-odbc feature, because we won't need a separate configuration for windows systems anymore. As on windows like platforms unixODBC will be an empty crate instead of one which does not build. On top of that it makes the Rust Analyzer work again for contributers to `odbc-sys` on windows platforms.
 
 ### Other
 
