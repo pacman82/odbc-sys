@@ -1,7 +1,7 @@
 use crate::{
     BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, Desc, DriverConnectOption,
     EnvironmentAttribute, FetchOrientation, FreeStmtOption, HDbc, HDesc, HEnv, HStmt, HWnd, Handle,
-    HandleType, InfoType, Integer, Len, Lock, Nullability, Operation, ParamType, Pointer, RetCode,
+    HandleType, InfoType, Len, Lock, Nullability, Operation, ParamType, Pointer, RetCode,
     SetPosIRow, SmallInt, SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
 };
 
@@ -52,8 +52,8 @@ extern "system" {
         environment_handle: HEnv,
         attribute: EnvironmentAttribute,
         value_ptr: Pointer,
-        buffer_length: Integer,
-        string_length: *mut Integer,
+        buffer_length: i32,
+        string_length: *mut i32,
     ) -> SqlReturn;
 
     /// Sets attributes that govern aspects of environments
@@ -64,7 +64,7 @@ extern "system" {
         environment_handle: HEnv,
         attribute: EnvironmentAttribute,
         value: Pointer,
-        string_length: Integer,
+        string_length: i32,
     ) -> SqlReturn;
 
     /// Closes the connection associated with a specific connection handle.
@@ -84,7 +84,7 @@ extern "system" {
         handle: Handle,
         RecNumber: SmallInt,
         state: *mut Char,
-        native_error_ptr: *mut Integer,
+        native_error_ptr: *mut i32,
         message_text: *mut Char,
         buffer_length: SmallInt,
         text_length_ptr: *mut SmallInt,
@@ -101,7 +101,7 @@ extern "system" {
         handle: Handle,
         record_number: SmallInt,
         state: *mut WChar,
-        native_error_ptr: *mut Integer,
+        native_error_ptr: *mut i32,
         message_text: *mut WChar,
         buffer_length: SmallInt,
         text_length_ptr: *mut SmallInt,
@@ -133,7 +133,7 @@ extern "system" {
     pub fn SQLExecDirect(
         statement_handle: HStmt,
         statement_text: *const Char,
-        text_length: Integer,
+        text_length: i32,
     ) -> SqlReturn;
 
     /// Executes a preparable statement, using the current values of the parameter marker variables
@@ -146,7 +146,7 @@ extern "system" {
     pub fn SQLExecDirectW(
         statement_handle: HStmt,
         statement_text: *const WChar,
-        text_length: Integer,
+        text_length: i32,
     ) -> SqlReturn;
 
     /// Returns the number of columns in a result set
@@ -436,19 +436,14 @@ extern "system" {
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or
     /// `SQL_STILL_EXECUTING`
-    pub fn SQLPrepare(hstmt: HStmt, statement_text: *const Char, text_length: Integer)
-        -> SqlReturn;
+    pub fn SQLPrepare(hstmt: HStmt, statement_text: *const Char, text_length: i32) -> SqlReturn;
 
     /// Compiles the statement and generates an access plan.
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or
     /// `SQL_STILL_EXECUTING`
-    pub fn SQLPrepareW(
-        hstmt: HStmt,
-        statement_text: *const WChar,
-        text_length: Integer,
-    ) -> SqlReturn;
+    pub fn SQLPrepareW(hstmt: HStmt, statement_text: *const WChar, text_length: i32) -> SqlReturn;
 
     /// Executes a prepared statement, using the current values of the parameter marker variables
     /// if any paramater markers exis in the statement.
@@ -542,8 +537,8 @@ extern "system" {
         connection_handle: HDbc,
         attribute: ConnectionAttribute,
         value_ptr: Pointer,
-        buffer_length: Integer,
-        string_length_ptr: *mut Integer,
+        buffer_length: i32,
+        string_length_ptr: *mut i32,
     ) -> SqlReturn;
 
     /// Returns the current setting of a connection attribute.
@@ -558,8 +553,8 @@ extern "system" {
         connection_handle: HDbc,
         attribute: ConnectionAttribute,
         value_ptr: Pointer,
-        buffer_length: Integer,
-        string_length_ptr: *mut Integer,
+        buffer_length: i32,
+        string_length_ptr: *mut i32,
     ) -> SqlReturn;
 
     /// Returns the cursor name associated with a specified statement.
@@ -584,8 +579,8 @@ extern "system" {
         record_number: SmallInt,
         field_identifier: Desc,
         value_ptr: Pointer,
-        buffer_length: Integer,
-        string_length_ptr: *mut Integer,
+        buffer_length: i32,
+        string_length_ptr: *mut i32,
     ) -> SqlReturn;
 
     /// Returns the current settings or values of multiple fields of a descriptor record.
@@ -699,8 +694,8 @@ extern "system" {
         hstmt: HStmt,
         attribute: StatementAttribute,
         value: Pointer,
-        buffer_length: Integer,
-        string_length: *mut Integer,
+        buffer_length: i32,
+        string_length: *mut i32,
     ) -> SqlReturn;
 
     /// Returns the current setting of a statement attribute.
@@ -731,8 +726,8 @@ extern "system" {
         handle: HStmt,
         attribute: StatementAttribute,
         value_ptr: Pointer,
-        buffer_length: Integer,
-        string_length_ptr: *mut Integer,
+        buffer_length: i32,
+        string_length_ptr: *mut i32,
     ) -> SqlReturn;
 
     /// Fetches the specified rowset of data from the result set and returns data for all bound columns.
@@ -885,7 +880,7 @@ extern "system" {
         hstmt: HStmt,
         attr: StatementAttribute,
         value: Pointer,
-        str_length: Integer,
+        str_length: i32,
     ) -> SqlReturn;
 
     /// Sets attributes related to a statement.
@@ -896,7 +891,7 @@ extern "system" {
         hstmt: HStmt,
         attr: StatementAttribute,
         value: Pointer,
-        str_length: Integer,
+        str_length: i32,
     ) -> SqlReturn;
 
     /// Sets attributes that govern aspects of connections.
@@ -907,7 +902,7 @@ extern "system" {
         hdbc: HDbc,
         attr: ConnectionAttribute,
         value: Pointer,
-        str_length: Integer,
+        str_length: i32,
     ) -> SqlReturn;
 
     /// Sets attributes that govern aspects of connections.
@@ -919,7 +914,7 @@ extern "system" {
         hdbc: HDbc,
         attr: ConnectionAttribute,
         value: Pointer,
-        str_length: Integer,
+        str_length: i32,
     ) -> SqlReturn;
 
     /// Requests a commit or rollback operation for all active operations on all statements associated with a handle.
@@ -962,7 +957,7 @@ extern "system" {
         rec_number: SmallInt,
         field_identifier: Desc,
         value: Pointer,
-        buffer_length: Integer,
+        buffer_length: i32,
     ) -> SqlReturn;
 
     /// Sets the value of a single field of a descriptor record.
@@ -975,7 +970,7 @@ extern "system" {
         rec_number: SmallInt,
         field_identifier: Desc,
         value: Pointer,
-        buffer_length: Integer,
+        buffer_length: i32,
     ) -> SqlReturn;
 
     /// Used together with [`SQLPutData`] to supply parameter data at statement execution time, and
