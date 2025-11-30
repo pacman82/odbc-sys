@@ -1,7 +1,18 @@
-use std::fs::{self, read_to_string};
-use std::path::{Path, PathBuf};
+use std::{
+    env,
+    fs::{self, read_to_string},
+    path::{Path, PathBuf},
+};
 
 fn main() {
+    // unixODBC is not built on Windows. On windows this is merley an empty library. We prefer this
+    // over an error, because we want our users to be able to avoid needing different feature flags
+    // for different platforms. This way they can always enable the "vendored" feature and it only
+    // bundles on non-windows platforms.
+    if env::var_os("CARGO_CFG_WINDOWS").is_some() {
+        return;
+    }
+
     let vendor_dir = Path::new("unixODBC");
     let src_dirs: Vec<PathBuf> = ["DriverManager", "odbcinst", "ini", "log", "lst"]
         .into_iter()
