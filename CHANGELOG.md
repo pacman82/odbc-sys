@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.4...odbc-sys-v0.28.0) - 2025-11-30
+
+### Added
+
+- ConnectionAttribute is now a strict alias.
+- unixODBC build script early exits on windows.
+
+### Other
+
+- Improve doc comment for `Numeric`
+
 ## [0.27.4](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.3...odbc-sys-v0.27.4) - 2025-10-25
 
 ### Other

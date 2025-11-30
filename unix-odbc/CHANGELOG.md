@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4](https://github.com/pacman82/odbc-sys/compare/unix-odbc-v0.1.3...unix-odbc-v0.1.4) - 2025-11-30
+
+### Added
+
+- unixODBC build script early exits on windows.
+
 ## [0.1.3](https://github.com/pacman82/odbc-sys/compare/unix-odbc-v0.1.2...unix-odbc-v0.1.3) - 2025-10-25
 
 ### Fixed

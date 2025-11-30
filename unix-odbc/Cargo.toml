@@ -1,6 +1,6 @@
 [package]
 name = "unix-odbc"
-version = "0.1.3"
+version = "0.1.4"
 edition = "2024"
 description = '''
 The unixODBC driver manager. It builds the unixODBC C-library, not the rust bindings to it. It is
