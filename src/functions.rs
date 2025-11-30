@@ -2,7 +2,7 @@ use crate::{
     BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, Desc, DriverConnectOption,
     EnvironmentAttribute, FetchOrientation, FreeStmtOption, HDbc, HDesc, HEnv, HStmt, HWnd, Handle,
     HandleType, InfoType, Len, Lock, Nullability, Operation, ParamType, Pointer, RetCode,
-    SetPosIRow, SmallInt, SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
+    SetPosIRow, SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
 };
 
 pub static mut NUM_ENVIRONMENT: u32 = 0;
@@ -82,12 +82,12 @@ extern "system" {
     pub fn SQLGetDiagRec(
         handle_type: HandleType,
         handle: Handle,
-        RecNumber: SmallInt,
+        RecNumber: i16,
         state: *mut Char,
         native_error_ptr: *mut i32,
         message_text: *mut Char,
-        buffer_length: SmallInt,
-        text_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        text_length_ptr: *mut i16,
     ) -> SqlReturn;
 
     /// Return the current values of multiple fields of a diagnostic record that contains eror,
@@ -99,12 +99,12 @@ extern "system" {
     pub fn SQLGetDiagRecW(
         handle_type: HandleType,
         handle: Handle,
-        record_number: SmallInt,
+        record_number: i16,
         state: *mut WChar,
         native_error_ptr: *mut i32,
         message_text: *mut WChar,
-        buffer_length: SmallInt,
-        text_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        text_length_ptr: *mut i16,
     ) -> SqlReturn;
 
     /// Returns the current value of a field of a record of the diagnostic data structure (associated with a specified handle) that contains error, warning, and status information.
@@ -116,11 +116,11 @@ extern "system" {
     pub fn SQLGetDiagFieldW(
         handle_type: HandleType,
         handle: Handle,
-        record_number: SmallInt,
-        diag_identifier: SmallInt,
+        record_number: i16,
+        diag_identifier: i16,
         diag_info_ptr: Pointer,
-        buffer_length: SmallInt,
-        string_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        string_length_ptr: *mut i16,
     ) -> SqlReturn;
 
     /// Executes a preparable statement, using the current values of the parameter marker variables
@@ -153,13 +153,13 @@ extern "system" {
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE` or `SQL_STILL_EXECUTING`
-    pub fn SQLNumResultCols(statement_handle: HStmt, column_count_ptr: *mut SmallInt) -> SqlReturn;
+    pub fn SQLNumResultCols(statement_handle: HStmt, column_count_ptr: *mut i16) -> SqlReturn;
 
     /// Returns the number of parameters in an SQL statement.
     ///
     /// # Returns
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE` or `SQL_STILL_EXECUTING`
-    pub fn SQLNumParams(statement_handle: HStmt, parameter_count_ptr: *mut SmallInt) -> SqlReturn;
+    pub fn SQLNumParams(statement_handle: HStmt, parameter_count_ptr: *mut i16) -> SqlReturn;
 
     /// Determines whether more results are available on a statement
     /// containing SELECT, UPDATE, INSERT, or DELETE statements and, if so, initializes processing
@@ -204,8 +204,8 @@ extern "system" {
         connection_handle: HDbc,
         info_type: InfoType,
         info_value_ptr: Pointer,
-        buffer_length: SmallInt,
-        string_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        string_length_ptr: *mut i16,
     ) -> SqlReturn;
 
     /// Returns general information about the driver and data source associated with a connection
@@ -216,8 +216,8 @@ extern "system" {
         connection_handle: HDbc,
         info_type: InfoType,
         info_value_ptr: Pointer,
-        buffer_length: SmallInt,
-        string_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        string_length_ptr: *mut i16,
     ) -> SqlReturn;
 
     /// SQLConnect establishes connections to a driver and a data source. The connection handle
@@ -230,11 +230,11 @@ extern "system" {
     pub fn SQLConnectW(
         connection_handle: HDbc,
         server_name: *const WChar,
-        name_length_1: SmallInt,
+        name_length_1: i16,
         user_name: *const WChar,
-        name_length_2: SmallInt,
+        name_length_2: i16,
         authentication: *const WChar,
-        name_length_3: SmallInt,
+        name_length_3: i16,
     ) -> SqlReturn;
 
     /// SQLConnect establishes connections to a driver and a data source. The connection handle
@@ -247,11 +247,11 @@ extern "system" {
     pub fn SQLConnect(
         connection_handle: HDbc,
         server_name: *const Char,
-        name_length_1: SmallInt,
+        name_length_1: i16,
         user_name: *const Char,
-        name_length_2: SmallInt,
+        name_length_2: i16,
         authentication: *const Char,
-        name_length_3: SmallInt,
+        name_length_3: i16,
     ) -> SqlReturn;
 
     /// Returns the list of table, catalog, or schema names, and table types, stored in a specific
@@ -263,13 +263,13 @@ extern "system" {
     pub fn SQLTables(
         statement_handle: HStmt,
         catalog_name: *const Char,
-        name_length_1: SmallInt,
+        name_length_1: i16,
         schema_name: *const Char,
-        name_length_2: SmallInt,
+        name_length_2: i16,
         table_name: *const Char,
-        name_length_3: SmallInt,
+        name_length_3: i16,
         table_type: *const Char,
-        name_length_4: SmallInt,
+        name_length_4: i16,
     ) -> SqlReturn;
 
     /// Returns the list of table, catalog, or schema names, and table types, stored in a specific
@@ -281,13 +281,13 @@ extern "system" {
     pub fn SQLTablesW(
         statement_handle: HStmt,
         catalog_name: *const WChar,
-        name_length_1: SmallInt,
+        name_length_1: i16,
         schema_name: *const WChar,
-        name_length_2: SmallInt,
+        name_length_2: i16,
         table_name: *const WChar,
-        name_length_3: SmallInt,
+        name_length_3: i16,
         table_type: *const WChar,
-        name_length_4: SmallInt,
+        name_length_4: i16,
     ) -> SqlReturn;
 
     /// Returns information about a data source. This function is implemented only by the Driver
@@ -299,11 +299,11 @@ extern "system" {
         environment_handle: HEnv,
         direction: FetchOrientation,
         server_name: *mut Char,
-        buffer_length_1: SmallInt,
-        name_length_1: *mut SmallInt,
+        buffer_length_1: i16,
+        name_length_1: *mut i16,
         description: *mut Char,
-        buffer_length_2: SmallInt,
-        name_length_2: *mut SmallInt,
+        buffer_length_2: i16,
+        name_length_2: *mut i16,
     ) -> SqlReturn;
 
     /// Returns information about a data source. This function is implemented only by the Driver
@@ -315,11 +315,11 @@ extern "system" {
         environment_handle: HEnv,
         direction: FetchOrientation,
         server_name: *mut WChar,
-        buffer_length_1: SmallInt,
-        name_length_1: *mut SmallInt,
+        buffer_length_1: i16,
+        name_length_1: *mut i16,
         description: *mut WChar,
-        buffer_length_2: SmallInt,
-        name_length_2: *mut SmallInt,
+        buffer_length_2: i16,
+        name_length_2: *mut i16,
     ) -> SqlReturn;
 
     /// An alternative to `SQLConnect`. It supports data sources that require more connection
@@ -333,10 +333,10 @@ extern "system" {
         connection_handle: HDbc,
         window_handle: HWnd,
         in_connection_string: *const Char,
-        string_length_1: SmallInt,
+        string_length_1: i16,
         out_connection_string: *mut Char,
-        buffer_length: SmallInt,
-        string_length_2: *mut SmallInt,
+        buffer_length: i16,
+        string_length_2: *mut i16,
         DriverCompletion: DriverConnectOption,
     ) -> SqlReturn;
 
@@ -351,10 +351,10 @@ extern "system" {
         connection_handle: HDbc,
         window_handle: HWnd,
         in_connection_string: *const WChar,
-        string_length_1: SmallInt,
+        string_length_1: i16,
         out_connection_string: *mut WChar,
-        buffer_length: SmallInt,
-        string_length_2: *mut SmallInt,
+        buffer_length: i16,
+        string_length_2: *mut i16,
         driver_completion: DriverConnectOption,
     ) -> SqlReturn;
 
@@ -367,11 +367,11 @@ extern "system" {
         henv: HEnv,
         direction: FetchOrientation,
         driver_desc: *mut Char,
-        driver_desc_max: SmallInt,
-        out_driver_desc: *mut SmallInt,
+        driver_desc_max: i16,
+        out_driver_desc: *mut i16,
         driver_attributes: *mut Char,
-        drvr_attr_max: SmallInt,
-        out_drvr_attr: *mut SmallInt,
+        drvr_attr_max: i16,
+        out_drvr_attr: *mut i16,
     ) -> SqlReturn;
 
     /// Lists driver descriptions and driver attribute keywords. This function is implemented only
@@ -383,11 +383,11 @@ extern "system" {
         henv: HEnv,
         direction: FetchOrientation,
         driver_desc: *mut WChar,
-        driver_desc_max: SmallInt,
-        out_driver_desc: *mut SmallInt,
+        driver_desc_max: i16,
+        out_driver_desc: *mut i16,
         driver_attributes: *mut WChar,
-        drvr_attr_max: SmallInt,
-        out_drvr_attr: *mut SmallInt,
+        drvr_attr_max: i16,
+        out_drvr_attr: *mut i16,
     ) -> SqlReturn;
 
     /// Closes a cursor that has been opened on a statement and discards pending results.
@@ -407,7 +407,7 @@ extern "system" {
         value_type: CDataType,
         parameter_type: SqlDataType,
         column_size: ULen,
-        decimal_digits: SmallInt,
+        decimal_digits: i16,
         parameter_value_ptr: Pointer,
         buffer_length: Len,
         str_len_or_ind_ptr: *mut Len,
@@ -483,10 +483,10 @@ extern "system" {
     pub fn SQLBrowseConnectW(
         connection_handle: HDbc,
         in_connection_string: *const WChar,
-        string_length: SmallInt,
+        string_length: i16,
         out_connection_string: *mut WChar,
-        buffer_length: SmallInt,
-        out_buffer_length: *mut SmallInt,
+        buffer_length: i16,
+        out_buffer_length: *mut i16,
     ) -> SqlReturn;
 
     /// Returns descriptor information for a column in a result set. Descriptor information is
@@ -499,8 +499,8 @@ extern "system" {
         column_number: USmallInt,
         field_identifier: Desc,
         character_attribute_ptr: Pointer,
-        buffer_length: SmallInt,
-        string_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        string_length_ptr: *mut i16,
         numeric_attribute_ptr: *mut Len,
     ) -> SqlReturn;
 
@@ -514,8 +514,8 @@ extern "system" {
         column_number: USmallInt,
         field_identifier: Desc,
         character_attribute_ptr: Pointer,
-        buffer_length: SmallInt,
-        string_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        string_length_ptr: *mut i16,
         numeric_attribute_ptr: *mut Len,
     ) -> SqlReturn;
 
@@ -564,8 +564,8 @@ extern "system" {
     pub fn SQLGetCursorNameW(
         statement_handle: HStmt,
         cursor_name: *mut WChar,
-        buffer_length: SmallInt,
-        name_length_ptr: *mut SmallInt,
+        buffer_length: i16,
+        name_length_ptr: *mut i16,
     ) -> SqlReturn;
 
     /// Returns the current setting or value of a single field of a descriptor record.
@@ -576,7 +576,7 @@ extern "system" {
     /// `SQL_NO_DATA` is returned if DescriptorHandle is an IRD handle and the statement is in the prepared or executed state but there was no open cursor associated with it.
     pub fn SQLGetDescFieldW(
         descriptor_handle: HDesc,
-        record_number: SmallInt,
+        record_number: i16,
         field_identifier: Desc,
         value_ptr: Pointer,
         buffer_length: i32,
@@ -592,15 +592,15 @@ extern "system" {
     /// `SQL_NO_DATA` is returned if DescriptorHandle is an IRD handle and the statement is in the prepared or executed state but there was no open cursor associated with it.
     pub fn SQLGetDescRecW(
         descriptor_handle: HDesc,
-        record_number: SmallInt,
+        record_number: i16,
         name: *mut WChar,
-        buffer_length: SmallInt,
-        string_length_ptr: *mut SmallInt,
-        type_ptr: *mut SmallInt,
-        sub_type_ptr: *mut SmallInt,
+        buffer_length: i16,
+        string_length_ptr: *mut i16,
+        type_ptr: *mut i16,
+        sub_type_ptr: *mut i16,
         length_ptr: *mut Len,
-        precision_ptr: *mut SmallInt,
-        scale_ptr: *mut SmallInt,
+        precision_ptr: *mut i16,
+        scale_ptr: *mut i16,
         nullable_ptr: *mut Nullability,
     ) -> SqlReturn;
 
@@ -612,13 +612,13 @@ extern "system" {
     pub fn SQLColumnPrivilegesW(
         statement_handle: HStmt,
         catalog_name: *const WChar,
-        catalog_name_length: SmallInt,
+        catalog_name_length: i16,
         schema_name: *const WChar,
-        schema_name_length: SmallInt,
+        schema_name_length: i16,
         table_name: *const WChar,
-        table_name_length: SmallInt,
+        table_name_length: i16,
         column_name: *const WChar,
-        column_name_length: SmallInt,
+        column_name_length: i16,
     ) -> SqlReturn;
 
     /// Returns the list of column names in specified tables. The driver returns this information as
@@ -629,13 +629,13 @@ extern "system" {
     pub fn SQLColumns(
         statement_handle: HStmt,
         catalog_name: *const Char,
-        catalog_name_length: SmallInt,
+        catalog_name_length: i16,
         schema_name: *const Char,
-        schema_name_length: SmallInt,
+        schema_name_length: i16,
         table_name: *const Char,
-        table_name_length: SmallInt,
+        table_name_length: i16,
         column_name: *const Char,
-        column_name_length: SmallInt,
+        column_name_length: i16,
     ) -> SqlReturn;
 
     /// Returns the list of column names in specified tables. The driver returns this information as
@@ -646,13 +646,13 @@ extern "system" {
     pub fn SQLColumnsW(
         statement_handle: HStmt,
         catalog_name: *const WChar,
-        catalog_name_length: SmallInt,
+        catalog_name_length: i16,
         schema_name: *const WChar,
-        schema_name_length: SmallInt,
+        schema_name_length: i16,
         table_name: *const WChar,
-        table_name_length: SmallInt,
+        table_name_length: i16,
         column_name: *const WChar,
-        column_name_length: SmallInt,
+        column_name_length: i16,
     ) -> SqlReturn;
 
     /// Can be used to determine when an asynchronous function is complete using either notification- or polling-based processing.
@@ -779,17 +779,17 @@ extern "system" {
     pub fn SQLForeignKeys(
         statement_handle: HStmt,
         pk_catalog_name: *const Char,
-        pk_catalog_name_length: SmallInt,
+        pk_catalog_name_length: i16,
         pk_schema_name: *const Char,
-        pk_schema_name_length: SmallInt,
+        pk_schema_name_length: i16,
         pk_table_name: *const Char,
-        pk_table_name_length: SmallInt,
+        pk_table_name_length: i16,
         fk_catalog_name: *const Char,
-        fk_catalog_name_length: SmallInt,
+        fk_catalog_name_length: i16,
         fk_schema_name: *const Char,
-        fk_schema_name_length: SmallInt,
+        fk_schema_name_length: i16,
         fk_table_name: *const Char,
-        fk_table_name_length: SmallInt,
+        fk_table_name_length: i16,
     ) -> SqlReturn;
 
     /// Can return:
@@ -803,17 +803,17 @@ extern "system" {
     pub fn SQLForeignKeysW(
         statement_handle: HStmt,
         pk_catalog_name: *const WChar,
-        pk_catalog_name_length: SmallInt,
+        pk_catalog_name_length: i16,
         pk_schema_name: *const WChar,
-        pk_schema_name_length: SmallInt,
+        pk_schema_name_length: i16,
         pk_table_name: *const WChar,
-        pk_table_name_length: SmallInt,
+        pk_table_name_length: i16,
         fk_catalog_name: *const WChar,
-        fk_catalog_name_length: SmallInt,
+        fk_catalog_name_length: i16,
         fk_schema_name: *const WChar,
-        fk_schema_name_length: SmallInt,
+        fk_schema_name_length: i16,
         fk_table_name: *const WChar,
-        fk_table_name_length: SmallInt,
+        fk_table_name_length: i16,
     ) -> SqlReturn;
 
     /// Returns the result descriptor for one column in the result set — column name, type, column
@@ -828,11 +828,11 @@ extern "system" {
         hstmt: HStmt,
         col_number: USmallInt,
         col_name: *mut Char,
-        buffer_length: SmallInt,
-        name_length: *mut SmallInt,
+        buffer_length: i16,
+        name_length: *mut i16,
         data_type: *mut SqlDataType,
         col_size: *mut ULen,
-        decimal_digits: *mut SmallInt,
+        decimal_digits: *mut i16,
         nullable: *mut Nullability,
     ) -> SqlReturn;
 
@@ -848,11 +848,11 @@ extern "system" {
         hstmt: HStmt,
         col_number: USmallInt,
         col_name: *mut WChar,
-        buffer_length: SmallInt,
-        name_length: *mut SmallInt,
+        buffer_length: i16,
+        name_length: *mut i16,
         data_type: *mut SqlDataType,
         col_size: *mut ULen,
-        decimal_digits: *mut SmallInt,
+        decimal_digits: *mut i16,
         nullable: *mut Nullability,
     ) -> SqlReturn;
 
@@ -868,7 +868,7 @@ extern "system" {
         parameter_number: USmallInt,
         data_type_ptr: *mut SqlDataType,
         parameter_size_ptr: *mut ULen,
-        decimal_digits_ptr: *mut SmallInt,
+        decimal_digits_ptr: *mut i16,
         nullable_ptr: *mut Nullability,
     ) -> SqlReturn;
 
@@ -954,7 +954,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
     pub fn SQLSetDescField(
         hdesc: HDesc,
-        rec_number: SmallInt,
+        rec_number: i16,
         field_identifier: Desc,
         value: Pointer,
         buffer_length: i32,
@@ -967,7 +967,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
     pub fn SQLSetDescFieldW(
         hdesc: HDesc,
-        rec_number: SmallInt,
+        rec_number: i16,
         field_identifier: Desc,
         value: Pointer,
         buffer_length: i32,
