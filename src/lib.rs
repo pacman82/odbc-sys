@@ -48,7 +48,6 @@ pub use self::{
 };
 use std::os::raw::{c_int, c_void};
 
-pub type USmallInt = u16;
 pub type Pointer = *mut c_void;
 pub type Char = u8;
 pub type SChar = i8;
@@ -178,17 +177,17 @@ pub struct IntervalStruct {
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Date {
     pub year: i16,
-    pub month: USmallInt,
-    pub day: USmallInt,
+    pub month: u16,
+    pub day: u16,
 }
 
 /// SQL_TIME_STRUCT
 #[repr(C)]
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Time {
-    pub hour: USmallInt,
-    pub minute: USmallInt,
-    pub second: USmallInt,
+    pub hour: u16,
+    pub minute: u16,
+    pub second: u16,
 }
 
 /// SQL_TIMESTAMP_STRUCT
@@ -196,11 +195,11 @@ pub struct Time {
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Timestamp {
     pub year: i16,
-    pub month: USmallInt,
-    pub day: USmallInt,
-    pub hour: USmallInt,
-    pub minute: USmallInt,
-    pub second: USmallInt,
+    pub month: u16,
+    pub day: u16,
+    pub hour: u16,
+    pub minute: u16,
+    pub second: u16,
     pub fraction: u32,
 }
 

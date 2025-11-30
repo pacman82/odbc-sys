@@ -2,7 +2,7 @@ use crate::{
     BulkOperation, CDataType, Char, CompletionType, ConnectionAttribute, Desc, DriverConnectOption,
     EnvironmentAttribute, FetchOrientation, FreeStmtOption, HDbc, HDesc, HEnv, HStmt, HWnd, Handle,
     HandleType, InfoType, Len, Lock, Nullability, Operation, ParamType, Pointer, RetCode,
-    SetPosIRow, SqlDataType, SqlReturn, StatementAttribute, ULen, USmallInt, WChar,
+    SetPosIRow, SqlDataType, SqlReturn, StatementAttribute, ULen, WChar,
 };
 
 pub static mut NUM_ENVIRONMENT: u32 = 0;
@@ -173,7 +173,7 @@ extern "system" {
     // Can be used since odbc version 3.8 to stream results
     pub fn SQLGetData(
         statement_handle: HStmt,
-        col_or_param_num: USmallInt,
+        col_or_param_num: u16,
         target_type: CDataType,
         target_value_ptr: Pointer,
         buffer_length: Len,
@@ -402,7 +402,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR` or `INVALID_HANDLE`
     pub fn SQLBindParameter(
         hstmt: HStmt,
-        parameter_number: USmallInt,
+        parameter_number: u16,
         input_output_type: ParamType,
         value_type: CDataType,
         parameter_type: SqlDataType,
@@ -467,7 +467,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, or `INVALID_HANDLE`.
     pub fn SQLBindCol(
         hstmt: HStmt,
-        col_number: USmallInt,
+        col_number: u16,
         target_type: CDataType,
         target_value: Pointer,
         buffer_length: Len,
@@ -496,7 +496,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
     pub fn SQLColAttributeW(
         statement_handle: HStmt,
-        column_number: USmallInt,
+        column_number: u16,
         field_identifier: Desc,
         character_attribute_ptr: Pointer,
         buffer_length: i16,
@@ -511,7 +511,7 @@ extern "system" {
     /// `SUCCESS`, `SUCCESS_WITH_INFO`, `ERROR`, `INVALID_HANDLE`, or `SQL_STILL_EXECUTING`.
     pub fn SQLColAttribute(
         statement_handle: HStmt,
-        column_number: USmallInt,
+        column_number: u16,
         field_identifier: Desc,
         character_attribute_ptr: Pointer,
         buffer_length: i16,
@@ -826,7 +826,7 @@ extern "system" {
     /// `INVALID_HANDLE`.
     pub fn SQLDescribeCol(
         hstmt: HStmt,
-        col_number: USmallInt,
+        col_number: u16,
         col_name: *mut Char,
         buffer_length: i16,
         name_length: *mut i16,
@@ -846,7 +846,7 @@ extern "system" {
     /// `INVALID_HANDLE`.
     pub fn SQLDescribeColW(
         hstmt: HStmt,
-        col_number: USmallInt,
+        col_number: u16,
         col_name: *mut WChar,
         buffer_length: i16,
         name_length: *mut i16,
@@ -865,7 +865,7 @@ extern "system" {
     /// `INVALID_HANDLE`.
     pub fn SQLDescribeParam(
         statement_handle: HStmt,
-        parameter_number: USmallInt,
+        parameter_number: u16,
         data_type_ptr: *mut SqlDataType,
         parameter_size_ptr: *mut ULen,
         decimal_digits_ptr: *mut i16,
