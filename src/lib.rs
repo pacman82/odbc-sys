@@ -50,7 +50,6 @@ use std::os::raw::{c_int, c_void};
 
 pub type SmallInt = i16;
 pub type USmallInt = u16;
-pub type Integer = i32;
 pub type UInteger = u32;
 pub type Pointer = *mut c_void;
 pub type Char = u8;
