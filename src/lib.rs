@@ -48,7 +48,6 @@ pub use self::{
 };
 use std::os::raw::{c_int, c_void};
 
-pub type SmallInt = i16;
 pub type USmallInt = u16;
 pub type Pointer = *mut c_void;
 pub type Char = u8;
@@ -72,7 +71,7 @@ pub const NTS: isize = -3;
 pub const NTSL: isize = -3;
 
 /// Maximum message length
-pub const MAX_MESSAGE_LENGTH: SmallInt = 512;
+pub const MAX_MESSAGE_LENGTH: i16 = 512;
 pub const SQLSTATE_SIZE: usize = 5;
 pub const SQLSTATE_SIZEW: usize = 10;
 
@@ -170,7 +169,7 @@ pub union IntervalUnion {
 #[derive(Clone, Copy)]
 pub struct IntervalStruct {
     pub interval_type: c_int,
-    pub interval_sign: SmallInt,
+    pub interval_sign: i16,
     pub interval_value: IntervalUnion,
 }
 
@@ -178,7 +177,7 @@ pub struct IntervalStruct {
 #[repr(C)]
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Date {
-    pub year: SmallInt,
+    pub year: i16,
     pub month: USmallInt,
     pub day: USmallInt,
 }
@@ -196,7 +195,7 @@ pub struct Time {
 #[repr(C)]
 #[derive(Debug, Default, PartialEq, Eq, Clone, Copy, Hash)]
 pub struct Timestamp {
-    pub year: SmallInt,
+    pub year: i16,
     pub month: USmallInt,
     pub day: USmallInt,
     pub hour: USmallInt,
