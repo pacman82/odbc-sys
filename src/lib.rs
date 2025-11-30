@@ -11,6 +11,7 @@
 mod attributes;
 mod bulk_operation;
 mod c_data_type;
+mod connection_attribute;
 mod desc;
 mod fetch_orientation;
 mod functions;
@@ -25,9 +26,25 @@ mod sql_data_type;
 mod sqlreturn;
 
 pub use self::{
-    attributes::*, bulk_operation::*, c_data_type::*, desc::*, fetch_orientation::*, functions::*,
-    handles::*, indicator::*, info_type::*, interval::*, nullability::*, param_type::*, set_pos::*,
-    sql_data_type::*, sqlreturn::*,
+    attributes::{
+        AttrConnectionPooling, AttrCpMatch, AttrOdbcVersion, EnvironmentAttribute,
+        StatementAttribute,
+    },
+    bulk_operation::BulkOperation,
+    c_data_type::*,
+    connection_attribute::ConnectionAttribute,
+    desc::Desc,
+    fetch_orientation::FetchOrientation,
+    functions::*,
+    handles::{HDbc, HDesc, HEnv, HStmt, Handle},
+    indicator::{len_data_at_exec, DATA_AT_EXEC, NO_TOTAL, NULL_DATA},
+    info_type::InfoType,
+    interval::Interval,
+    nullability::Nullability,
+    param_type::ParamType,
+    set_pos::{Lock, Operation},
+    sql_data_type::SqlDataType,
+    sqlreturn::SqlReturn,
 };
 use std::os::raw::{c_int, c_void};
 
@@ -198,34 +215,6 @@ pub struct Guid {
     pub d2: u16,
     pub d3: u16,
     pub d4: [u8; 8],
-}
-
-/// Connection attributes for `SQLSetConnectAttr`
-#[repr(i32)]
-#[derive(Debug, PartialEq, Eq, Clone, Copy)]
-pub enum ConnectionAttribute {
-    AsyncEnable = 4,
-    AccessMode = 101,
-    AutoCommit = 102,
-    LoginTimeout = 103,
-    Trace = 104,
-    TraceFile = 105,
-    TranslateLib = 106,
-    TranslateOption = 107,
-    TxnIsolation = 108,
-    CurrentCatalog = 109,
-    OdbcCursors = 110,
-    QuietMode = 111,
-    PacketSize = 112,
-    ConnectionTimeout = 113,
-    DisconnectBehaviour = 114,
-    AsyncDbcFunctionsEnable = 117,
-    AsyncDbcEvent = 119,
-    EnlistInDtc = 1207,
-    EnlistInXa = 1208,
-    ConnectionDead = 1209,
-    AutoIpd = 10001,
-    MetadataId = 10014,
 }
 
 /// `DiagIdentifier` for `SQLGetDiagField`
