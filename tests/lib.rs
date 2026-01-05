@@ -29,7 +29,7 @@ fn allocate_connection() {
             SQLSetEnvAttr(
                 env.as_henv(),
                 EnvironmentAttribute::OdbcVersion,
-                AttrOdbcVersion::Odbc3.into(),
+                AttrOdbcVersion::ODBC_3.into(),
                 0
             )
         );
