@@ -655,6 +655,84 @@ extern "system" {
         column_name_length: i16,
     ) -> SqlReturn;
 
+    /// Create a result set which contains the column names that make up the primary key for the
+    /// table.
+    ///
+    /// # Parameters
+    ///
+    /// * `hstmt`: Statement Handle
+    /// * `catalog_name`: Catalog name. If a driver supports catalogs for some tables but not for
+    ///   others, such as when the driver retrieves data from different DBMSs, an empty string ("")
+    ///   denotes those tables that do not have catalogs. `catalog_name` cannot contain a string
+    ///   search pattern.
+    /// * `catalog_name_length`: Length of `catalog_name` in characters.
+    /// * `schema_name`: Schema name. If a driver supports schemas for some tables but not for
+    ///   others, such as when the driver retrieves data from different DBMSs, an empty string ("")
+    ///   denotes those tables that do not have schemas. `schema_name` cannot contain a string
+    ///   search pattern.
+    /// * `schema_name_length`: Length of `schema_name` in characters.
+    /// * `table_name`: Table name. This argument can not be a null pointer. `table_name` cannot
+    ///   contain a string search pattern.
+    ///
+    /// If [`StatementAttribute::MetadataId`] statement attribute is set to true, catalog, schema
+    /// and table name parameters are treated as an identifiers and their case is not significant.
+    /// If it is false, they are ordinary arguments. As such they treated literally and their case
+    /// is significant.
+    ///
+    /// See: <https://learn.microsoft.com/sql/odbc/reference/syntax/sqlprimarykeys-function>
+    ///
+    /// # Returns
+    ///
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `STILL_EXECUTING`, `ERROR`, or `INVALID_HANDLE`.
+    pub fn SQLPrimaryKeys(
+        hstmt: HStmt,
+        catalog_name: *const Char,
+        catalog_name_length: i16,
+        schema_name: *const Char,
+        schema_name_length: i16,
+        table_name: *const Char,
+        table_name_length: i16,
+    ) -> SqlReturn;
+
+    /// Create a result set which contains the column names that make up the primary key for the
+    /// table.
+    ///
+    /// # Parameters
+    ///
+    /// * `hstmt`: Statement Handle
+    /// * `catalog_name`: Catalog name. If a driver supports catalogs for some tables but not for
+    ///   others, such as when the driver retrieves data from different DBMSs, an empty string ("")
+    ///   denotes those tables that do not have catalogs. `catalog_name` cannot contain a string
+    ///   search pattern.
+    /// * `catalog_name_length`: Length of `catalog_name` in characters.
+    /// * `schema_name`: Schema name. If a driver supports schemas for some tables but not for
+    ///   others, such as when the driver retrieves data from different DBMSs, an empty string ("")
+    ///   denotes those tables that do not have schemas. `schema_name` cannot contain a string
+    ///   search pattern.
+    /// * `schema_name_length`: Length of `schema_name` in characters.
+    /// * `table_name`: Table name. This argument can not be a null pointer. `table_name` cannot
+    ///   contain a string search pattern.
+    ///
+    /// If [`StatementAttribute::MetadataId`] statement attribute is set to true, catalog, schema
+    /// and table name parameters are treated as an identifiers and their case is not significant.
+    /// If it is false, they are ordinary arguments. As such they treated literally and their case
+    /// is significant.
+    ///
+    /// See: <https://learn.microsoft.com/sql/odbc/reference/syntax/sqlprimarykeys-function>
+    ///
+    /// # Returns
+    ///
+    /// `SUCCESS`, `SUCCESS_WITH_INFO`, `STILL_EXECUTING`, `ERROR`, or `INVALID_HANDLE`.
+    pub fn SQLPrimaryKeysW(
+        hstmt: HStmt,
+        catalog_name: *const WChar,
+        catalog_name_length: i16,
+        schema_name: *const WChar,
+        schema_name_length: i16,
+        table_name: *const WChar,
+        table_name_length: i16,
+    ) -> SqlReturn;
+
     /// Can be used to determine when an asynchronous function is complete using either notification- or polling-based processing.
     ///
     /// # Returns
