@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.28.1](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.28.0...odbc-sys-v0.28.1) - 2026-03-02
+
+### Added
+
+- Add SQLPrimaryKey and SQLPrimaryKeyW
+
 ## [0.28.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.4...odbc-sys-v0.28.0) - 2025-11-30
 
 ### Added
