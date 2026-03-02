@@ -7,11 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [0.28.1](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.28.0...odbc-sys-v0.28.1) - 2026-03-02
+## [0.29.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.28.0...odbc-sys-v0.29.0) - 2026-03-02
 
 ### Added
 
 - Add SQLPrimaryKey and SQLPrimaryKeyW
+
+### Removed
+
+- `USmallInt` type alias has been removed. Use u16 instead.
+- `SmallInt` type alias has been removed. Use i16 instead.
+- `UInteger` type alias has been removed. Use u32 instead.
+- `Integer` type alias has been removed. Use i32 instead.
 
 ## [0.28.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.27.4...odbc-sys-v0.28.0) - 2025-11-30
 
