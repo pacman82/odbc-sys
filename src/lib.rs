@@ -14,6 +14,7 @@ mod c_data_type;
 mod connection_attribute;
 mod desc;
 mod fetch_orientation;
+mod function_id;
 mod functions;
 mod handles;
 mod indicator;
@@ -35,6 +36,10 @@ pub use self::{
     connection_attribute::ConnectionAttribute,
     desc::Desc,
     fetch_orientation::FetchOrientation,
+    function_id::{
+        FunctionId, SQL_API_ALL_FUNCTIONS, SQL_API_ODBC3_ALL_FUNCTIONS,
+        SQL_API_ODBC3_ALL_FUNCTIONS_SIZE,
+    },
     functions::*,
     handles::{HDbc, HDesc, HEnv, HStmt, Handle},
     indicator::{len_data_at_exec, DATA_AT_EXEC, NO_TOTAL, NULL_DATA},
