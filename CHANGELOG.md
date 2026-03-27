@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.30.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.29.0...odbc-sys-v0.30.0) - 2026-03-27
+
+- [**breaking**] Add missing vairants to `InfoType`. Thanks to @lfrancke.
+
 ## [0.29.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.28.0...odbc-sys-v0.29.0) - 2026-03-02
 
 ### Added
