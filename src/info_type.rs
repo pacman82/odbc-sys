@@ -82,6 +82,11 @@ pub enum InfoType {
     /// the form "MM.mm" (e.g. "03.80").
     DriverOdbcVer = 77,
     GetDataExtensions = 81,
+    /// `SQL_FILE_USAGE`. How a single-tier driver directly treats files in a data source.
+    /// `SQL_FILE_NOT_SUPPORTED` (not a single-tier driver), `SQL_FILE_TABLE` (files are
+    /// treated as tables, e.g. Xbase), or `SQL_FILE_CATALOG` (files are treated as full
+    /// catalogs/databases, e.g. Microsoft Access).
+    SqlFileUsage = 84,
     NullCollation = 85,
     AlterTable = 86,
     /// `SQL_COLUMN_ALIAS`. Whether the data source supports column aliases
@@ -97,6 +102,11 @@ pub enum InfoType {
     /// `SQL_CATALOG_USAGE` (also known as `SQL_QUALIFIER_USAGE` in ODBC 2.x). A
     /// bitmask enumerating the statements in which catalogs can be used.
     CatalogUsage = 92,
+    /// `SQL_QUOTED_IDENTIFIER_CASE`. Case sensitivity of quoted identifiers in SQL. Returns
+    /// `SQL_IC_UPPER` (not case-sensitive, stored uppercase), `SQL_IC_LOWER` (not case-sensitive,
+    /// stored lowercase), `SQL_IC_SENSITIVE` (case-sensitive, stored mixed case), or
+    /// `SQL_IC_MIXED` (not case-sensitive, stored mixed case).
+    SqlQuotedIdentifierCase = 93,
     SpecialCharacters = 94,
     /// `SQL_SUBQUERIES`. A bitmask enumerating the predicates that support
     /// subqueries.
