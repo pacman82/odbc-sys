@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 env:
   CARGO_TERM_COLOR: always
+  MALLOC_CHECK_: 3  # Print diagnostic to stderr and abort on heap corruption (0=ignore, 1=print, 2=abort, 3=print+abort)
+  MALLOC_PERTURB_: 170  # Fill allocated memory with 0x55, freed memory with 0xAA to catch use-after-free
 
 jobs:
   format:
@@ -48,16 +50,35 @@ jobs:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: "recursive"
-      - if: ${{ contains(matrix.target, 'linux') && matrix.features == '' }}
-        run: sudo apt-get update && sudo apt-get install -y unixodbc-dev
-      - if: ${{ contains(matrix.target, 'linux') && matrix.features == 'iodbc' }}
-        run: sudo apt-get update && sudo apt-get install -y libiodbc2-dev
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == '' }}
-        run: brew install unixodbc
-      - if: ${{ contains(matrix.target, 'darwin') && matrix.features == 'iodbc' }}
-        run: brew install libiodbc
+      - if: ${{ contains(matrix.target, 'linux') }}
+        run: |
+          sudo apt-get update && sudo apt-get install -y libsqliteodbc ${{ matrix.features == '' && 'unixodbc-dev' || matrix.features == 'iodbc' && 'libiodbc2-dev' || '' }}
+          echo "LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/odbc" >> "$GITHUB_ENV"
+      - if: ${{ contains(matrix.target, 'darwin') }}
+        run: |
+          brew install sqliteodbc ${{ matrix.features == '' && 'unixodbc' || matrix.features == 'iodbc' && 'libiodbc' || '' }}
+          cat > /tmp/sqlite3_driver.ini << 'EOF'
+          [SQLite3]
+          Description=SQLite ODBC Driver
+          Driver=/opt/homebrew/lib/libsqlite3odbc.dylib
+          Setup=/opt/homebrew/lib/libsqlite3odbc.dylib
+          EOF
+          odbcinst -i -d -f /tmp/sqlite3_driver.ini
+      - if: ${{ contains(matrix.target, 'windows') }}
+        run: |
+          $arch = "${{ contains(matrix.target, 'x86_64') && '_w64' || '' }}"
+          $installPath = if ($arch -eq "_w64") { "C:\Program Files\SQLite ODBC Driver" } else { "C:\Program Files (x86)\SQLite ODBC Driver" }
+          Invoke-WebRequest "http://www.ch-werner.de/sqliteodbc/sqliteodbc$arch.exe" -OutFile C:\sqliteodbc.exe
+          7z x C:\sqliteodbc.exe -o"$installPath"
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\ODBC Drivers" /v SQLite3 /t REG_SZ /d Installed /f
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\SQLite3" /v "Driver" /t REG_SZ /d "$installPath\sqlite3odbc.dll" /f
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\SQLite3" /v "Setup" /t REG_SZ /d "$installPath\sqlite3odbc.dll" /f
+          REG ADD "HKLM\SOFTWARE\ODBC\ODBCINST.INI\SQLite3" /v "UsageCount" /t REG_DWORD /d 1 /f
       - run: cargo clippy --all-targets --features "${{ matrix.features }}" -- -D warnings
-      - run: cargo test -p odbc-sys --target "${{ matrix.target }}" --features "${{ matrix.features }}"
+      - run: cargo test -p odbc-sys
+              --target "${{ matrix.target }}"
+              --features "${{ matrix.features }}"
+              -- ${{ matrix.features !=  'iodbc' && matrix.target!= 'i686-pc-windows-msvc' && '--include-ignored' || '' }} # ignored tests depend on the sqlite driver
 
   # Verify that the build script does nothing nasty, which would prevent publishing to crates.io
   test_publish_unix_odbc:
