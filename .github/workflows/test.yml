@@ -32,7 +32,10 @@ jobs:
   test:
     needs: [format]
     name: ${{ matrix.features || 'dynamic unixodbc' }} on ${{ matrix.target }}
-    runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || 'ubuntu-latest' }}
+    # libiodbc2 3.52.16-2 (Ubuntu 26.04) is built with -std=c17, which hides the strdup prototype and
+    # truncates pointers. It segfaults on the first SQLAllocHandle call, even from plain C. Keep the
+    # iodbc job on 24.04 (libiodbc2 3.52.9) until the Debian/Ubuntu package is fixed.
+    runs-on: ${{ contains(matrix.target, 'windows') && 'windows-latest' || contains(matrix.target, 'darwin') && 'macos-latest' || matrix.features == 'iodbc' && 'ubuntu-24.04' || 'ubuntu-latest' }}
 
     strategy:
       matrix:
