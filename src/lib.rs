@@ -32,7 +32,7 @@ pub use self::{
     },
     bulk_operation::BulkOperation,
     c_data_type::*,
-    connection_attribute::ConnectionAttribute,
+    connection_attribute::{ConnectionAttribute, SsAccessToken},
     desc::Desc,
     fetch_orientation::FetchOrientation,
     functions::*,
