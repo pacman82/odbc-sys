@@ -3,6 +3,22 @@
 `odbc-sys` adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.31.1](https://github.com/pacman82/odbc-sys/compare/0.31.0...0.31.1) - 2026-11-01
+
+### 🚀 Features
+
+- Support for setting Microsoft Entra IDs
+
+  via SS_ACCESS_TOKEN connection attribute and SsAccessToken struct
+
+
+
+### 📚 Documentation
+
+- Fix git-cliff template for first release. Remove superfluous
+- Update git-cliff configuration to include compare link in
+- Update changelog format
+
 
 ## [0.31.0](https://github.com/pacman82/odbc-sys/compare/odbc-sys-v0.30.0...odbc-sys-v0.31.0) - 2026-03-30
 
