@@ -3,6 +3,12 @@
 `odbc-sys` adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.31.2](https://github.com/pacman82/odbc-sys/compare/0.31.1...0.31.2) - 2026-11-01
+
+### 🚀 Features
+
+- Contructor for allocating SsAccessToken
+
 ## [0.31.1](https://github.com/pacman82/odbc-sys/compare/0.31.0...0.31.1) - 2026-11-01
 
 ### 🚀 Features
