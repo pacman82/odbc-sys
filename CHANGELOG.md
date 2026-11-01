@@ -9,14 +9,12 @@
 
 - Support for setting Microsoft Entra IDs
 
-  via SS_ACCESS_TOKEN connection attribute and SsAccessToken struct
-
+  via `SS_ACCESS_TOKEN` connection attribute and `SsAccessToken` struct
 
 
 ### 📚 Documentation
 
-- Fix git-cliff template for first release. Remove superfluous
-- Update git-cliff configuration to include compare link in
+- Update git-cliff configuration to include compare link in changelog
 - Update changelog format
 
 
