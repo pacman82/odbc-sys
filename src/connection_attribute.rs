@@ -58,4 +58,36 @@ impl ConnectionAttribute {
     pub const CONNECTION_DEAD: Self = Self(1209);
     pub const AUTO_IPD: Self = Self(10001);
     pub const METADATA_ID: Self = Self(10014);
+
+    /// Equivalent to `SQL_COPT_SS_ACCESS_TOKEN` in `msodbcsql.h`.
+    ///
+    /// Pre-connect attribute to authenticate with a Microsoft Entra ID access token. Specific to
+    /// the Microsoft ODBC Driver for SQL Server. Setting this for other drivers could cause
+    /// undefined behavior. The value is a pointer to an [`SsAccessToken`]. It must stay allocated
+    /// for as long as the connection handle is allocated.
+    ///
+    /// See:
+    /// <https://learn.microsoft.com/sql/connect/odbc/using-azure-active-directory#authenticating-with-an-access-token>
+    pub const SS_ACCESS_TOKEN: Self = Self(1256);
+}
+
+/// Equivalent to `ACCESSTOKEN` in `msodbcsql.h`. Value of [`ConnectionAttribute::SS_ACCESS_TOKEN`].
+///
+/// Specific to the Microsoft ODBC Driver for SQL Server. A dynamically sized type: pointers to it
+/// are fat and carry the length of `data`, which must equal `data_size`. Cast to a thin pointer
+/// before passing it to the driver.
+///
+/// See:
+/// <https://learn.microsoft.com/sql/connect/odbc/using-azure-active-directory#authenticating-with-an-access-token>
+#[repr(C)]
+pub struct SsAccessToken {
+    /// Length of `data` in bytes. Does not include a terminating zero.
+    pub data_size: u32,
+    /// Flexible array member (`BYTE data[]` in C). Directly follows `data_size`.
+    ///
+    /// According to Microsoft, a token obtained from an OAuth 2.0 JSON response must be expanded,
+    /// so each byte is followed by a zero byte. For the ASCII characters of an access token, this
+    /// equals UTF-16 with little endian byte order. This holds whether the narrow or wide ODBC
+    /// functions are used, since the driver manager passes the pointer through unchanged.
+    pub data: [u8],
 }
