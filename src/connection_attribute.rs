@@ -1,3 +1,8 @@
+use std::{
+    alloc::{alloc, handle_alloc_error, Layout},
+    ptr,
+};
+
 /// Connection attributes for `SQLSetConnectAttr`
 ///
 /// See: <https://docs.microsoft.com/en-us/sql/odbc/reference/syntax/sqlsetconnectattr-function>
@@ -90,4 +95,79 @@ pub struct SsAccessToken {
     /// equals UTF-16 with little endian byte order. This holds whether the narrow or wide ODBC
     /// functions are used, since the driver manager passes the pointer through unchanged.
     pub data: [u8],
+}
+
+impl SsAccessToken {
+    /// `data` must be the access token in the format expected by the driver: each byte of the
+    /// ASCII token followed by a zero byte. Use [`Self::from_text`] to pass the token text instead.
+    ///
+    /// # Panics
+    ///
+    /// If `data` is larger than `u32::MAX` bytes.
+    pub fn new(data: &[u8]) -> Box<Self> {
+        let data_size =
+            u32::try_from(data.len()).expect("Access token must not be larger than u32::MAX bytes");
+        // Can not fail, since `data.len()` fits into an `u32`.
+        let (layout, data_offset) = Layout::new::<u32>()
+            .extend(Layout::array::<u8>(data.len()).unwrap())
+            .unwrap();
+        let layout = layout.pad_to_align();
+        // Safety: `layout` has a non-zero size, since it contains at least the `u32` header. Header
+        // and data are written within the allocation, at the offsets computed by `Layout::extend`.
+        // The fat pointer carries `data.len()` as length of `data`, so `Layout::for_value` of the
+        // resulting box equals `layout`, as required by `Box::from_raw`.
+        unsafe {
+            let raw = alloc(layout);
+            if raw.is_null() {
+                handle_alloc_error(layout);
+            }
+            raw.cast::<u32>().write(data_size);
+            ptr::copy_nonoverlapping(data.as_ptr(), raw.add(data_offset), data.len());
+            Box::from_raw(ptr::slice_from_raw_parts_mut(raw, data.len()) as *mut SsAccessToken)
+        }
+    }
+
+    /// `token` is the access token as text, e.g. obtained from an OAuth 2.0 JSON response.
+    ///
+    /// # Panics
+    ///
+    /// If the encoded token is larger than `u32::MAX` bytes.
+    pub fn from_text(token: &str) -> Box<Self> {
+        let data: Vec<u8> = token.encode_utf16().flat_map(u16::to_le_bytes).collect();
+        Self::new(&data)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use std::mem::{align_of_val, size_of_val};
+
+    use super::SsAccessToken;
+
+    #[test]
+    fn access_token_from_str_is_encoded_as_utf16_little_endian() {
+        let token = SsAccessToken::from_text("eyJ");
+
+        assert_eq!(6, token.data_size);
+        assert_eq!(&[b'e', 0, b'y', 0, b'J', 0], &token.data);
+    }
+
+    #[test]
+    fn access_token_new_copies_bytes_verbatim() {
+        let token = SsAccessToken::new(&[1, 2, 3]);
+
+        assert_eq!(3, token.data_size);
+        assert_eq!(&[1, 2, 3], &token.data);
+    }
+
+    #[test]
+    fn access_token_has_c_layout() {
+        let token = SsAccessToken::new(&[1, 2, 3]);
+
+        let start = &*token as *const SsAccessToken as *const u8 as usize;
+        assert_eq!(4, token.data.as_ptr() as usize - start);
+        // 4 bytes header, 3 bytes data, padded to alignment of 4
+        assert_eq!(8, size_of_val(&*token));
+        assert_eq!(4, align_of_val(&*token));
+    }
 }
