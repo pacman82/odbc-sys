@@ -3,6 +3,12 @@
 `odbc-sys` adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+## [0.31.3](https://github.com/pacman82/odbc-sys/compare/0.31.2...0.31.3) - 2026-11-07
+
+### 🚀 Features
+
+- TransactionCapable as strict alias over u16 for SQL_TXN_CAPABLE values
+
 ## [0.31.2](https://github.com/pacman82/odbc-sys/compare/0.31.1...0.31.2) - 2026-11-01
 
 ### 🚀 Features
