@@ -24,6 +24,7 @@ mod param_type;
 mod set_pos;
 mod sql_data_type;
 mod sqlreturn;
+mod transaction_capable;
 
 pub use self::{
     attributes::{
@@ -45,6 +46,7 @@ pub use self::{
     set_pos::{Lock, Operation},
     sql_data_type::SqlDataType,
     sqlreturn::SqlReturn,
+    transaction_capable::TransactionCapable,
 };
 use std::os::raw::{c_int, c_void};
 
